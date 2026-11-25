@@ -140,7 +140,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 4. PBR Material System | Shared materials and locally generated/substantiated texture detail for wood, stone, glass, metal and lacquer | **Completed — procedural PBR library integrated** |
 | 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | **Completed — tiered lighting and contact shadows integrated** |
 | 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | **Completed — local panorama and PMREM reflections integrated** |
-| 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | Pending |
+| 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | **Completed — premium flacon and vial assets integrated** |
 | 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | Pending |
 | 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | Pending |
 | 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | Pending |
@@ -289,3 +289,29 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Tests, foundation validation, CI syntax and PWA precache updated.
 - [ ] Actual glass/metal appearance tuning on target Android hardware — Block 12.
 - [ ] Perfume bottle geometry/labels/glass thickness refinement — Block 7.
+
+
+## 14. Block 7 implementation record — High-Quality Perfume Assets
+
+**Implementation branch:** `feature/phase2-block7-premium-perfume-assets`
+
+- Added `src/js/features/laboratory/perfume-assets.js` with reusable rounded-plate geometry and a custom beveled flacon silhouette.
+- Replaced the main box-shaped bottle with curved shoulders, an integrated neck, rounded/beveled edges and a wider glass body.
+- Added an internal colored-liquid volume and visible dip tube.
+- Rebuilt the main cap as a dark-walnut cylinder with brushed-brass lower ring, upper medallion and eight fine vertical accent grooves.
+- Added a layered front label: brass rounded backing, dark inset plate and an independent typography texture.
+- Refined reference vial geometry with more cylinder segments, neck collars, dark caps, brass accent rings and layered labels.
+- All geometry is generated locally with Three.js. New geometry and materials are included in the existing scene-disposal lifecycle.
+- Added asset regression tests, foundation validation, CI syntax checking and PWA precache entry. Cache is now `shell-v15`.
+
+### Block 7 acceptance record
+
+- [x] Main bottle no longer uses the plain rectangular box silhouette.
+- [x] Custom curved/bisected flacon geometry with beveled edges.
+- [x] Liquid volume and internal dip tube visible as conceptual visual elements.
+- [x] Layered label plate and premium cap details.
+- [x] Refined glass vial/cap/label geometry.
+- [x] Reusable rounded plate geometry.
+- [x] Tests, structure validator, CI syntax check and PWA cache updated.
+- [ ] Real-world reference comparison for glass/refraction and physical scale — Block 12.
+- [ ] Additional laboratory equipment and furniture details — Block 8.

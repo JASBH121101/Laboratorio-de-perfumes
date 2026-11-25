@@ -127,3 +127,8 @@ The atelier now has a warm directional key aligned with its side window, cool fi
 ### Environment reflections and atmosphere — Phase 2 Block 6
 
 The atelier generates a compact equirectangular panorama locally with CanvasTexture, converts it to a PMREM reflection map for glass and metallic surfaces, and uses the same panorama as a restrained background. Mobile uses a 256 px source; desktop uses 512 px. The PMREM target and source texture are disposed when the 3D view closes. No HDRI download or external environment service is used; PWA cache is now `shell-v14`.
+
+
+### Premium perfume assets — Phase 2 Block 7
+
+The main concept flacon now uses a custom beveled ExtrudeGeometry silhouette with rounded shoulders, an integrated neck, internal liquid and dip tube, layered label plates, a dark cap, and brushed-brass collar/rings. Reference vials receive more detailed cylindrical geometry and matching label/cap treatment. Geometry is generated locally and disposed with the scene; the new module is in PWA cache `shell-v15`.
