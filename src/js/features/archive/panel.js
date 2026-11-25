@@ -112,7 +112,7 @@ export function renderArchiveView(state = {}) {
         <div class="archive-rename-row"><label for="archive-variant-name">Nombre de variante ${esc(selectedVariant.label)}</label><input id="archive-variant-name" maxlength="60" value="${esc(selectedVariant.name)}"><button type="button" data-action="rename-archive-variant">Renombrar</button></div>
         <div class="archive-action-row">
           <button type="button" data-action="save-archive-version">Guardar composición actual como nueva versión</button>
-          <button type="button" data-action="create-archive-variant" ${remainingVariants ? "" : "disabled"}>${remainingVariants ? `＋ Crear variante ${["A","B","C"].find((label) => !selected.variants.some((item) => item.label === label)}` : "Límite de variantes alcanzado"}</button>
+          <button type="button" data-action="create-archive-variant" ${remainingVariants ? "" : "disabled"}>${remainingVariants ? `＋ Crear variante ${["A","B","C"].find((label) => !selected.variants.some((item) => item.label === label))}` : "Límite de variantes alcanzado"}</button>
         </div>
         <div class="archive-subheading"><h4>Historial de ${esc(selectedVariant.label)}</h4><span>${selectedVariant.versions.length}/${MAX_VERSIONS_PER_VARIANT} versiones</span></div>
         <div class="archive-version-list">${history}</div>
@@ -130,6 +130,7 @@ export function renderArchiveView(state = {}) {
     `;
   }
   return `
+    <div id="archive-root">
     <section class="page-intro archive-page-intro"><p class="eyebrow">BLOCK 08 · PERSISTENCE & CREATIVE ARCHIVE</p><h1>Mis <em>creaciones</em></h1><p>Un archivo privado en este dispositivo para conservar composiciones, versiones y variantes de tus conceptos.</p></section>
     <div class="archive-summary"><strong>${creations.length}</strong><span>CREACIONES GUARDADAS</span><span>LOCAL-FIRST · SIN CUENTA</span></div>
     ${fallback}
@@ -151,6 +152,7 @@ export function renderArchiveView(state = {}) {
       </div>
     </section>
     <p class="archive-privacy-note">Las creaciones se guardan únicamente en el almacenamiento de este navegador/dispositivo. No se suben a GitHub ni a un servidor. Exportá respaldos periódicos: borrar los datos del navegador o cambiar de teléfono puede eliminar este archivo local.</p>
+    </div>
   `;
 }
 
@@ -161,14 +163,14 @@ export function renderArchiveQuickSave(state = {}) {
     : null;
   if (selected && variant) {
     return `
-      <section class="archive-quick-save">
+      <section class="archive-quick-save" id="archive-quick-save">
         <div><p class="eyebrow">LOCAL ARCHIVE · ${esc(selected.name)}</p><strong>Guardar cambios de la composición</strong><small>Variante ${esc(variant.label)} · v${variant.versions.at(-1)?.number ?? 1}</small></div>
         <div class="archive-quick-actions"><button type="button" data-action="save-archive-version">Guardar nueva versión</button><button type="button" data-nav="projects">Administrar archivo ↗</button></div>
       </section>
     `;
   }
   return `
-    <section class="archive-quick-save">
+    <section class="archive-quick-save" id="archive-quick-save">
       <div><p class="eyebrow">BLOCK 08 · SAVE YOUR IDEA</p><strong>Conservá esta composición</strong><small>Guardala como una creación nueva para recuperarla después.</small></div>
       <div class="archive-quick-actions"><input id="archive-quick-name" maxlength="60" placeholder="Nombre de la fragancia"><button type="button" data-action="save-current-as-creation">Guardar creación</button><button type="button" data-nav="projects">Abrir archivo ↗</button></div>
     </section>
