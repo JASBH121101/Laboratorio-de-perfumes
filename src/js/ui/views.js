@@ -97,6 +97,15 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <div><span class="gesture-icon">⊕</span><div><strong>Acercar o alejar</strong><small>Pellizcá con dos dedos o usá la rueda</small></div></div>
       <div><span class="gesture-icon">◎</span><div><strong>Inspeccionar</strong><small>Tocá un objeto para abrir su ficha</small></div></div>
     </section>
+    <section class="lab-performance-panel" aria-labelledby="lab-performance-title">
+      <div class="lab-performance-copy">
+        <p class="eyebrow">ANDROID · DIAGNÓSTICO LOCAL</p>
+        <h2 id="lab-performance-title">Medición de rendimiento 3D</h2>
+        <p>Ejecuta una prueba corta cuando la escena esté lista. No corre en segundo plano ni envía datos fuera del dispositivo.</p>
+      </div>
+      <button type="button" class="lab-performance-button" data-action="run-lab-performance-audit">Medir rendimiento</button>
+      <pre class="lab-performance-report" id="lab-performance-report" role="status" aria-live="polite" hidden></pre>
+    </section>
     ${renderMixStudio(mixingState)}
     ${renderArchiveQuickSave(archiveState)}
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
