@@ -14,10 +14,12 @@ test("camera offers overview, bottle and workbench presets with distinct cinemat
   assert.match(scene, /animateCameraPreset/);
   assert.match(scene, /setCameraPreset: \(preset\) =>/);
   assert.match(scene, /setExperimentMode/);
-  assert.match(scene, /experiment: \{ theta: 0, phi: 1\.42/);
-  assert.match(scene, /target: \[0, 1\.38, 0\.12\]/);
-  assert.match(scene, /target: \[0, 0\.94, 0\.08\]/);
-  assert.match(scene, /radius: 6\.35/);
+  assert.match(scene, /experiment: \{ theta: 0, phi: 1\.4/);
+  assert.match(scene, /target: \[0, 1\.34, 0\.12\]/);
+  assert.match(scene, /target: \[0, 0\.96, 0\.05\]/);
+  assert.match(scene, /radius: 5\.8/);
+  assert.match(scene, /new THREE\.PerspectiveCamera\(40, 1, 0\.1, 80\)/);
+  assert.match(scene, /const aspectFit = Math\.max\(1, 1\.04 \/ Math\.max\(camera\.aspect, 0\.6\)\)/);
 });
 
 test("camera preset transitions are eased, interruptible and respect reduced motion", () => {
@@ -42,12 +44,32 @@ test("camera preset controls are accessible and the app connects each button to 
   assert.match(view, /role="group" aria-label="Encuadres de cámara"/);
   assert.equal((view.match(/class="lab-camera-presets"/g) || []).length, 1, "Stage must expose one camera preset group");
   assert.match(view, /aria-pressed="true"/);
-  assert.match(app, /labController\?\.setCameraPreset\?\.\(cameraPreset\)/);
-  assert.match(app, /button\.dataset\.cameraPreset === activePreset/);
+  assert.match(app, /labController\.setCameraPreset\(cameraPreset\)/);
+  assert.match(app, /syncLabCameraPreset\(sceneStage\)/);
+  assert.match(scene, /stage\.dataset\.cameraPreset = preset/);
+  assert.match(scene, /if \(preset === "overview" \|\| preset === "bottle" \|\| preset === "workbench"\)/);
+  assert.match(scene, /setExperimentMode\(!hasComposition, hasComposition \? "overview" : "experiment"\)/);
   assert.match(app, /button\.setAttribute\("aria-pressed", String\(active\)\)/);
 });
 
 test("preset styling exposes a visible selected state and keyboard focus", () => {
   assert.match(styles, /\.lab-camera-presets button\.is-active/);
+  assert.match(styles, /\.lab-stage-live-dot/);
+  assert.match(styles, /\.lab-stage-live-label/);
   assert.match(styles, /focus-visible/);
+  assert.match(view, /lab-stage-live-dot/);
+  assert.match(view, /lab-stage-live-label/);
+  assert.doesNotMatch(styles, /\.lab-stage-live span \{/);
+});
+
+
+test("camera presets remain usable with an empty composition", () => {
+  assert.match(scene, /setCameraPreset: \(preset\) => \{[\s\S]*?if \(preset === "overview" \|\| preset === "bottle" \|\| preset === "workbench"\)[\s\S]*?return setExperimentMode\(false, preset\)/);
+  assert.doesNotMatch(scene, /if \(!compositionHasItems\) return setExperimentMode\(true\)/);
+});
+
+test("recenter follows the currently selected scene mode and exposes the active preset", () => {
+  assert.match(scene, /const preset = experimentMode \? "experiment" : "overview"/);
+  assert.match(scene, /stage\.dataset\.cameraPreset = preset/);
+  assert.match(app, /function syncLabCameraPreset\(/);
 });
