@@ -95,3 +95,30 @@ test("mix total remains 100 after a sequence of operations", () => {
     assert.equal(getMixTotal(state), 100);
   }
 });
+
+test("a single-note composition stays at 100 points and cannot be reweighted", () => {
+  let state = addMixNote(createMixState(), "rose");
+  const before = state;
+  state = setMixNotePoints(state, "rose", 45);
+  assert.equal(state, before);
+  assert.equal(getMixTotal(state), 100);
+});
+
+test("composition history is bounded to the most recent forty operations", () => {
+  let state = createMixState();
+  const ids = ["bergamot", "rose", "vanilla", "vetiver", "sandalwood", "cardamom"];
+  for (let index = 0; index < 50; index += 1) {
+    const id = ids[index % ids.length];
+    state = addMixNote(state, id);
+    if (state.items.length === ids.length) state = removeMixNote(state, ids[(index + 1) % ids.length]);
+  }
+  assert.ok(state.history.length <= 40);
+});
+
+test("mixing panel exposes library picker, drag-drop zone and undo", () => {
+  const html = renderMixStudio(addMixNote(createMixState(), "bergamot"));
+  assert.match(html, /id="mix-note-picker"/);
+  assert.match(html, /data-mix-dropzone/);
+  assert.match(html, /data-action="undo-mix"/);
+  assert.match(html, /data-mix-weight="bergamot"/);
+});
