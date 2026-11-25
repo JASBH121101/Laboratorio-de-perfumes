@@ -1,0 +1,20 @@
+{
+  "name": "jb-virtual-perfume-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Personal interactive 3D virtual fragrance laboratory",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "qa:static": "jb-qa-project .",
+    "qa:security": "jb-qa-security .",
+    "qa:dashboard": "jb-qa-dashboard",
+    "qa:setup-browser": "jb-qa setup --browser chromium",
+    "qa:full": "npm run qa:static && npm run qa:security"
+  },
+  "devDependencies": {
+    "@jb/expert-qa": "0.2.1"
+  }
+}
