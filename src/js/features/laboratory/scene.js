@@ -615,6 +615,67 @@ function createFurniture(scene, materials) {
   return shelving;
 }
 
+function createExperimentBackdrop(materials) {
+  const backdrop = new THREE.Group();
+  backdrop.name = "experiment-backdrop";
+
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(11.6, 7.5),
+    materials.stone
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.set(0, -0.035, 0.12);
+  backdrop.add(floor);
+
+  const rearPanel = new THREE.Mesh(
+    new THREE.BoxGeometry(10.8, 3.65, 0.14),
+    materials.wall
+  );
+  rearPanel.position.set(0, 1.78, -3.72);
+  backdrop.add(rearPanel);
+
+  const inset = new THREE.Mesh(
+    new THREE.BoxGeometry(8.25, 2.55, 0.055),
+    materials.darkWalnut
+  );
+  inset.position.set(0, 2.02, -3.625);
+  backdrop.add(inset);
+
+  const innerPanel = new THREE.Mesh(
+    new THREE.BoxGeometry(7.95, 2.25, 0.035),
+    materials.wall
+  );
+  innerPanel.position.set(0, 2.02, -3.585);
+  backdrop.add(innerPanel);
+
+  for (const x of [-5.22, 5.22]) {
+    const upright = new THREE.Mesh(
+      new THREE.BoxGeometry(0.075, 3.55, 0.08),
+      materials.walnut
+    );
+    upright.position.set(x, 1.78, -3.6);
+    backdrop.add(upright);
+  }
+
+  for (const y of [0.12, 3.53]) {
+    const rail = new THREE.Mesh(
+      new THREE.BoxGeometry(10.55, 0.055, 0.095),
+      materials.brass
+    );
+    rail.position.set(0, y, -3.54);
+    backdrop.add(rail);
+  }
+
+  const signature = new THREE.Mesh(
+    new THREE.BoxGeometry(2.7, 0.52, 0.045),
+    materials.darkWalnut
+  );
+  signature.position.set(0, 2.98, -3.53);
+  backdrop.add(signature);
+
+  return backdrop;
+}
+
 function createPropMesh(prop, materials) {
   let group;
   if (prop.id === "author-bottle") group = createMainBottle(prop, materials);
@@ -782,6 +843,9 @@ export function mountLaboratory(stage) {
   const benchPractical = new THREE.PointLight(0xd9ad79, 2.6, 4.8);
   benchPractical.position.set(3.3, 2.3, 0.25);
   scene.add(benchPractical);
+
+  const experimentBackdrop = createExperimentBackdrop(materials);
+  scene.add(experimentBackdrop);
 
   const atelierEnvironment = new THREE.Group();
   createRoomArchitecture(atelierEnvironment, materials);
@@ -1167,6 +1231,7 @@ export function mountLaboratory(stage) {
   function setSceneMode(mode = "experiment") {
     currentSceneMode = mode === "atelier" ? "atelier" : "experiment";
     atelierEnvironment.visible = currentSceneMode === "atelier";
+    experimentBackdrop.visible = currentSceneMode === "experiment";
     shelfPractical.visible = currentSceneMode === "atelier";
     animateCameraPreset(currentSceneMode === "atelier" ? "atelier" : "workbench");
     stage.dataset.labMode = currentSceneMode;
