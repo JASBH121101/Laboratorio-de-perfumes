@@ -566,6 +566,8 @@ function createRoomArchitecture(scene, materials) {
 }
 
 function createFurniture(scene, materials) {
+  const displayFurnitureGroup = new THREE.Group();
+  displayFurnitureGroup.name = "atelier-display-furniture";
   const table = new THREE.Mesh(
     new THREE.BoxGeometry(9.2, 0.22, 4.2),
     materials.counterstone
@@ -593,14 +595,14 @@ function createFurniture(scene, materials) {
   for (const y of [2.55, 3.35]) {
     const shelf = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.11, 0.48), shelfMaterial);
     shelf.position.set(0, y, -2.58);
-    scene.add(shelf);
+    displayFurnitureGroup.add(shelf);
 
     const accent = new THREE.Mesh(
       new THREE.BoxGeometry(7.5, 0.025, 0.49),
       materials.brass
     );
     accent.position.set(0, y - 0.06, -2.58);
-    scene.add(accent);
+    displayFurnitureGroup.add(accent);
   }
 
   const shelfBottleMaterial = materials.lacquer;
@@ -612,8 +614,10 @@ function createFurniture(scene, materials) {
       shelfBottleMaterial
     );
     decorativeBottle.position.set(x, 2.55 + 0.055 + height / 2, -2.58);
-    scene.add(decorativeBottle);
+    displayFurnitureGroup.add(decorativeBottle);
   }
+  scene.add(displayFurnitureGroup);
+  return displayFurnitureGroup;
 }
 
 function createPropMesh(prop, materials) {
@@ -722,6 +726,7 @@ export function mountLaboratory(stage) {
   const atelierBackground = scene.background;
   const experimentBackground = new THREE.Color(0x211a21);
   let roomArchitectureGroup = null;
+  let displayFurnitureGroup = null;
   let experimentMode = true;
   let compositionHasItems = false;
 
@@ -790,7 +795,8 @@ export function mountLaboratory(stage) {
   phi = 1.42;
   radius = 7.2;
   target.set(0, 1.12, -1.2);
-  createFurniture(scene, materials);
+  displayFurnitureGroup = createFurniture(scene, materials);
+  displayFurnitureGroup.visible = false;
 
   const contactShadowMaterial = createContactShadowMaterial();
   const contactShadowSizes = {
@@ -1144,6 +1150,7 @@ export function mountLaboratory(stage) {
     if (experimentMode === nextMode) return experimentMode;
     experimentMode = nextMode;
     if (roomArchitectureGroup) roomArchitectureGroup.visible = !experimentMode;
+    if (displayFurnitureGroup) displayFurnitureGroup.visible = !experimentMode;
     scene.background = experimentMode ? experimentBackground : atelierBackground;
     stage.dataset.sceneMode = experimentMode ? "experiment" : "atelier";
     animateCameraPreset(experimentMode ? "experiment" : "overview");
