@@ -77,7 +77,7 @@ if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includ
 if (!app.includes("createArchiveRepository") || !app.includes("saveCurrentAsVersion") || !app.includes("parseArchiveBackup")) failures.push("Local archive repository, version saving or backup import is not wired.");
 if (!views.includes("renderArchiveView(archiveState)") || !views.includes("renderArchiveQuickSave(archiveState)")) failures.push("Archive screen or laboratory quick-save panel is not connected.");
 if (!archiveRepository.includes("indexedDBApi.open") || !archiveRepository.includes("localStorage")) failures.push("Archive needs IndexedDB storage and a localStorage fallback.");
-if (!archivePanel.includes("data-restore-version") || !archivePanel.includes("data-action=\\"compare-archive-variants\\"") || !archivePanel.includes("Exportar todo")) failures.push("Archive history, comparison or backup controls are missing.");
+if (!archivePanel.includes("data-restore-version") || !archivePanel.includes('data-action="compare-archive-variants"') || !archivePanel.includes("Exportar todo")) failures.push("Archive history, comparison or backup controls are missing.");
 if (!analysisPanel.includes("heurística") || !analysisPanel.includes("no miden compatibilidad molecular")) failures.push("Creative analysis limitations must be visible to the user.");
 let sampleMix = createMixState();
 sampleMix = addMixNote(sampleMix, "bergamot");
