@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "JB Virtual Perfume Lab",
+  "short_name": "JB Perfume Lab",
+  "description": "Atelier digital para explorar conceptos de fragancias.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#171216",
+  "theme_color": "#171216",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
