@@ -83,6 +83,7 @@ function updateArchiveUI() {
 async function refreshArchive() {
   try {
     archiveState.creations = await archiveRepository.list();
+    archiveState.storageMode = archiveRepository.getStorageMode();
     archiveState.error = "";
     if (archiveState.selectedCreationId) {
       const selected = archiveState.creations.find((creation) => creation.id === archiveState.selectedCreationId);
