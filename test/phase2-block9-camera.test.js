@@ -34,6 +34,7 @@ test("Phase 2 Block 9 camera presets and transitions are wired", async () => {
   assert.match(scene, /return experimentMode/);
   assert.match(scene, /if \(preset === "overview" \|\| preset === "bottle" \|\| preset === "workbench"\)/);
   assert.match(scene, /stage\.dataset\.cameraPreset = preset/);
-  assert.match(app, /resetCamera\?\.\(\) === true/);
+  assert.match(app, /labController\.resetCamera\(\)/);
+  assert.match(app, /syncLabCameraPreset\(sceneStage\)/);
   assert.match(views, /data-camera-preset="experiment"/);
 });
