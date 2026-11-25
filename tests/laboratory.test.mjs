@@ -76,3 +76,10 @@ test("other routes keep receiving their own view state", () => {
   assert.match(home, /Las ideas también/);
   assert.match(notes, /Biblioteca/);
 });
+
+\ntest("Laboratory route includes the conceptual evolution simulator", () => {
+  const html = renderPage("lab", {}, createMixState());
+  assert.match(html, /id="evolution-simulator"/);
+  assert.match(html, /BLOCK 07 · CONCEPTUAL EVOLUTION/);
+  assert.match(html, /data-evolution-stage="opening"/);
+});
