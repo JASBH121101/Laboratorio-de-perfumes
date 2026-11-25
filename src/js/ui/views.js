@@ -75,6 +75,11 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
           <span class="status-pill">JB ATELIER · 3D VIEW</span>
           <span class="lab-stage-live"><span></span> SCENE READY</span>
         </div>
+        <div class="lab-camera-presets" role="group" aria-label="Encuadres de cámara">
+          <button type="button" class="lab-camera-preset is-active" data-action="camera-preset-overview" aria-pressed="true">General</button>
+          <button type="button" class="lab-camera-preset" data-action="camera-preset-bottle" aria-pressed="false">Frasco</button>
+          <button type="button" class="lab-camera-preset" data-action="camera-preset-workbench" aria-pressed="false">Mesa</button>
+        </div>
         <div class="lab-canvas" data-lab-canvas>
           <div class="lab-loading"><span class="lab-loading-mark">JB</span><strong>Preparando el laboratorio</strong><small>Cargando escena tridimensional…</small></div>
         </div>
