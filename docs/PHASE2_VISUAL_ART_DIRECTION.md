@@ -135,7 +135,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | Block | Scope | Status |
 |---|---|---|
 | 1. Visual Benchmark & Art Direction | Audit baseline, define cinematic atelier direction, palette, materials, camera, device tiers and acceptance criteria | **Completed — this document** |
-| 2. Rendering Pipeline Upgrade | Renderer profiles, color management audit, quality selection, capability fallbacks and rendering configuration | Pending |
+| 2. Rendering Pipeline Upgrade | Renderer profiles, color management audit, quality selection, capability fallbacks and rendering configuration | **Completed — adaptive profiles integrated** |
 | 3. Architectural Environment | Complete room shell, window/opening, walls, ceiling treatment, floor, doors/trim and spatial depth | Pending |
 | 4. PBR Material System | Shared materials and locally generated/substantiated texture detail for wood, stone, glass, metal and lacquer | Pending |
 | 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | Pending |
@@ -155,7 +155,31 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Mobile quality tiers and measurable profiling targets defined.
 - [x] Free/local asset policy and intellectual-property boundaries documented.
 - [x] All twelve Phase 2 blocks listed with explicit status.
-- [ ] Actual renderer, room, materials, lighting and props rebuilt — intentionally deferred to Blocks 2–8.
+- [ ] Room, materials, lighting and props rebuilt — deferred to Blocks 3–8; renderer profile integration is recorded under Block 2.
 - [ ] Android performance certified — reserved for Block 12.
 
 **Exit condition:** Block 1 is complete when the art-direction specification and full roadmap are committed, automated documentation checks pass, and the Phase 2 implementation can proceed without unresolved visual or cost-policy decisions.
+
+
+## 9. Block 2 implementation record — Rendering Pipeline Upgrade
+
+**Implementation branch:** `feature/phase2-block2-rendering-pipeline`
+
+- Added `src/js/features/laboratory/render-profile.js` as a dependency-free profile selector.
+- Integrated profile selection into the existing Three.js scene using available `navigator.deviceMemory`, `navigator.hardwareConcurrency` and `renderer.capabilities.maxTextureSize`.
+- Unknown or constrained Android capabilities fall back to Mobile Lite. Capable Android devices can select Mobile Standard; Desktop High requires stronger reported memory, CPU and texture capability.
+- The renderer consumes the profile's pixel-ratio cap and shadow/post-processing policy. Current profiles keep real-time shadows and post-processing disabled until later blocks establish and measure their value.
+- Existing ACES filmic tone mapping, sRGB output, lazy Three.js import, touch controls, on-demand rendering and disposal lifecycle remain in place.
+- Added unit coverage for unknown hardware, constrained Android, capable Android, limited GPU capability and desktop selection.
+- Added the module to the PWA app-shell cache, incremented the cache to `shell-v10`, and added CI syntax/structure checks.
+
+### Block 2 acceptance record
+
+- [x] Three named quality profiles with immutable configuration.
+- [x] Conservative fallback when Android hardware data is missing or constrained.
+- [x] Actual WebGL texture limit participates in final profile selection.
+- [x] Pixel ratio is selected from the active profile.
+- [x] Existing color management and event-driven rendering are preserved.
+- [x] Unit tests, foundation validation and CI syntax coverage added.
+- [x] PWA cache updated to `shell-v10` with the new module precached.
+- [ ] Physical-device FPS, battery and thermal profiling — reserved for Block 12.
