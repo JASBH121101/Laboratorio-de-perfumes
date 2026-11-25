@@ -434,3 +434,11 @@
  .archive-quick-actions input { width:100%; grid-column:1/-1; }
  .archive-quick-actions button { min-height:40px; }
 }
+
+
+/* Phase 2 Block 9 — cinematic camera preset controls */
+.lab-camera-presets { position:absolute; z-index:6; top:58px; left:50%; transform:translateX(-50%); display:flex; gap:5px; padding:4px; border:1px solid rgba(217,178,124,.25); border-radius:8px; background:rgba(27,21,27,.76); backdrop-filter:blur(8px); }
+.lab-camera-presets button { min-height:30px; padding:0 10px; border:1px solid transparent; border-radius:5px; background:transparent; color:rgba(239,226,216,.8); font:inherit; font-size:9px; cursor:pointer; }
+.lab-camera-presets button:hover,.lab-camera-presets button:focus-visible { border-color:rgba(217,178,124,.5); background:rgba(217,178,124,.13); color:var(--accent); outline:none; }
+@media (max-width:520px) { .lab-camera-presets { top:54px; } .lab-camera-presets button { min-height:32px; padding:0 12px; font-size:10px; } }
+@media (prefers-reduced-motion: reduce) { .lab-camera-presets button { transition:none; } }
