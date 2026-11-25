@@ -396,7 +396,15 @@ appRoot.addEventListener("click", async (event) => {
   }
 
   const cameraPreset = event.target.closest("[data-camera-preset]")?.dataset.cameraPreset;
-  if (cameraPreset) { labController?.setCameraPreset(cameraPreset); return; }
+  if (cameraPreset) {
+    labController?.setCameraPreset?.(cameraPreset);
+    appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
+      const active = button.dataset.cameraPreset === cameraPreset;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    return;
+  }
 
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (!action) return;
@@ -425,18 +433,10 @@ appRoot.addEventListener("click", async (event) => {
     } else if (action === "close-note-detail") {
       libraryState.selectedId = null;
       updateLibrary();
-    } else if (action === "camera-preset-overview" || action === "camera-preset-bottle" || action === "camera-preset-workbench") {
-      const preset = action.replace("camera-preset-", "");
-      labController?.setCameraPreset?.(preset);
-      appRoot.querySelectorAll("[data-action^='camera-preset-']").forEach((button) => {
-        const active = button.dataset.action === action;
-        button.classList.toggle("is-active", active);
-        button.setAttribute("aria-pressed", String(active));
-      });
     } else if (action === "reset-lab-camera") {
       labController?.resetCamera();
-      appRoot.querySelectorAll("[data-action^='camera-preset-']").forEach((button) => {
-        const active = button.dataset.action === "camera-preset-overview";
+      appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
+        const active = button.dataset.cameraPreset === "overview";
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
