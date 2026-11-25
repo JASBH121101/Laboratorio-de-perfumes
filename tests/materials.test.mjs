@@ -42,6 +42,7 @@ test("the same PBR material library is reused across room, furniture and props",
 
 test("shared PBR library includes dedicated transparent lab-vessel glass", () => {
   assert.match(materialModule, /const vesselGlass = new THREE\.MeshPhysicalMaterial/);
-  assert.match(materialModule, /transmission: 0\.42/);
+  assert.match(materialModule, /transmission: 0\.52/);
+  assert.match(materialModule, /ior: 1\.47/);
   assert.match(materialModule, /vesselGlass,/);
 });
