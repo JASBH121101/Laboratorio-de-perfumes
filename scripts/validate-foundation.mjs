@@ -85,7 +85,7 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v17/.test(sw) || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v17 with valid JavaScript source line breaks.");
+if (!/shell-v18/.test(sw) || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v18 with valid JavaScript source line breaks.");
 if (!views.includes("renderEvolutionSimulator(mixingState, evolutionStage)") || !app.includes("data-evolution-stage") || !app.includes("updateEvolutionSimulator")) failures.push("Evolution simulator is not wired into the Laboratory view and state updates.");
 if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includes("analyzeEvolutionStage")) failures.push("Evolution simulator disclaimer or engine is missing.");
 if (!app.includes("createArchiveRepository") || !app.includes("saveCurrentAsVersion") || !app.includes("parseArchiveBackup")) failures.push("Local archive repository, version saving or backup import is not wired.");
