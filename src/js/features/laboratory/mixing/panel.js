@@ -1,6 +1,6 @@
-import { getPerfumeLibraryItem } from "../perfume-library/library.js";
+import { getPerfumeLibraryItem } from "../../perfume-library/library.js";
 import { getMixTotal, hasMixNote } from "./state.js";
-import { PERFUME_ITEMS } from "../perfume-library/data.js";
+import { PERFUME_ITEMS } from "../../perfume-library/data.js";
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
