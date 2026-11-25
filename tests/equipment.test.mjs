@@ -9,7 +9,11 @@ const materials = await readFile(new URL("../src/js/features/laboratory/material
 test("beaker has a hollow glass wall, thick base, lip and a measurement scale", () => {
   assert.match(scene, /CylinderGeometry\(0\.365, 0\.42, 0\.72, 40, 1, true\)/);
   assert.match(scene, /TorusGeometry\(0\.365, 0\.022, 10, 48\)/);
+  assert.match(scene, /innerBase/);
+  assert.match(scene, /innerLip/);
   assert.match(scene, /makeMeasurementTexture/);
+  assert.match(scene, /VISUAL INDEX/);
+  assert.match(scene, /conceptual-liquid-volume/);
   assert.match(scene, /scaleLabel/);
   assert.match(materials, /const vesselGlass = new THREE\.MeshPhysicalMaterial/);
 });
@@ -17,7 +21,8 @@ test("beaker has a hollow glass wall, thick base, lip and a measurement scale", 
 test("pipette has a tapered tip, rounded bulb and graduated metallic bands", () => {
   assert.match(scene, /CylinderGeometry\(0\.032, 0\.045, 0\.92, 20\)/);
   assert.match(scene, /ConeGeometry\(0\.045, 0\.24, 18\)/);
-  assert.match(scene, /SphereGeometry\(0\.13, 18, 16\)/);
+  assert.match(scene, /SphereGeometry\(0\.13, 24, 20\)/);
+  assert.match(scene, /bulbCollar/);
   assert.match(scene, /TorusGeometry\(0\.043, 0\.006, 8, 20\)/);
 });
 
