@@ -33,6 +33,7 @@ jobs:
           node --check src/js/features/laboratory/scene.js
           node --check src/js/features/laboratory/render-profile.js
           node --check src/js/features/laboratory/architecture.js
+          node --check src/js/features/laboratory/materials.js
           node --check src/js/features/laboratory/catalog.js
           node --check src/js/features/laboratory/inspector.js
           node --check src/js/features/laboratory/mixing/state.js
