@@ -7,6 +7,7 @@ import { createAtelierEnvironment } from "./environment.js";
 import { createFlaconGeometry, createRoundedPlateGeometry } from "./perfume-assets.js";
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 import { runLaboratoryPerformanceAudit } from "./performance-audit.js";
+import { clampLaboratoryOrbit, LAB_CAMERA_PRESETS } from "./camera-controls.js";
 
 const color = (hex) => new THREE.Color(hex);
 
@@ -585,18 +586,19 @@ function createFurniture(scene, materials) {
     }
   }
 
+  const shelving = new THREE.Group();
   const shelfMaterial = materials.walnut;
   for (const y of [2.55, 3.35]) {
     const shelf = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.11, 0.48), shelfMaterial);
     shelf.position.set(0, y, -2.58);
-    scene.add(shelf);
+    shelving.add(shelf);
 
     const accent = new THREE.Mesh(
       new THREE.BoxGeometry(7.5, 0.025, 0.49),
       materials.brass
     );
     accent.position.set(0, y - 0.06, -2.58);
-    scene.add(accent);
+    shelving.add(accent);
   }
 
   const shelfBottleMaterial = materials.lacquer;
@@ -608,8 +610,70 @@ function createFurniture(scene, materials) {
       shelfBottleMaterial
     );
     decorativeBottle.position.set(x, 2.55 + 0.055 + height / 2, -2.58);
-    scene.add(decorativeBottle);
+    shelving.add(decorativeBottle);
   }
+  return shelving;
+}
+
+function createExperimentBackdrop(materials) {
+  const backdrop = new THREE.Group();
+  backdrop.name = "experiment-backdrop";
+
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(11.6, 7.5),
+    materials.stone
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.set(0, -0.035, 0.12);
+  backdrop.add(floor);
+
+  const rearPanel = new THREE.Mesh(
+    new THREE.BoxGeometry(10.8, 3.65, 0.14),
+    materials.wall
+  );
+  rearPanel.position.set(0, 1.78, -3.72);
+  backdrop.add(rearPanel);
+
+  const inset = new THREE.Mesh(
+    new THREE.BoxGeometry(8.25, 2.55, 0.055),
+    materials.darkWalnut
+  );
+  inset.position.set(0, 2.02, -3.625);
+  backdrop.add(inset);
+
+  const innerPanel = new THREE.Mesh(
+    new THREE.BoxGeometry(7.95, 2.25, 0.035),
+    materials.wall
+  );
+  innerPanel.position.set(0, 2.02, -3.585);
+  backdrop.add(innerPanel);
+
+  for (const x of [-5.22, 5.22]) {
+    const upright = new THREE.Mesh(
+      new THREE.BoxGeometry(0.075, 3.55, 0.08),
+      materials.walnut
+    );
+    upright.position.set(x, 1.78, -3.6);
+    backdrop.add(upright);
+  }
+
+  for (const y of [0.12, 3.53]) {
+    const rail = new THREE.Mesh(
+      new THREE.BoxGeometry(10.55, 0.055, 0.095),
+      materials.brass
+    );
+    rail.position.set(0, y, -3.54);
+    backdrop.add(rail);
+  }
+
+  const signature = new THREE.Mesh(
+    new THREE.BoxGeometry(2.7, 0.52, 0.045),
+    materials.darkWalnut
+  );
+  signature.position.set(0, 2.98, -3.53);
+  backdrop.add(signature);
+
+  return backdrop;
 }
 
 function createPropMesh(prop, materials) {
@@ -705,6 +769,7 @@ export function mountLaboratory(stage) {
   canvas.className = "lab-three-canvas";
   canvas.dataset.qualityTier = renderProfile.id;
   stage.dataset.visualTier = renderProfile.id;
+  stage.dataset.labMode = "experiment";
   canvas.setAttribute("aria-label", "Escena tridimensional interactiva del laboratorio de perfumería");
   canvas.setAttribute("role", "application");
   canvas.setAttribute("tabindex", "0");
@@ -717,19 +782,19 @@ export function mountLaboratory(stage) {
   scene.backgroundIntensity = renderProfile.backgroundIntensity;
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
-  const target = new THREE.Vector3(0, 1.12, 0);
-  // Default to a composed frontal experiment view instead of an exterior room angle.
-  let theta = 0;
-  let phi = 1.12;
-  let radius = 8.8;
-  const CAMERA_LIMITS = Object.freeze({ theta: 1.08, phiMin: 0.72, phiMax: 1.38, radiusMin: 5.8, radiusMax: 11.8 });
+  const defaultFraming = LAB_CAMERA_PRESETS.workbench;
+  const target = new THREE.Vector3(...defaultFraming.target);
+  let theta = defaultFraming.theta;
+  let phi = defaultFraming.phi;
+  let radius = defaultFraming.radius;
   let cameraTransition = null;
   let cameraTransitionFrame = 0;
 
   const updateCamera = () => {
-    theta = THREE.MathUtils.clamp(theta, -CAMERA_LIMITS.theta, CAMERA_LIMITS.theta);
-    phi = THREE.MathUtils.clamp(phi, CAMERA_LIMITS.phiMin, CAMERA_LIMITS.phiMax);
-    radius = THREE.MathUtils.clamp(radius, CAMERA_LIMITS.radiusMin, CAMERA_LIMITS.radiusMax);
+    const limited = clampLaboratoryOrbit({ theta, phi, radius });
+    theta = limited.theta;
+    phi = limited.phi;
+    radius = limited.radius;
     const sinPhi = Math.sin(phi);
     camera.position.set(
       target.x + radius * sinPhi * Math.sin(theta),
@@ -772,14 +837,21 @@ export function mountLaboratory(stage) {
   // Restrained warm practicals give the shelving and bench a local light source.
   const shelfPractical = new THREE.PointLight(0xffc98e, 5.5, 6.2);
   shelfPractical.position.set(-0.5, 3.45, -2.15);
+  shelfPractical.visible = false;
   scene.add(shelfPractical);
 
   const benchPractical = new THREE.PointLight(0xd9ad79, 2.6, 4.8);
   benchPractical.position.set(3.3, 2.3, 0.25);
   scene.add(benchPractical);
 
-  createRoomArchitecture(scene, materials);
-  createFurniture(scene, materials);
+  const experimentBackdrop = createExperimentBackdrop(materials);
+  scene.add(experimentBackdrop);
+
+  const atelierEnvironment = new THREE.Group();
+  createRoomArchitecture(atelierEnvironment, materials);
+  atelierEnvironment.add(createFurniture(scene, materials));
+  scene.add(atelierEnvironment);
+  atelierEnvironment.visible = false;
 
   const contactShadowMaterial = createContactShadowMaterial();
   const contactShadowSizes = {
@@ -838,6 +910,7 @@ export function mountLaboratory(stage) {
   let disposed = false;
   let performanceAuditAbort = null;
   let performanceAuditRun = null;
+  let currentSceneMode = "experiment";
 
   function findPropAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
@@ -947,12 +1020,7 @@ export function mountLaboratory(stage) {
   }
 
   function animateCameraPreset(preset) {
-    const presets = {
-      overview: { theta: 0, phi: 1.12, radius: 8.8, target: [0, 1.02, 0.48] },
-      workbench: { theta: 0, phi: 1.18, radius: 7.8, target: [0, 0.94, 0.12] },
-      bottle: { theta: 0, phi: 1.22, radius: 5.8, target: [0, 1.38, 0.12] }
-    };
-    const destination = presets[preset] || presets.overview;
+    const destination = LAB_CAMERA_PRESETS[preset] || LAB_CAMERA_PRESETS.overview;
     stopCameraTransition();
     const from = { theta, phi, radius, target: target.clone() };
     const to = { theta: destination.theta, phi: destination.phi, radius: destination.radius, target: new THREE.Vector3(...destination.target) };
@@ -1012,7 +1080,7 @@ export function mountLaboratory(stage) {
     if (activePointers.size >= 2) {
       const distance = pointerDistance();
       if (lastPinch !== null && distance !== null) {
-        radius = THREE.MathUtils.clamp(radius + (lastPinch - distance) * 0.018, CAMERA_LIMITS.radiusMin, CAMERA_LIMITS.radiusMax);
+        radius = THREE.MathUtils.clamp(radius + (lastPinch - distance) * 0.018, LAB_RENDER_CONFIG.minCameraRadius, LAB_RENDER_CONFIG.maxCameraRadius);
       }
       lastPinch = distance;
       didMove = true;
@@ -1023,8 +1091,8 @@ export function mountLaboratory(stage) {
     if (!pointerStart) return;
     if (Math.abs(event.clientX - pointerStart.x) + Math.abs(event.clientY - pointerStart.y) > 3) didMove = true;
     if (didMove) {
-      theta = THREE.MathUtils.clamp(theta - dx * 0.008, -CAMERA_LIMITS.theta, CAMERA_LIMITS.theta);
-      phi = THREE.MathUtils.clamp(phi + dy * 0.006, CAMERA_LIMITS.phiMin, CAMERA_LIMITS.phiMax);
+      theta -= dx * 0.008;
+      phi = THREE.MathUtils.clamp(phi + dy * 0.006, 0.62, 1.42);
       updateCamera();
     }
   }
@@ -1048,7 +1116,7 @@ export function mountLaboratory(stage) {
   function onWheel(event) {
     stopCameraTransition();
     event.preventDefault();
-    radius = THREE.MathUtils.clamp(radius + event.deltaY * 0.004, CAMERA_LIMITS.radiusMin, CAMERA_LIMITS.radiusMax);
+    radius = THREE.MathUtils.clamp(radius + event.deltaY * 0.004, LAB_RENDER_CONFIG.minCameraRadius, LAB_RENDER_CONFIG.maxCameraRadius);
     updateCamera();
   }
 
@@ -1078,10 +1146,10 @@ export function mountLaboratory(stage) {
       phi = THREE.MathUtils.clamp(phi + step, 0.62, 1.42);
       updateCamera();
     } else if (event.key === "+" || event.key === "=") {
-      radius = Math.max(CAMERA_LIMITS.radiusMin, radius - 0.45);
+      radius = Math.max(LAB_RENDER_CONFIG.minCameraRadius, radius - 0.45);
       updateCamera();
     } else if (event.key === "-") {
-      radius = Math.min(CAMERA_LIMITS.radiusMax, radius + 0.45);
+      radius = Math.min(LAB_RENDER_CONFIG.maxCameraRadius, radius + 0.45);
       updateCamera();
     }
   }
@@ -1160,8 +1228,18 @@ export function mountLaboratory(stage) {
     renderer.render(scene, camera);
   }
 
+  function setSceneMode(mode = "experiment") {
+    currentSceneMode = mode === "atelier" ? "atelier" : "experiment";
+    atelierEnvironment.visible = currentSceneMode === "atelier";
+    experimentBackdrop.visible = currentSceneMode === "experiment";
+    shelfPractical.visible = currentSceneMode === "atelier";
+    animateCameraPreset(currentSceneMode === "atelier" ? "atelier" : "workbench");
+    stage.dataset.labMode = currentSceneMode;
+    return currentSceneMode;
+  }
+
   function resetCamera() {
-    animateCameraPreset("overview");
+    animateCameraPreset(currentSceneMode === "atelier" ? "atelier" : "workbench");
   }
 
   function runPerformanceAudit() {
@@ -1193,6 +1271,7 @@ export function mountLaboratory(stage) {
   return {
     resetCamera,
     setCameraPreset: animateCameraPreset,
+    setSceneMode,
     clearSelection,
     setComposition,
     runPerformanceAudit,
