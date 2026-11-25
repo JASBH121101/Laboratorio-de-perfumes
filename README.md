@@ -158,4 +158,8 @@ The renderer now applies subtle exposure and environment-reflection intensity se
 
 The Laboratory includes an opt-in local performance audit. Press **Medir rendimiento** to run a short active-render sample and review average FPS, frame timing, draw-call/triangle averages, resource counters, device capability fields and the active quality tier. The test stops when the view is closed or the tab is hidden and does not upload data.
 
-Its FPS comparison is an indicative browser measurement against the tier target, not a formal hardware certification. Browser APIs do not expose reliable GPU-memory bytes, device temperature or battery drain. Final Android sign-off still requires repeated physical-device testing, visual inspection, thermal/battery observation and an offline reopen test. The service-worker app-shell cache is now `shell-v21`.
+Its FPS comparison is an indicative browser measurement against the tier target, not a formal hardware certification. Browser APIs do not expose reliable GPU-memory bytes, device temperature or battery drain. Final Android sign-off still requires repeated physical-device testing, visual inspection, thermal/battery observation and an offline reopen test. The service-worker app-shell cache is now `shell-v22`.
+
+### Visual correction — experiment-first workspace
+
+The Laboratory now opens in a dedicated frontal experiment workspace: a bounded studio floor and a simple presentation backdrop keep the workbench in focus without showing the full atelier room. The full room architecture and display shelving are available through **Ver atelier completo**; the control returns to the experiment workspace. Camera orbit is constrained to a frontal arc, elevation and zoom are bounded, and the initial framing targets the workbench. The camera constraints module is included in the PWA shell cache. This corrective pass is tracked in [the visual correction record](./docs/PHASE2_VISUAL_CORRECTION.md).

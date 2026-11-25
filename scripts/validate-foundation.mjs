@@ -11,7 +11,8 @@ const requiredFiles = [
   "src/css/styles.css", "src/css/design-system.css", "src/css/perfume-library.css", "src/css/laboratory.css",
   "src/js/app.js", "src/js/core/navigation.js", "src/js/core/pwa.js",
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
-  "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js", "src/js/features/laboratory/render-profile.js", "src/js/features/laboratory/architecture.js", "src/js/features/laboratory/materials.js", "src/js/features/laboratory/environment.js", "src/js/features/laboratory/perfume-assets.js", "src/js/features/laboratory/performance-audit.js",
+  "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js", "src/js/features/laboratory/render-profile.js", "src/js/features/laboratory/architecture.js", "src/js/features/laboratory/materials.js", "src/js/features/laboratory/environment.js", "src/js/features/laboratory/perfume-assets.js", "src/js/features/laboratory/performance-audit.js", "src/js/features/laboratory/camera-controls.js",
+  "tests/laboratory-camera.test.js",
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
@@ -33,6 +34,7 @@ const app = await readFile("src/js/app.js", "utf8");
 const scene = await readFile("src/js/features/laboratory/scene.js", "utf8");
 const renderProfile = await readFile("src/js/features/laboratory/render-profile.js", "utf8");
 const performanceAudit = await readFile("src/js/features/laboratory/performance-audit.js", "utf8");
+const cameraControls = await readFile("src/js/features/laboratory/camera-controls.js", "utf8");
 const architecture = await readFile("src/js/features/laboratory/architecture.js", "utf8");
 const materials = await readFile("src/js/features/laboratory/materials.js", "utf8");
 const environment = await readFile("src/js/features/laboratory/environment.js", "utf8");
@@ -70,13 +72,17 @@ if (!scene.includes("WebGLRenderer") || !scene.includes("Raycaster") || !scene.i
 if (!scene.includes("clearSelection") || !scene.includes("resetCamera")) failures.push("3D selection or camera reset controls are missing.");
 if (!scene.includes("resolveLaboratoryRenderProfile") || !scene.includes("renderProfile.pixelRatioCap") || !scene.includes("renderer.shadowMap.enabled")) failures.push("Adaptive renderer profile is not connected to the 3D scene.");
 if (!renderProfile.includes("mobile-lite") || !renderProfile.includes("mobile-standard") || !renderProfile.includes("desktop-high")) failures.push("Mobile Lite, Mobile Standard and Desktop High render profiles are required.");
-if (!scene.includes("createRoomArchitecture(scene, materials)") || !scene.includes("windowGlassMaterial") || !scene.includes("PlaneGeometry(room.width, room.depth)") || !architecture.includes("ATELIER_ARCHITECTURE")) failures.push("Bounded atelier room architecture, window glazing or layout config is missing.");
+if (!scene.includes("createRoomArchitecture(atelierEnvironment, materials)") || !scene.includes("windowGlassMaterial") || !scene.includes("PlaneGeometry(room.width, room.depth)") || !architecture.includes("ATELIER_ARCHITECTURE")) failures.push("Bounded atelier room architecture, window glazing or layout config is missing.");
 if (scene.includes("PlaneGeometry(200, 200)")) failures.push("The old infinite laboratory floor must not return.");
 if (!scene.includes("createAtelierMaterials") || !scene.includes("materials.counterstone") || !materials.includes("new THREE.CanvasTexture") || !materials.includes("roughnessMap: brassMaps.roughness")) failures.push("Procedural PBR materials are not integrated across the atelier.");
 if (!scene.includes("createContactShadowMaterial") || !scene.includes("keyLight.castShadow = renderProfile.shadowsEnabled") || !scene.includes("THREE.PCFSoftShadowMap")) failures.push("Tiered lighting and contact shadow strategy are missing.");
 if (!scene.includes("createAtelierEnvironment(renderer, scene") || !environment.includes("new THREE.PMREMGenerator(renderer)") || !environment.includes("scene.environmentIntensity")) failures.push("Procedural environment reflections and atmosphere are missing.");
 if (!scene.includes("function updateHoverAt") || !scene.includes("function animateSelectedProp") || !scene.includes("pointerleave") || !scene.includes("stopObjectFocusAnimation")) failures.push("Hover feedback and transient selection animation are missing.");
 if (!scene.includes("renderer.toneMappingExposure = renderProfile.exposure") || !scene.includes("scene.environmentIntensity = renderProfile.environmentIntensity") || !scene.includes("stage.dataset.visualTier = renderProfile.id")) failures.push("Tiered final visual finish is not applied to the atelier scene.");
+if (!scene.includes("createExperimentBackdrop(materials)") || !scene.includes("experimentBackdrop.visible = currentSceneMode === \"experiment\"") || !scene.includes("atelierEnvironment.visible = currentSceneMode === \"atelier\"")) failures.push("Experiment-first backdrop and optional full atelier mode are not connected.");
+if (!scene.includes("const defaultFraming = LAB_CAMERA_PRESETS.workbench") || !scene.includes('currentSceneMode = "experiment"')) failures.push("The 3D scene must open in the frontal experiment workspace.");
+if (!cameraControls.includes("minTheta: -0.5") || !cameraControls.includes("maxTheta: 0.5") || !cameraControls.includes("atelier: Object.freeze")) failures.push("Frontal camera constraints or dedicated atelier framing are missing.");
+if (!views.includes('data-scene-mode="atelier"') || !views.includes("Ver atelier completo") || !app.includes("setSceneMode(requestedMode)")) failures.push("The experiment/atelier mode switch is not wired to the UI.");
 if (!scene.includes("createFlaconGeometry()") || !scene.includes("createRoundedPlateGeometry") || !perfumeAssets.includes("bevelEnabled: true")) failures.push("Premium beveled perfume assets are missing.");
 if (!scene.includes("makeMeasurementTexture") || !scene.includes("materials.vesselGlass") || !scene.includes("const inset = new THREE.Mesh")) failures.push("Refined laboratory beaker, glass or organizer equipment is missing.");
 if (!scene.includes("function setComposition") || !scene.includes("mixLiquid")) failures.push("3D composition vessel visual is missing.");
@@ -88,7 +94,7 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v21/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v21, precache the performance audit module and keep valid JavaScript source line breaks.");
+if (!/shell-v22/.test(sw) || !sw.includes("laboratory/performance-audit.js") || !sw.includes("laboratory/camera-controls.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v22, precache the performance audit and camera controls modules, and keep valid JavaScript source line breaks.");
 if (!scene.includes("runPerformanceAudit") || !scene.includes("performanceAuditAbort?.abort()")) failures.push("3D performance audit must be on-demand and abort on scene disposal.");
 if (!views.includes('data-action="run-lab-performance-audit"') || !views.includes('id="lab-performance-report"')) failures.push("Local performance audit controls and report output are missing.");
 if (!app.includes("formatLabPerformanceReport") || !app.includes("run-lab-performance-audit")) failures.push("Performance report UI is not wired to the local audit.");
