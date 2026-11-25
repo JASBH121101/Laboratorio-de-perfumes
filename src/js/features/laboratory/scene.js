@@ -717,6 +717,8 @@ export function mountLaboratory(stage) {
   let theta = 0.74;
   let phi = 1.05;
   let radius = LAB_RENDER_CONFIG.initialCameraRadius;
+  let cameraTransition = null;
+  let cameraTransitionFrame = 0;
 
   const updateCamera = () => {
     const sinPhi = Math.sin(phi);
@@ -847,8 +849,47 @@ export function mountLaboratory(stage) {
     return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
   }
 
+  function stopCameraTransition() {
+    if (cameraTransitionFrame) cancelAnimationFrame(cameraTransitionFrame);
+    cameraTransitionFrame = 0;
+    cameraTransition = null;
+  }
+
+  function animateCameraPreset(preset) {
+    const presets = {
+      overview: { theta: 0.74, phi: 1.05, radius: LAB_RENDER_CONFIG.initialCameraRadius, target: [0, 1.12, 0] },
+      workbench: { theta: 0.18, phi: 1.18, radius: 8.8, target: [0, 0.9, 0.2] },
+      bottle: { theta: 0.42, phi: 1.28, radius: 6.1, target: [-1.15, 1.05, 0.35] }
+    };
+    const destination = presets[preset] || presets.overview;
+    stopCameraTransition();
+    const from = { theta, phi, radius, target: target.clone() };
+    const to = { theta: destination.theta, phi: destination.phi, radius: destination.radius, target: new THREE.Vector3(...destination.target) };
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      theta = to.theta; phi = to.phi; radius = to.radius; target.copy(to.target); updateCamera(); return;
+    }
+    const start = performance.now();
+    const duration = 460;
+    const ease = (t) => t * t * (3 - 2 * t);
+    const frame = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = ease(progress);
+      theta = THREE.MathUtils.lerp(from.theta, to.theta, eased);
+      phi = THREE.MathUtils.lerp(from.phi, to.phi, eased);
+      radius = THREE.MathUtils.lerp(from.radius, to.radius, eased);
+      target.copy(from.target).lerp(to.target, eased);
+      updateCamera();
+      if (progress < 1) cameraTransitionFrame = requestAnimationFrame(frame);
+      else { cameraTransitionFrame = 0; cameraTransition = null; }
+    };
+    cameraTransition = preset;
+    cameraTransitionFrame = requestAnimationFrame(frame);
+  }
+
   function onPointerDown(event) {
     if (disposed) return;
+    stopCameraTransition();
     event.preventDefault();
     canvas.setPointerCapture?.(event.pointerId);
     activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -900,6 +941,7 @@ export function mountLaboratory(stage) {
   }
 
   function onWheel(event) {
+    stopCameraTransition();
     event.preventDefault();
     radius = THREE.MathUtils.clamp(radius + event.deltaY * 0.004, LAB_RENDER_CONFIG.minCameraRadius, LAB_RENDER_CONFIG.maxCameraRadius);
     updateCamera();
@@ -1011,21 +1053,20 @@ export function mountLaboratory(stage) {
   }
 
   function resetCamera() {
-    theta = 0.74;
-    phi = 1.05;
-    radius = LAB_RENDER_CONFIG.initialCameraRadius;
-    updateCamera();
+    animateCameraPreset("overview");
   }
 
   updateCamera();
 
   return {
     resetCamera,
+    setCameraPreset: animateCameraPreset,
     clearSelection,
     setComposition,
     dispose() {
       if (disposed) return;
       disposed = true;
+      stopCameraTransition();
       if (resizeObserver) resizeObserver.disconnect();
       else window.removeEventListener("resize", resizeHandler);
       canvas.removeEventListener("pointerdown", onPointerDown);
