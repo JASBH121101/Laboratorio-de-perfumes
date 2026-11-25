@@ -708,6 +708,7 @@ export function mountLaboratory(stage) {
   canvas.className = "lab-three-canvas";
   canvas.dataset.qualityTier = renderProfile.id;
   stage.dataset.visualTier = renderProfile.id;
+  stage.dataset.labMode = "experiment";
   canvas.setAttribute("aria-label", "Escena tridimensional interactiva del laboratorio de perfumería");
   canvas.setAttribute("role", "application");
   canvas.setAttribute("tabindex", "0");
@@ -1167,13 +1168,13 @@ export function mountLaboratory(stage) {
     currentSceneMode = mode === "atelier" ? "atelier" : "experiment";
     atelierEnvironment.visible = currentSceneMode === "atelier";
     shelfPractical.visible = currentSceneMode === "atelier";
-    animateCameraPreset(currentSceneMode === "atelier" ? "overview" : "workbench");
+    animateCameraPreset(currentSceneMode === "atelier" ? "atelier" : "workbench");
     stage.dataset.labMode = currentSceneMode;
     return currentSceneMode;
   }
 
   function resetCamera() {
-    animateCameraPreset(currentSceneMode === "atelier" ? "overview" : "workbench");
+    animateCameraPreset(currentSceneMode === "atelier" ? "atelier" : "workbench");
   }
 
   function runPerformanceAudit() {
