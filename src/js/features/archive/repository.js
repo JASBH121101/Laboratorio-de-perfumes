@@ -34,9 +34,10 @@ export function createArchiveRepository({
   storage = globalThis.localStorage
 } = {}) {
   let databasePromise = null;
+  let fallbackRequired = !indexedDBApi;
 
   async function openDatabase() {
-    if (!indexedDBApi) return null;
+    if (fallbackRequired) return null;
     if (!databasePromise) {
       databasePromise = new Promise((resolve, reject) => {
         const request = indexedDBApi.open(DB_NAME, DB_VERSION);
@@ -53,9 +54,10 @@ export function createArchiveRepository({
         };
         request.onerror = () => reject(request.error || new Error("No se pudo abrir el archivo local."));
         request.onblocked = () => reject(new Error("Cerrá otras pestañas del laboratorio para actualizar el archivo local."));
-      }).catch((error) => {
-        databasePromise = null;
-        throw error;
+      }).catch(() => {
+        fallbackRequired = true;
+        databasePromise = Promise.resolve(null);
+        return null;
       });
     }
     return databasePromise;
@@ -65,8 +67,9 @@ export function createArchiveRepository({
     const database = await openDatabase();
     if (!database) return readFallback(storage).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     const transaction = database.transaction(STORE_NAME, "readonly");
+    const finished = transactionFinished(transaction);
     const result = await requestResult(transaction.objectStore(STORE_NAME).getAll());
-    await transactionFinished(transaction);
+    await finished;
     return result.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
 
@@ -74,8 +77,9 @@ export function createArchiveRepository({
     const database = await openDatabase();
     if (!database) return readFallback(storage).find((creation) => creation.id === id) ?? null;
     const transaction = database.transaction(STORE_NAME, "readonly");
+    const finished = transactionFinished(transaction);
     const result = await requestResult(transaction.objectStore(STORE_NAME).get(id));
-    await transactionFinished(transaction);
+    await finished;
     return result ?? null;
   }
 
