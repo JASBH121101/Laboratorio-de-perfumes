@@ -3,6 +3,7 @@ import { renderLabInspector } from "../features/laboratory/inspector.js";
 import { renderMixStudio } from "../features/laboratory/mixing/panel.js";
 import { renderCreativeAnalysis } from "../features/laboratory/analysis/panel.js";
 import { renderEvolutionSimulator } from "../features/laboratory/evolution/panel.js";
+import { renderArchiveView, renderArchiveQuickSave } from "../features/archive/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -55,7 +56,7 @@ function homeView() {
   `;
 }
 
-function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening") {
+function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}) {
   return `
     <section class="page-intro lab-page-intro">
       <p class="eyebrow">BLOCK 04 · INTERACTIVE WORKSPACE</p>
@@ -92,6 +93,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <div><span class="gesture-icon">◎</span><div><strong>Inspeccionar</strong><small>Tocá un objeto para abrir su ficha</small></div></div>
     </section>
     ${renderMixStudio(mixingState)}
+    ${renderArchiveQuickSave(archiveState)}
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
     ${renderEvolutionSimulator(mixingState, evolutionStage)}
     <p class="lab-boundary-note">Los puntos de composición son ponderaciones creativas abstractas. No representan porcentajes, concentraciones ni dosificaciones reales.</p>
@@ -102,21 +104,18 @@ function notesView(libraryState) {
   return renderPerfumeLibrary(libraryState);
 }
 
-function projectsView() {
-  return `
-    <section class="page-intro"><p class="eyebrow">PERSONAL ARCHIVE · 03</p><h1>Mis <em>creaciones</em></h1><p>El archivo para documentar ideas, conservar decisiones y comparar futuras variantes.</p></section>
-    <section class="empty-state"><span class="empty-icon">▤</span><span class="status-pill">PLANIFICADO · BLOQUES 05 Y 08</span><h2>Tu archivo creativo estará aquí.</h2><p>La persistencia local, el historial, la comparación de versiones y las copias de seguridad se incorporarán antes de certificar el MVP.</p></section>
-  `;
+function projectsView(archiveState = {}) {
+  return renderArchiveView(archiveState);
 }
 
 const viewContent = {
   home: () => homeView(),
-  lab: (mixingState, analysisDirection, evolutionStage) => labView(mixingState, analysisDirection, evolutionStage),
+  lab: (mixingState, analysisDirection, evolutionStage, archiveState) => labView(mixingState, analysisDirection, evolutionStage, archiveState),
   notes: (libraryState) => notesView(libraryState),
-  projects: () => projectsView()
+  projects: (_libraryState, _analysisDirection, _evolutionStage, archiveState) => projectsView(archiveState)
 };
 
-export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening") {
+export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}) {
   const current = viewContent[activeView] ? activeView : "home";
   return `
     <div class="app-shell">
@@ -134,7 +133,7 @@ export function renderPage(activeView = "home", libraryState = {}, mixingState =
       </header>
       <div class="layout">
         <aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><nav aria-label="Navegación principal">${navItems.map(item => navLink(item, current)).join("")}</nav><div class="sidebar-bottom"><span class="sidebar-line"></span><small>CREADO PARA EXPLORAR<br>CONCEPTOS OLFATIVOS</small><span class="sidebar-version">3D LABORATORY · V0.4</span></div></aside>
-        <main class="main-content" id="main-content" tabindex="-1">${viewContent[current](current === "lab" ? mixingState : libraryState, analysisDirection, evolutionStage)}</main>
+        <main class="main-content" id="main-content" tabindex="-1">${viewContent[current](current === "lab" ? mixingState : libraryState, analysisDirection, evolutionStage, archiveState)}</main>
       </div>
       <nav class="mobile-nav" aria-label="Navegación móvil">${navItems.map(item => navLink(item, current, true)).join("")}</nav>
       <footer class="app-footer"><span>JB VIRTUAL PERFUME LAB</span><span>CREATIVE CONCEPTS · NOT CHEMICAL FORMULAS</span></footer>

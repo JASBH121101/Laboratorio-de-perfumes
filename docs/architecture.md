@@ -19,10 +19,14 @@ The application uses semantic HTML, responsive CSS and native JavaScript ES modu
 - src/js/features/laboratory/analysis/panel.js: analysis view, creative direction selector and suggested references with rationale/trade-off.
 - src/js/features/laboratory/evolution/engine.js: role-filtered conceptual stage summaries and stage-relative point distribution.
 - src/js/features/laboratory/evolution/panel.js: interactive stage tabs and editorial reference cards.
-- src/js/ui/views.js: presentation-only view templates.
+- src/js/features/archive/model.js: creation records, A/B/C variants, immutable version snapshots, restore, comparison and schema-validated JSON backups.
+- src/js/features/archive/repository.js: IndexedDB persistence with localStorage fallback.
+- src/js/features/archive/panel.js: saved-creation list, detail editor, version controls, variant comparison and import/export UI.
+- src/js/ui/views.js: presentation-only view templates, including Projects archive and Laboratory quick-save.
+- tests/archive-model.test.mjs, tests/archive-repository.test.mjs and tests/archive-panel.test.mjs: archive model, storage fallback, and UI regression tests.
 - src/css/: base shell, design system, perfume library and 3D workspace styles.
 - manifest.webmanifest: installed application identity, display settings and icons.
-- sw.js: versioned app-shell cache, optional Three.js CDN cache, offline fallback and explicit update activation.
+- sw.js: versioned app-shell cache, optional Three.js CDN cache, offline fallback and explicit update activation. The archive modules are precached with the shell; user records remain in IndexedDB.
 - scripts/validate-foundation.mjs: dependency-free structural validation.
 - tests/: Node built-in test runner.
 
@@ -54,8 +58,17 @@ Block 7 presents three editorial stages: opening, heart and drydown. Stage times
 
 ## Product and safety boundary
 
-The product represents fragrance concepts for creative exploration. It is not a chemical formulation tool, laboratory instrument, safety evaluator or substitute for professional perfumery. The 3D objects are visual props, not lab equipment that measures or controls real ingredients. Block 5 uses creative points normalized to 100 only for comparing ideas inside the interface. These points are not percentages, ingredient ratios, concentrations, dosages or manufacturing instructions. The beaker color and level are visual metaphors, not physical measurements. Composition state remains session-only until the archive/persistence block.
+The product represents fragrance concepts for creative exploration. It is not a chemical formulation tool, laboratory instrument, safety evaluator or substitute for professional perfumery. The 3D objects are visual props, not lab equipment that measures or controls real ingredients. Block 5 uses creative points normalized to 100 only for comparing ideas inside the interface. These points are not percentages, ingredient ratios, concentrations, dosages or manufacturing instructions. The beaker color and level are visual metaphors, not physical measurements. Saved creation snapshots persist locally in IndexedDB; an unsaved in-progress composition remains session-only.
 
 ## Delivery
 
 Changes are developed on feature branches, validated by pull request and merged into main only after review. GitHub Pages publishes main from /(root). The quality workflow runs dependency-free tests and structure validation on Node.js 22. JB Expert QA commands remain separate until the dependency is installed and validated.
+
+
+## Local creative archive and data lifecycle
+
+The archive is local-first and has no network write path. `createArchiveRepository()` uses IndexedDB database `jb-virtual-perfume-lab`, object store `creations`, version 1. If IndexedDB is unavailable during initialization, the repository falls back to the `jb-vpl-archive-v1` localStorage key. Every creation stores metadata, up to three variants (A/B/C), each variant's current composition and up to 50 immutable version snapshots.
+
+`model.js` enforces note IDs from the current educational library, integer creative points from 0–100, and a 100-point total for non-empty compositions. Version restore appends a new snapshot; it does not delete later history. Variant comparison reports per-note point deltas. The archive accepts up to 200 creations and JSON backups up to 5 MB; imports are schema-validated and ID collisions are remapped rather than overwritten.
+
+The user explicitly triggers save operations. Merely editing an unsaved live composition does not write it to the archive. JSON backup is the supported portability mechanism; local data is not cloud-synchronized and may be cleared with browser storage.
