@@ -325,7 +325,7 @@ function findPropRoot(object) {
 
 export function mountLaboratory(stage) {
   const canvasHost = stage?.querySelector("[data-lab-canvas]");
-  if (!canvasHost) return { dispose() {}, resetCamera() {} };
+  if (!canvasHost) return { dispose() {}, resetCamera() {}, clearSelection() {} };
 
   const isMobile = window.matchMedia("(max-width: 700px)").matches;
   let renderer;
@@ -339,7 +339,7 @@ export function mountLaboratory(stage) {
   } catch (error) {
     canvasHost.innerHTML = '<div class="lab-webgl-fallback"><strong>Vista 3D no disponible</strong><span>Este navegador o dispositivo no pudo iniciar WebGL. Podés volver a intentar desde otro navegador compatible.</span></div>';
     console.warn("No se pudo inicializar WebGL para el laboratorio:", error);
-    return { dispose() {}, resetCamera() {} };
+    return { dispose() {}, resetCamera() {}, clearSelection() {} };
   }
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? LAB_RENDER_CONFIG.mobileMaxPixelRatio : LAB_RENDER_CONFIG.maxPixelRatio));
