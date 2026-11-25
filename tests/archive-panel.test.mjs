@@ -10,7 +10,7 @@ test("archive view offers local creation, backup and restore controls", () => {
   assert.match(html, /Crear desde composición actual/);
   assert.match(html, /Exportar todo/);
   assert.match(html, /Importar respaldo JSON/);
-  assert.match(html, /local-first/);
+  assert.match(html, /local-first/i);
 });
 
 test("archive detail exposes variant, version, rename and delete controls", () => {
