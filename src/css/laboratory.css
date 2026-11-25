@@ -467,3 +467,29 @@
     radial-gradient(ellipse at 47% 36%, rgba(255,231,202,.055) 0%, rgba(255,231,202,0) 56%),
     radial-gradient(ellipse at 50% 48%, rgba(8,6,10,0) 48%, rgba(8,6,10,var(--stage-vignette)) 100%);
 }
+
+
+/* Phase 2 Block 12 — opt-in local performance audit */
+.lab-performance-panel {
+  margin: 14px 0 20px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.lab-performance-copy { min-width: 0; }
+.lab-performance-copy .eyebrow { margin: 0 0 6px; }
+.lab-performance-copy h2 { margin: 0 0 5px; color: var(--text); font-family: "Playfair Display",Georgia,serif; font-size: 18px; font-weight: 500; }
+.lab-performance-copy p:last-child { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.65; }
+.lab-performance-button { min-height: 40px; padding: 0 14px; border: 1px solid rgba(217,178,124,.45); border-radius: 6px; background: rgba(217,178,124,.12); color: var(--accent); font: inherit; font-size: 10px; font-weight: 700; cursor: pointer; }
+.lab-performance-button:disabled { opacity: .55; cursor: wait; }
+.lab-performance-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.lab-performance-report { grid-column: 1 / -1; max-width: 100%; margin: 0; padding: 13px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: 7px; background: rgba(22,18,23,.72); color: #eee4dc; font: 10px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace; }
+@media (max-width: 520px) {
+  .lab-performance-panel { grid-template-columns: 1fr; align-items: stretch; padding: 13px; }
+  .lab-performance-button { width: 100%; min-height: 43px; }
+}
