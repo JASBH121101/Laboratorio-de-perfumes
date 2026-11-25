@@ -4,6 +4,7 @@ import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-li
 import { renderLabInspector } from "./features/laboratory/inspector.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
+import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
@@ -14,6 +15,7 @@ const noticeAction = document.querySelector("#app-notice-action");
 
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 let mixingState = createMixState();
+let analysisDirection = "balanced";
 let selectedLabPropId = null;
 let labController = null;
 let renderCycle = 0;
@@ -76,7 +78,7 @@ function render() {
   labController = null;
   const cycle = ++renderCycle;
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -101,10 +103,16 @@ function updateLabInspector(propId = selectedLabPropId) {
   if (inspector) inspector.innerHTML = renderLabInspector(propId, mixingState);
 }
 
+function updateCreativeAnalysis() {
+  const panel = appRoot.querySelector("#creative-analysis");
+  if (panel) panel.outerHTML = renderCreativeAnalysis(mixingState, analysisDirection);
+}
+
 function updateMixStudio() {
   const panel = appRoot.querySelector("#mix-studio");
   if (panel) panel.outerHTML = renderMixStudio(mixingState);
   labController?.setComposition(mixingState.items);
+  updateCreativeAnalysis();
   updateLibrary();
   updateLabInspector();
 }
@@ -143,6 +151,10 @@ appRoot.addEventListener("change", (event) => {
   if (event.target.matches("[data-mix-weight]")) {
     mixingState = setMixNotePoints(mixingState, event.target.dataset.mixWeight, event.target.value);
     updateMixStudio();
+  }
+  if (event.target.matches("[data-analysis-direction]")) {
+    analysisDirection = event.target.value;
+    updateCreativeAnalysis();
   }
 });
 

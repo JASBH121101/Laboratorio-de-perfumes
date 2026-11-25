@@ -58,7 +58,8 @@ JB Expert QA 2.0 is declared as a development dependency. It has not yet been in
 - Block 2 — Design System & PWA Experience: integrated and Pages-published.
 - Block 3 — Perfume Library & Official Branding: integrated and Pages-published.
 - Block 4 — 3D Laboratory Core: integrated and Pages-published.
-- Block 5 — Virtual Mixing Studio: in development on `feature/block5-virtual-mixing-studio`.
+- Block 5 — Virtual Mixing Studio: integrated and Pages-published.
+- Block 6 — Creative Analysis Engine: in development on `feature/block6-creative-analysis-engine`.
 
 
 ## Virtual Mixing Studio — Block 5
@@ -68,3 +69,12 @@ The mixing studio accepts references from the library picker, quick-add chips, n
 These points are internal creative weights only. They are not percentages, ingredient ratios, concentrations, dosages, production instructions or predictions of a real perfume. The beaker's color and displayed level are visual metaphors based on selected note families and reference count.
 
 The current composition remains in memory for the active app session. Persistent drafts, named variants and export belong to the later archive/persistence block.
+
+
+## Creative Analysis Engine — Block 6
+
+The analysis engine reads the current conceptual composition and summarizes family distribution, reference coverage across the indicative top/heart/base roles, repeated sensory descriptors and editorial sensory signals (sweet/creamy, fresh/luminous, woody/earthy, floral, spicy, clean/close).
+
+It does not generate a single unexplained quality score. Observations describe patterns to review, not automatic verdicts. The Creative Advisor offers up to three references from the existing library for a selected direction: sweeter, less sweet, fresher, woodier, more floral, spicier, cleaner/intimate or more balanced/contrasted. Each suggestion explains its editorial rationale and possible trade-off and can be added to the conceptual composition.
+
+All indicators are derived from the library's editorial text and the composition's abstract creative points. They are not sensory measurements, objective formula compatibility, molecular analysis, longevity, projection, sillage or safety assessments. The user must evaluate real samples with professional support.
