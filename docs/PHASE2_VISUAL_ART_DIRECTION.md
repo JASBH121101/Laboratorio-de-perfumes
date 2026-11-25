@@ -149,6 +149,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 13. Focused Experiment View | Hide architectural room when composition is empty; front camera, clean background, automatic return to atelier when a composition becomes active | **Completed — merged in PR #24; physical Android verification pending** |
 | 14. Analytical Chart System | Improve family distribution, sensory profile and pyramid coverage with responsive visual charts and accessible labels | **Completed — merged in PR #25; CI certified** |
 | 15. Vessel & Glass Realism | Refine flacons, vials, liquid surfaces, meniscus, graduated glass and pipette details with Android-conscious PBR | **Completed — implementation merged after CI; physical Android visual/performance sign-off pending** |
+| 16. Environmental Surface Realism | Refine mineral wall finish, honed stone response and low-cost contact-shadow falloff without increasing mobile render cost | **Implemented — CI certified; physical Android visual review pending** |
 
 ## 8. Block 1 acceptance record
 
@@ -517,10 +518,13 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - Kept the existing procedural panorama, PMREM reflections, window-led lighting, camera modes and event-driven rendering. No new runtime dependency, remote asset, paid service or extra post-processing pass was introduced.
 - Advanced the PWA shell cache to `shell-v25`.
 
-### Acceptance criteria
+### Acceptance record
 
-- [ ] Plaster texture remains subtle at mobile viewing size and preserves the existing room palette.
-- [ ] Contact shadows ground props without visible dark halos or z-fighting.
-- [ ] Countertop reflection and wall texture remain legible across render tiers.
-- [ ] Automated tests, browser syntax validation, foundation validation and deployment pass.
-- [ ] Physical Android visual/performance/thermal/offline protocol from Block 12 is still required before device certification.
+- [x] Deterministic mineral-plaster color/bump textures are generated locally at the existing mobile/desktop texture resolutions.
+- [x] Wall material preserves the dark mauve palette and uses a matte, low-relief surface response.
+- [x] Workbench stone roughness and bump amplitude are reduced for a restrained honed finish.
+- [x] Contact-shadow decal has a tighter central core and wider falloff; mobile dynamic shadow maps remain disabled.
+- [x] Regression tests, browser module syntax and PWA foundation validation pass — 157/157 tests in CI.
+- [x] PWA shell cache advances to `shell-v25`; no new dependency, paid asset or remote texture.
+- [ ] Inspect wall texture scale, tabletop highlights, shadow halos/z-fighting and scene readability on the physical Android device.
+- [ ] Run the Block 12 repeated performance, thermal, battery and offline-reopen protocol before device certification.
