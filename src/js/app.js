@@ -398,8 +398,9 @@ appRoot.addEventListener("click", async (event) => {
 
   const sceneModeButton = event.target.closest("[data-scene-mode]");
   if (sceneModeButton) {
+    if (!labController?.setSceneMode) return;
     const requestedMode = sceneModeButton.dataset.sceneMode;
-    const activeMode = labController?.setSceneMode?.(requestedMode) ?? requestedMode;
+    const activeMode = labController.setSceneMode(requestedMode);
     sceneModeButton.dataset.sceneMode = activeMode === "atelier" ? "experiment" : "atelier";
     sceneModeButton.textContent = activeMode === "atelier" ? "Volver al experimento" : "Ver atelier completo";
     sceneModeButton.setAttribute("aria-pressed", String(activeMode === "atelier"));
