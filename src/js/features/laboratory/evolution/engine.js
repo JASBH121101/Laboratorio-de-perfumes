@@ -25,7 +25,7 @@ export function analyzeEvolutionStage(mixState, stageId = "opening") {
   const remainder = 100 - shares.reduce((sum, value) => sum + value, 0);
   const order = rawShares.map((value, index) => ({ index, fraction: value - shares[index] }))
     .sort((a, b) => b.fraction - a.fraction || a.index - b.index);
-  for (let index = 0; index < remainder; index += 1) shares[order[index].index] += 1;
+  for (let index = 0; index < remainder && order.length; index += 1) shares[order[index].index] += 1;
   const normalized = matching.map((item, index) => ({ ...item, share: shares[index] }));
   return {
     stage,
