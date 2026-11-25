@@ -344,21 +344,23 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 
 **Implementation branch:** `feature/phase2-block9-cinematic-camera`
 
-- Added three touch-friendly camera presets: Overview, Workbench and Bottle inspection.
-- Preset changes interpolate camera orbit, elevation, distance and target using a short eased transition; the camera still renders only while interacting or transitioning.
-- Camera transitions are interrupted when the user begins orbiting or zooming, preventing input conflicts.
-- Recenter now transitions back to the composed overview instead of snapping.
-- Honors `prefers-reduced-motion` by applying the requested view immediately.
-- Added accessible button labels and keyboard-focusable preset controls.
-- Advanced the service-worker app-shell cache to `shell-v17`.
-- No added dependencies, paid services, remote assets or continuous idle rendering.
+- Exposed the scene's three camera presets in the stage UI as accessible actions: General, Frasco and Mesa.
+- Recalibrated the bottle close-up to target the central concept flacon rather than the left-side reference vial; workbench framing now prioritizes the active vessel and surrounding tools.
+- Preset transitions interpolate orbit, elevation, distance and camera target with a short smoothstep easing curve; rendering remains event-driven and there is no idle animation loop.
+- Touch/pointer orbit, pinch zoom, wheel and keyboard navigation interrupt an in-progress preset transition immediately.
+- The reduced-motion preference skips animation and applies the destination frame directly.
+- Preset controls expose a visible selected state and update `aria-pressed`; Recentrar returns to General.
+- Advanced the PWA app-shell cache to `shell-v18` so updated app, view and style assets are fetched.
+- Added regression tests for preset framing, transition easing/cancellation, reduced motion, UI wiring, active state and keyboard focus.
 
 ### Block 9 acceptance record
 
-- [x] Three camera presets (overview, workbench and bottle close-up).
-- [x] Eased transition of camera target, orbit, elevation and zoom.
-- [x] Transition cancels on touch/mouse orbit and zoom interactions.
-- [x] Recenter returns to the designed default view.
+- [x] General, Frasco and Mesa camera presets available from the stage.
+- [x] Bottle preset frames the actual central bottle.
+- [x] Workbench preset frames the active vessel and work surface.
+- [x] Eased transitions with no continuous idle rendering.
+- [x] Manual pointer, wheel and keyboard input interrupts preset transitions.
 - [x] Reduced-motion preference disables animated transitions.
-- [x] Accessible labels and PWA cache update included.
-- [ ] Physical Android visual verification — Block 12.
+- [x] Selected state exposed visually and through `aria-pressed`.
+- [x] PWA cache, test coverage and static foundation validation updated.
+- [ ] Physical Android framing and legibility verification — Block 12.
