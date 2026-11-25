@@ -136,5 +136,5 @@ export function createArchiveRepository({
     await transactionFinished(transaction);
   }
 
-  return { list, get, put, putMany, remove, clear };
+  return { list, get, put, putMany, remove, clear, getStorageMode: () => fallbackRequired ? "localStorage" : "IndexedDB" };
 }
