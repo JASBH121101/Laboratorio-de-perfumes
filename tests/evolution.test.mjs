@@ -39,3 +39,9 @@ test("rendered simulator contains three stages and conceptual disclaimer",()=>{
  assert.match(html,/data-evolution-stage="drydown"/);
  assert.match(html,/No simula volatilidad/);
 });
+
+\ntest("stage share normalization handles references with zero points safely", () => {
+ const result=analyzeEvolutionStage({items:[{id:"bergamot",points:0},{id:"lemon",points:0}]}, "opening");
+ assert.equal(result.references.reduce((sum,n)=>sum+n.share,0),100);
+ assert.ok(result.references.every(n=>Number.isFinite(n.share)));
+});
