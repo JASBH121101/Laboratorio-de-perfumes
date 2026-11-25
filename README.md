@@ -142,3 +142,8 @@ The exploration beaker now has a hollow glass wall, thick base, rolled lip and l
 ### Cinematic camera presets — Phase 2 Block 9
 
 The 3D stage now exposes three accessible camera framings: General, Frasco and Mesa. Presets use short eased transitions, update their selected state for assistive technology, stop when the user begins orbit/zoom/keyboard navigation, and switch immediately when reduced motion is requested. Manual touch orbit, pinch zoom, wheel and arrow-key controls remain available. The PWA shell cache is now `shell-v18`.
+
+
+### Interaction polish — Phase 2 Block 10
+
+Desktop pointer hover now identifies inspectable objects with a restrained cursor/ring response. Selecting an object briefly scales it by 2.8% and returns the previous selection to its original size. The 170 ms selection pulse is canceled when superseded, disabled when reduced motion is requested, and cleaned up when the 3D view closes. Touch selection and inspector events remain unchanged. PWA cache advances to `shell-v19`.

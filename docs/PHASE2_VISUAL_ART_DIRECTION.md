@@ -143,7 +143,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | **Completed — premium flacon and vial assets integrated** |
 | 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | **Completed — beaker, pipette and organizer refined** |
 | 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | **Completed — preset views and reduced-motion-aware transitions integrated** |
-| 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | Pending |
+| 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | **Completed — hover and selection feedback integrated** |
 | 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | Pending |
 | 12. Android Performance & Visual Certification | Device profiling, quality-tier tuning, memory/load/FPS checks and final regression certification | Pending |
 
@@ -364,3 +364,30 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Selected state exposed visually and through `aria-pressed`.
 - [x] PWA cache, test coverage and static foundation validation updated.
 - [ ] Physical Android framing and legibility verification — Block 12.
+
+
+## 17. Block 10 implementation record — Animation & Interaction Polish
+
+**Implementation branch:** `feature/phase2-block10-interaction-polish`
+
+- Added desktop mouse/pen hover hit-testing for the eight inspectable props. Hover changes the pointer cursor and reveals a subtle, low-opacity selection ring; pointer leave clears the state.
+- Selected props use a short 170 ms ease-out scale pulse, capped at 2.8%, while the previous selection returns to its original scale.
+- The focus animation updates only the previously selected and newly selected object, avoiding a full-scene animation loop.
+- Hover and selected ring states remain separate; the active selection keeps stronger visual emphasis than hover.
+- Reduced-motion preference applies the selected scale immediately without animating.
+- A new selection cancels any in-flight scale pulse; scene disposal cancels pending animation frames and removes the pointer-leave listener.
+- Existing touch tap selection, object IDs, selection events, inspector updates, touch orbit/pinch and camera transitions remain intact.
+- Advanced the service-worker app-shell cache to `shell-v19`; added regression tests and foundation validation for hover, selection pulse, reduced motion and cleanup.
+
+### Block 10 acceptance record
+
+- [x] Mouse/pen hover hit-testing identifies interactive objects.
+- [x] Hover adds restrained cursor and ring feedback.
+- [x] Selection ring remains visually stronger than hover feedback.
+- [x] Selected object receives a brief 2.8% scale pulse; previous object returns to base scale.
+- [x] Animation is interrupted cleanly when selection changes.
+- [x] Reduced-motion preference applies state without animation.
+- [x] Pending animation frames and pointer listener are cleaned up on dispose.
+- [x] Touch selection, inspector contract and camera controls preserved.
+- [x] Regression tests, foundation checks and PWA cache updated.
+- [ ] Physical Android interaction/legibility and FPS verification — Block 12.
