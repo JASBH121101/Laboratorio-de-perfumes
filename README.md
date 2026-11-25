@@ -147,3 +147,8 @@ The 3D stage now exposes three accessible camera framings: General, Frasco and M
 ### Interaction polish — Phase 2 Block 10
 
 Desktop pointer hover now identifies inspectable objects with a restrained cursor/ring response. Selecting an object briefly scales it by 2.8% and returns the previous selection to its original size. The 170 ms selection pulse is canceled when superseded, disabled when reduced motion is requested, and cleaned up when the 3D view closes. Touch selection and inspector events remain unchanged. PWA cache advances to `shell-v19`.
+
+
+### Final visual finish — Phase 2 Block 11
+
+The renderer now applies subtle exposure and environment-reflection intensity settings from the active graphics tier. A lightweight CSS vignette and warm center lift add depth over the 3D canvas; the overlay is pointer-transparent and uses a lighter grade on constrained phones. This avoids a costly bloom/blur post-processing chain and adds no new WebGL pass or external assets. PWA cache advances to `shell-v20`.

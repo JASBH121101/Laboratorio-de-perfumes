@@ -7,7 +7,10 @@ export const LAB_RENDER_PROFILES = Object.freeze({
     powerPreference: "low-power",
     shadowsEnabled: false,
     postProcessingEnabled: false,
-    maxAnisotropy: 1
+    maxAnisotropy: 1,
+    exposure: 1.01,
+    environmentIntensity: 0.48,
+    backgroundIntensity: 0.68
   }),
   mobileStandard: Object.freeze({
     id: "mobile-standard",
@@ -17,7 +20,10 @@ export const LAB_RENDER_PROFILES = Object.freeze({
     powerPreference: "low-power",
     shadowsEnabled: false,
     postProcessingEnabled: false,
-    maxAnisotropy: 2
+    maxAnisotropy: 2,
+    exposure: 1.04,
+    environmentIntensity: 0.58,
+    backgroundIntensity: 0.75
   }),
   desktopHigh: Object.freeze({
     id: "desktop-high",
@@ -27,7 +33,10 @@ export const LAB_RENDER_PROFILES = Object.freeze({
     powerPreference: "default",
     shadowsEnabled: true,
     postProcessingEnabled: false,
-    maxAnisotropy: 4
+    maxAnisotropy: 4,
+    exposure: 1.07,
+    environmentIntensity: 0.68,
+    backgroundIntensity: 0.82
   })
 });
 

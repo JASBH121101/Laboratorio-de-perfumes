@@ -144,7 +144,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | **Completed — beaker, pipette and organizer refined** |
 | 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | **Completed — preset views and reduced-motion-aware transitions integrated** |
 | 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | **Completed — hover and selection feedback integrated** |
-| 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | Pending |
+| 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | **Completed — profile grade and lightweight vignette integrated** |
 | 12. Android Performance & Visual Certification | Device profiling, quality-tier tuning, memory/load/FPS checks and final regression certification | Pending |
 
 ## 8. Block 1 acceptance record
@@ -391,3 +391,28 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Touch selection, inspector contract and camera controls preserved.
 - [x] Regression tests, foundation checks and PWA cache updated.
 - [ ] Physical Android interaction/legibility and FPS verification — Block 12.
+
+
+## 18. Block 11 implementation record — Post-Processing & Final Visual Effects
+
+**Implementation branch:** `feature/phase2-block11-visual-finish`
+
+- Added profile-specific tone-mapping exposure values: Mobile Lite 1.01, Mobile Standard 1.04 and Desktop High 1.07.
+- Added profile-specific environment reflection intensity (0.48 / 0.58 / 0.68) and background intensity (0.68 / 0.75 / 0.82).
+- Connected the active render profile to the renderer, scene environment and `data-visual-tier` stage attribute.
+- Added a lightweight CSS finish layer over the WebGL canvas: subtle warm center lift plus an edge vignette, with intensity scaled by Mobile Lite, Mobile Standard and Desktop High.
+- The overlay uses `pointer-events: none` and is layered below stage controls, so it does not block taps, selection, preset controls or touch gestures.
+- No EffectComposer, bloom, depth-of-field blur, extra WebGL pass, external texture or new dependency was added. ACES tone mapping and sRGB output remain active.
+- Added regression tests for profile ranges, renderer/environment wiring, tiered vignette and interaction transparency.
+- Advanced PWA cache to `shell-v20` and extended foundation validation.
+
+### Block 11 acceptance record
+
+- [x] Exposure and environment reflection intensity vary by active render profile.
+- [x] Mobile Lite uses the most restrained grade; Desktop High uses the strongest approved grade.
+- [x] Stage receives a subtle vignette and warm center lift.
+- [x] Visual overlay is pointer-transparent and does not intercept stage interactions.
+- [x] No additional WebGL post-processing pass or runtime dependency.
+- [x] ACES tone mapping and sRGB output preserved.
+- [x] Visual finish tests, foundation validation and PWA cache updated.
+- [ ] Physical Android comparison and frame-time/thermal measurement — Block 12.
