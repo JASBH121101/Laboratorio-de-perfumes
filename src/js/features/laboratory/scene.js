@@ -720,10 +720,11 @@ export function mountLaboratory(stage) {
   scene.backgroundIntensity = renderProfile.backgroundIntensity;
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
-  const target = new THREE.Vector3(0, 1.12, 0);
-  let theta = 0;
-  let phi = 1.13;
-  let radius = LAB_RENDER_CONFIG.initialCameraRadius;
+  const defaultFraming = LAB_CAMERA_PRESETS.workbench;
+  const target = new THREE.Vector3(...defaultFraming.target);
+  let theta = defaultFraming.theta;
+  let phi = defaultFraming.phi;
+  let radius = defaultFraming.radius;
   let cameraTransition = null;
   let cameraTransitionFrame = 0;
 
