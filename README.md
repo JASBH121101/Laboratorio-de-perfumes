@@ -95,3 +95,10 @@ Use **Exportar todo (.json)** to download a backup containing creations, variant
 The archive does not sync to GitHub or a cloud account. IndexedDB is the primary storage; localStorage is a fallback when IndexedDB is unavailable. Browser storage can be cleared by the user or the operating system, and it does not transfer automatically to a new phone. Keep an external JSON backup.
 
 The project data contains only note-library IDs and conceptual creative points. It is not a chemical formula or manufacturing recipe. Saved points remain creative weights, not percentages or ingredient concentrations.
+
+
+## Phase 2 — Premium Realistic 3D Atelier
+
+The visual rebuild is tracked block-by-block in [the Phase 2 visual art-direction specification](./docs/PHASE2_VISUAL_ART_DIRECTION.md). Block 1 documents the current Three.js scene audit, cinematic atelier direction, material/lighting principles, Android quality tiers, cost and asset policy, and the complete twelve-block roadmap. It does not yet claim that the 3D scene has been visually rebuilt.
+
+Phase 2 retains lazy-loaded Three.js, touch orbit/pinch controls, object inspection, the conceptual composition vessel, local-first behavior and a mobile-safe rendering profile. No paid assets, APIs or services are part of the plan.
