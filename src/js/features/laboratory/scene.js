@@ -796,12 +796,14 @@ export function mountLaboratory(stage) {
   const selectable = [];
   const rings = new Map();
   const propRoots = new Map();
+  const propBaseScales = new Map();
 
   for (const prop of LAB_PROPS) {
     const group = createPropMesh(prop, materials);
     scene.add(group);
     selectable.push(group);
     propRoots.set(prop.id, group);
+    propBaseScales.set(prop.id, prop.scale);
     const ring = group.children.find((child) => child.userData?.isSelectionRing);
     if (ring) rings.set(prop.id, ring);
   }
@@ -818,25 +820,103 @@ export function mountLaboratory(stage) {
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   let selectedId = null;
+  let hoveredId = null;
   let pointerStart = null;
   let didMove = false;
   let lastPinch = null;
+  let objectFocusFrame = 0;
   const activePointers = new Map();
   let disposed = false;
 
-  function selectAt(clientX, clientY) {
+  function findPropAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    if (!rect.width || !rect.height) return null;
     pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
     raycaster.setFromCamera(pointer, camera);
-    const hit = raycaster.intersectObjects(selectable, true)
+    return raycaster.intersectObjects(selectable, true)
       .map((result) => findPropRoot(result.object))
-      .find(Boolean);
+      .find(Boolean) || null;
+  }
 
-    selectedId = hit?.userData.propId ?? null;
-    for (const [id, ring] of rings) ring.visible = id === selectedId;
+  function syncSelectionVisuals() {
+    for (const [id, ring] of rings) {
+      const isSelected = id === selectedId;
+      const isHovered = id === hoveredId && !isSelected;
+      ring.visible = isSelected || isHovered;
+      ring.material.opacity = isSelected ? 0.9 : 0.38;
+      ring.scale.setScalar(isSelected ? 1.1 : 1.045);
+    }
     renderer.render(scene, camera);
+  }
+
+  function stopObjectFocusAnimation() {
+    if (objectFocusFrame) cancelAnimationFrame(objectFocusFrame);
+    objectFocusFrame = 0;
+  }
+
+  function animateSelectedProp(previousId, nextId) {
+    stopObjectFocusAnimation();
+    const affectedIds = [...new Set([previousId, nextId].filter(Boolean))];
+    const changes = affectedIds
+      .map((id) => {
+        const root = propRoots.get(id);
+        const baseScale = propBaseScales.get(id);
+        return root && Number.isFinite(baseScale)
+          ? { root, from: root.scale.x, to: baseScale * (id === nextId ? 1.028 : 1) }
+          : null;
+      })
+      .filter(Boolean);
+    if (!changes.length) return;
+
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    if (reduceMotion) {
+      for (const change of changes) change.root.scale.setScalar(change.to);
+      return;
+    }
+
+    const start = performance.now();
+    const duration = 170;
+    const frame = (now) => {
+      if (disposed) {
+        objectFocusFrame = 0;
+        return;
+      }
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - (1 - progress) * (1 - progress);
+      for (const change of changes) {
+        change.root.scale.setScalar(THREE.MathUtils.lerp(change.from, change.to, eased));
+      }
+      if (progress < 1) objectFocusFrame = requestAnimationFrame(frame);
+      else objectFocusFrame = 0;
+      renderer.render(scene, camera);
+    };
+    objectFocusFrame = requestAnimationFrame(frame);
+  }
+
+  function updateHoverAt(clientX, clientY) {
+    const hit = findPropAt(clientX, clientY);
+    const nextHoveredId = hit?.userData.propId ?? null;
+    if (nextHoveredId === hoveredId) return;
+    hoveredId = nextHoveredId;
+    canvas.style.cursor = hoveredId ? "pointer" : "grab";
+    syncSelectionVisuals();
+  }
+
+  function clearHover() {
+    if (!hoveredId) return;
+    hoveredId = null;
+    canvas.style.cursor = "grab";
+    syncSelectionVisuals();
+  }
+
+  function selectAt(clientX, clientY) {
+    const hit = findPropAt(clientX, clientY);
+    const nextSelectedId = hit?.userData.propId ?? null;
+    const previousId = selectedId;
+    selectedId = nextSelectedId;
+    animateSelectedProp(previousId, selectedId);
+    syncSelectionVisuals();
     stage.dispatchEvent(new CustomEvent("lab:item-selected", {
       bubbles: true,
       detail: { id: selectedId }
@@ -890,6 +970,8 @@ export function mountLaboratory(stage) {
   function onPointerDown(event) {
     if (disposed) return;
     stopCameraTransition();
+    clearHover();
+    canvas.style.cursor = "grabbing";
     event.preventDefault();
     canvas.setPointerCapture?.(event.pointerId);
     activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -903,7 +985,12 @@ export function mountLaboratory(stage) {
   }
 
   function onPointerMove(event) {
-    if (!activePointers.has(event.pointerId)) return;
+    if (!activePointers.has(event.pointerId)) {
+      if (event.pointerType === "mouse" || event.pointerType === "pen") {
+        updateHoverAt(event.clientX, event.clientY);
+      }
+      return;
+    }
     event.preventDefault();
 
     const previous = activePointers.get(event.pointerId);
@@ -936,8 +1023,15 @@ export function mountLaboratory(stage) {
     if (activePointers.size === 1 && !didMove) selectAt(event.clientX, event.clientY);
     activePointers.delete(event.pointerId);
     if (activePointers.size < 2) lastPinch = null;
-    if (activePointers.size === 0) pointerStart = null;
+    if (activePointers.size === 0) {
+      pointerStart = null;
+      canvas.style.cursor = hoveredId ? "pointer" : "grab";
+    }
     if (activePointers.size === 1) didMove = true;
+  }
+
+  function onPointerLeave() {
+    if (activePointers.size === 0) clearHover();
   }
 
   function onWheel(event) {
@@ -948,9 +1042,10 @@ export function mountLaboratory(stage) {
   }
 
   function clearSelection() {
+    const previousId = selectedId;
     selectedId = null;
-    for (const ring of rings.values()) ring.visible = false;
-    renderer.render(scene, camera);
+    animateSelectedProp(previousId, null);
+    syncSelectionVisuals();
     stage.dispatchEvent(new CustomEvent("lab:item-selected", { bubbles: true, detail: { id: null } }));
   }
 
@@ -988,6 +1083,7 @@ export function mountLaboratory(stage) {
   canvas.addEventListener("pointermove", onPointerMove);
   canvas.addEventListener("pointerup", onPointerUp);
   canvas.addEventListener("pointercancel", onPointerUp);
+  canvas.addEventListener("pointerleave", onPointerLeave);
   canvas.addEventListener("wheel", onWheel, { passive: false });
   canvas.addEventListener("keydown", onKeyDown);
   canvas.addEventListener("contextmenu", onContextMenu);
@@ -1068,12 +1164,14 @@ export function mountLaboratory(stage) {
       if (disposed) return;
       disposed = true;
       stopCameraTransition();
+      stopObjectFocusAnimation();
       if (resizeObserver) resizeObserver.disconnect();
       else window.removeEventListener("resize", resizeHandler);
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerup", onPointerUp);
       canvas.removeEventListener("pointercancel", onPointerUp);
+      canvas.removeEventListener("pointerleave", onPointerLeave);
       canvas.removeEventListener("wheel", onWheel);
       canvas.removeEventListener("keydown", onKeyDown);
       canvas.removeEventListener("contextmenu", onContextMenu);
