@@ -1,5 +1,6 @@
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
-import { getMixTotal } from "./state.js";
+import { getMixTotal, hasMixNote } from "./state.js";
+import { PERFUME_ITEMS } from "../perfume-library/data.js";
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -8,6 +9,10 @@ const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => (
 export function renderMixStudio(state) {
   const total = getMixTotal(state);
   const hasItems = state.items.length > 0;
+  const available = PERFUME_ITEMS.filter((item) => !hasMixNote(state, item.id));
+  const quickNotes = ["bergamot", "rose", "sandalwood", "vanilla", "vetiver", "cardamom"]
+    .map((id) => PERFUME_ITEMS.find((item) => item.id === id))
+    .filter((item) => item && !hasMixNote(state, item.id));
   const rows = state.items.map((entry) => {
     const note = getPerfumeLibraryItem(entry.id);
     if (!note) return "";
@@ -24,7 +29,7 @@ export function renderMixStudio(state) {
         <label class="mix-range-label" for="mix-${escapeHtml(entry.id)}">
           <span>Peso creativo</span><span>0–100 puntos</span>
         </label>
-        <input class="mix-range" id="mix-${escapeHtml(entry.id)}" data-mix-weight="${escapeHtml(entry.id)}" type="range" min="0" max="100" step="1" value="${entry.points}" aria-label="Peso creativo de ${escapeHtml(note.name)}">
+        <input class="mix-range" id="mix-${escapeHtml(entry.id)}" data-mix-weight="${escapeHtml(entry.id)}" type="range" min="0" max="100" step="1" value="${entry.points}" aria-label="Peso creativo de ${escapeHtml(note.name)}" ${state.items.length === 1 ? "disabled" : ""}>
       </article>
     `;
   }).join("");
@@ -38,6 +43,18 @@ export function renderMixStudio(state) {
           <p>Organizá notas y acordes y ajustá su peso creativo para explorar el perfil general.</p>
         </div>
         <span class="mix-total-badge">${hasItems ? total : 0}<small>/ 100 PTS</small></span>
+      </div>
+      <div class="mix-note-picker">
+        <label for="mix-note-picker">Añadir desde la biblioteca</label>
+        <div class="mix-picker-controls">
+          <select id="mix-note-picker" ${available.length ? "" : "disabled"}>
+            ${available.map((item) => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.name)} · ${escapeHtml(item.family)}</option>`).join("")}
+          </select>
+          <button class="mix-add-button" type="button" data-action="add-picked-note" ${available.length ? "" : "disabled"}>＋ Añadir</button>
+        </div>
+        <div class="mix-quick-notes" aria-label="Referencias rápidas">
+          ${quickNotes.map((item) => `<button type="button" data-add-to-mix="${escapeHtml(item.id)}" data-drag-note="${escapeHtml(item.id)}" draggable="true">${escapeHtml(item.name)}</button>`).join("")}
+        </div>
       </div>
       <div class="mix-drop-zone ${hasItems ? "has-items" : ""}" data-mix-dropzone aria-label="Zona para añadir notas al recipiente conceptual">
         <span class="mix-drop-symbol">${hasItems ? "◈" : "＋"}</span>
