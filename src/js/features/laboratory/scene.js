@@ -778,7 +778,7 @@ export function mountLaboratory(stage) {
   let experimentMode = true;
   let compositionHasItems = false;
 
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 80);
   const target = new THREE.Vector3(0, 1.12, 0);
   let theta = 0.74;
   let phi = 1.05;
@@ -840,9 +840,10 @@ export function mountLaboratory(stage) {
   scene.background = experimentBackground;
   stage.dataset.sceneMode = "experiment";
   theta = 0;
-  phi = 1.42;
-  radius = 7.2;
-  target.set(0, 1.12, -1.2);
+  phi = 1.4;
+  radius = 8.4;
+  target.set(0, 1.14, -1.05);
+  stage.dataset.cameraPreset = "experiment";
   displayFurnitureGroup = createFurniture(scene, materials);
   displayFurnitureGroup.visible = false;
 
@@ -1013,15 +1014,17 @@ export function mountLaboratory(stage) {
 
   function animateCameraPreset(preset) {
     const presets = {
-      overview: { theta: 0.74, phi: 1.05, radius: LAB_RENDER_CONFIG.initialCameraRadius, target: [0, 1.12, 0] },
-      workbench: { theta: 0.18, phi: 1.18, radius: 8.5, target: [0, 0.94, 0.08] },
-      bottle: { theta: 0.52, phi: 1.22, radius: 6.35, target: [0, 1.38, 0.12] },
-      experiment: { theta: 0, phi: 1.42, radius: 7.2, target: [0, 1.12, -1.2] }
+      overview: { theta: 0.18, phi: 1.08, radius: 13.5, target: [0, 1.45, -0.15] },
+      workbench: { theta: 0.12, phi: 1.22, radius: 12.4, target: [0, 0.96, 0.05] },
+      bottle: { theta: 0.28, phi: 1.22, radius: 5.8, target: [0, 1.34, 0.12] },
+      experiment: { theta: 0, phi: 1.4, radius: 8.4, target: [0, 1.14, -1.05] }
     };
     const destination = presets[preset] || presets.overview;
     stopCameraTransition();
     const from = { theta, phi, radius, target: target.clone() };
-    const to = { theta: destination.theta, phi: destination.phi, radius: destination.radius, target: new THREE.Vector3(...destination.target) };
+    const aspectFit = Math.max(1, 1.04 / Math.max(camera.aspect, 0.6));
+    const to = { theta: destination.theta, phi: destination.phi, radius: destination.radius * aspectFit, target: new THREE.Vector3(...destination.target) };
+    stage.dataset.cameraPreset = preset;
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
     if (reduceMotion) {
       theta = to.theta; phi = to.phi; radius = to.radius; target.copy(to.target); updateCamera(); return;
@@ -1193,15 +1196,18 @@ export function mountLaboratory(stage) {
     "Cuero": "#795c58"
   };
 
-  function setExperimentMode(enabled) {
-    const nextMode = Boolean(enabled) || !compositionHasItems;
-    if (experimentMode === nextMode) return experimentMode;
+  function setExperimentMode(enabled, presetOverride = null) {
+    const nextMode = Boolean(enabled);
+    const modeChanged = experimentMode !== nextMode;
+    if (!modeChanged && !presetOverride) return experimentMode;
     experimentMode = nextMode;
-    if (roomArchitectureGroup) roomArchitectureGroup.visible = !experimentMode;
-    if (displayFurnitureGroup) displayFurnitureGroup.visible = !experimentMode;
-    scene.background = experimentMode ? experimentBackground : atelierBackground;
-    stage.dataset.sceneMode = experimentMode ? "experiment" : "atelier";
-    animateCameraPreset(experimentMode ? "experiment" : "overview");
+    if (modeChanged) {
+      if (roomArchitectureGroup) roomArchitectureGroup.visible = !experimentMode;
+      if (displayFurnitureGroup) displayFurnitureGroup.visible = !experimentMode;
+      scene.background = experimentMode ? experimentBackground : atelierBackground;
+      stage.dataset.sceneMode = experimentMode ? "experiment" : "atelier";
+    }
+    animateCameraPreset(presetOverride || (experimentMode ? "experiment" : "overview"));
     return experimentMode;
   }
 
@@ -1209,7 +1215,7 @@ export function mountLaboratory(stage) {
     const hasComposition = entries.some((entry) => Number(entry?.points) > 0);
     if (hasComposition !== compositionHasItems) {
       compositionHasItems = hasComposition;
-      setExperimentMode(!hasComposition);
+      setExperimentMode(!hasComposition, hasComposition ? "overview" : "experiment");
     }
     const beaker = propRoots.get("glass-beaker");
     const liquid = beaker?.userData.mixLiquid;
@@ -1244,9 +1250,9 @@ export function mountLaboratory(stage) {
   }
 
   function resetCamera() {
-    const preset = compositionHasItems ? "overview" : "experiment";
+    const preset = experimentMode ? "experiment" : "overview";
     animateCameraPreset(preset);
-    return !compositionHasItems;
+    return experimentMode;
   }
 
   function runPerformanceAudit() {
@@ -1278,10 +1284,10 @@ export function mountLaboratory(stage) {
   return {
     resetCamera,
     setCameraPreset: (preset) => {
-      if (preset === "experiment") return setExperimentMode(true);
-      if (!compositionHasItems) return setExperimentMode(true);
-      setExperimentMode(false);
-      animateCameraPreset(preset);
+      if (preset === "experiment") return setExperimentMode(true, "experiment");
+      if (preset === "overview" || preset === "bottle" || preset === "workbench") {
+        return setExperimentMode(false, preset);
+      }
       return experimentMode;
     },
     setExperimentMode,
