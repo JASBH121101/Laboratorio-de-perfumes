@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { LAB_PROPS, LAB_RENDER_CONFIG, getLabProp } from "../src/js/features/laboratory/catalog.js";
 import { renderLabInspector } from "../src/js/features/laboratory/inspector.js";
+import { renderPage } from "../src/js/ui/views.js";
+import { createMixState, addMixNote } from "../src/js/features/laboratory/mixing/state.js";
 
 test("3D scene catalogue contains eight selectable atelier props", () => {
   assert.equal(LAB_PROPS.length, 8);
@@ -50,4 +52,27 @@ test("renderer quality bounds are mobile-conscious", () => {
   assert.ok(LAB_RENDER_CONFIG.maxPixelRatio <= 1.5);
   assert.ok(LAB_RENDER_CONFIG.mobileMaxPixelRatio <= 1.25);
   assert.ok(LAB_RENDER_CONFIG.minCameraRadius < LAB_RENDER_CONFIG.initialCameraRadius);
+});
+
+test("rendering the Laboratory route passes the composition state into the mixing studio", () => {
+  const mixingState = addMixNote(createMixState(), "bergamot");
+  const html = renderPage("lab", {}, mixingState);
+  assert.match(html, /data-lab-stage/);
+  assert.match(html, /id="mix-studio"/);
+  assert.match(html, /Bergamota/);
+  assert.match(html, /100 pts/);
+});
+
+test("rendering the Laboratory route with an empty composition does not throw", () => {
+  const html = renderPage("lab", {}, createMixState());
+  assert.match(html, /Laboratorio/);
+  assert.match(html, /Tu recipiente está vacío/);
+  assert.match(html, /id="mix-studio"/);
+});
+
+test("other routes keep receiving their own view state", () => {
+  const home = renderPage("home", {}, createMixState());
+  const notes = renderPage("notes", { query: "bergamota" }, createMixState());
+  assert.match(home, /Las ideas también/);
+  assert.match(notes, /Biblioteca/);
 });
