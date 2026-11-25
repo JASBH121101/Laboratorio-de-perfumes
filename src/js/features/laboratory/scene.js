@@ -865,7 +865,7 @@ export function mountLaboratory(stage) {
     stopCameraTransition();
     const from = { theta, phi, radius, target: target.clone() };
     const to = { theta: destination.theta, phi: destination.phi, radius: destination.radius, target: new THREE.Vector3(...destination.target) };
-    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
     if (reduceMotion) {
       theta = to.theta; phi = to.phi; radius = to.radius; target.copy(to.target); updateCamera(); return;
     }
