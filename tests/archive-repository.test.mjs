@@ -18,6 +18,7 @@ function sample(id) {
 
 test("localStorage fallback supports create, list, get, update and remove", async () => {
   const repository = createArchiveRepository({ indexedDBApi: null, storage: memoryStorage() });
+  assert.equal(repository.getStorageMode(), "localStorage");
   const first = sample("local-a");
   await repository.put(first);
   assert.equal((await repository.list()).length, 1);
