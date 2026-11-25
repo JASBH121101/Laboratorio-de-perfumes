@@ -4,7 +4,7 @@ import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-li
 import { renderLabInspector } from "./features/laboratory/inspector.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
-import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
+import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";\nimport { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
@@ -15,7 +15,7 @@ const noticeAction = document.querySelector("#app-notice-action");
 
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 let mixingState = createMixState();
-let analysisDirection = "balanced";
+let analysisDirection = "balanced";\nlet evolutionStage = "opening";
 let selectedLabPropId = null;
 let labController = null;
 let renderCycle = 0;
@@ -78,7 +78,7 @@ function render() {
   labController = null;
   const cycle = ++renderCycle;
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -103,7 +103,7 @@ function updateLabInspector(propId = selectedLabPropId) {
   if (inspector) inspector.innerHTML = renderLabInspector(propId, mixingState);
 }
 
-function updateCreativeAnalysis() {
+function updateEvolutionSimulator() {\n  const panel = appRoot.querySelector("#evolution-simulator");\n  if (panel) panel.outerHTML = renderEvolutionSimulator(mixingState, evolutionStage);\n}\n\nfunction updateCreativeAnalysis() {
   const panel = appRoot.querySelector("#creative-analysis");
   if (panel) panel.outerHTML = renderCreativeAnalysis(mixingState, analysisDirection);
 }
@@ -180,7 +180,7 @@ appRoot.addEventListener("click", async (event) => {
     return;
   }
 
-  const removeMixTarget = event.target.closest("[data-remove-mix-note]");
+  const evolutionTarget = event.target.closest("[data-evolution-stage]");\n  if (evolutionTarget) {\n    evolutionStage = evolutionTarget.dataset.evolutionStage;\n    updateEvolutionSimulator();\n    return;\n  }\n\n  const removeMixTarget = event.target.closest("[data-remove-mix-note]");
   if (removeMixTarget) {
     mixingState = removeMixNote(mixingState, removeMixTarget.dataset.removeMixNote);
     updateMixStudio();
