@@ -1,5 +1,6 @@
 import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { LAB_PROPS } from "../src/js/features/laboratory/catalog.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -23,7 +24,6 @@ const html = await readFile("index.html", "utf8");
 const sw = await readFile("sw.js", "utf8");
 const app = await readFile("src/js/app.js", "utf8");
 const scene = await readFile("src/js/features/laboratory/scene.js", "utf8");
-const catalog = await readFile("src/js/features/laboratory/catalog.js", "utf8");
 
 if (!packageJson.scripts?.test || !packageJson.scripts?.validate) failures.push("Missing test or validate npm script.");
 if (manifest.start_url !== "./" || manifest.scope !== "./") failures.push("PWA paths must be relative for GitHub Pages project sites.");
@@ -45,7 +45,7 @@ if (!sw.includes("src/js/features/laboratory/scene.js") || !sw.includes("src/css
 if (!app.includes('import("./features/laboratory/scene.js")') || !app.includes("[data-lab-stage]")) failures.push("The 3D scene must be lazy-loaded only in the laboratory view.");
 if (!scene.includes("WebGLRenderer") || !scene.includes("Raycaster") || !scene.includes("pointerdown")) failures.push("Interactive 3D renderer or object selection is missing.");
 if (!scene.includes("clearSelection") || !scene.includes("resetCamera")) failures.push("3D selection or camera reset controls are missing.");
-if (catalog.split('"id":').length - 1 !== 8) failures.push("The 3D scene should expose eight selectable props.");
+if (LAB_PROPS.length !== 8) failures.push("The 3D scene should expose eight selectable props.");
 
 if (failures.length) {
   console.error("Foundation validation failed:");
