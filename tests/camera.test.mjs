@@ -13,6 +13,9 @@ test("camera offers overview, bottle and workbench presets with distinct cinemat
   }
   assert.match(scene, /animateCameraPreset/);
   assert.match(scene, /setCameraPreset: animateCameraPreset/);
+  assert.match(scene, /target: \[0, 1\.38, 0\.12\]/);
+  assert.match(scene, /target: \[0, 0\.94, 0\.08\]/);
+  assert.match(scene, /radius: 6\.35/);
 });
 
 test("camera preset transitions are eased, interruptible and respect reduced motion", () => {
