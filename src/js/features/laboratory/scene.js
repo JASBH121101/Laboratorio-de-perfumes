@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { LAB_PROPS, LAB_RENDER_CONFIG } from "./catalog.js";
+import { resolveLaboratoryRenderProfile } from "./render-profile.js";
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 
 const color = (hex) => new THREE.Color(hex);
@@ -344,12 +345,24 @@ export function mountLaboratory(stage) {
   if (!canvasHost) return { dispose() {}, resetCamera() {}, clearSelection() {}, setComposition() {} };
 
   const isMobile = window.matchMedia("(max-width: 700px)").matches;
+  const deviceMemory = typeof navigator !== "undefined" && Number.isFinite(navigator.deviceMemory)
+    ? navigator.deviceMemory
+    : null;
+  const hardwareConcurrency = typeof navigator !== "undefined" && Number.isFinite(navigator.hardwareConcurrency)
+    ? navigator.hardwareConcurrency
+    : null;
+  const initialProfile = resolveLaboratoryRenderProfile({
+    isMobile,
+    deviceMemory,
+    hardwareConcurrency,
+    maxTextureSize: isMobile ? 4096 : 8192
+  });
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({
       alpha: false,
-      antialias: !isMobile,
-      powerPreference: "low-power",
+      antialias: initialProfile.antialias,
+      powerPreference: initialProfile.powerPreference,
       preserveDrawingBuffer: false
     });
   } catch (error) {
@@ -358,15 +371,24 @@ export function mountLaboratory(stage) {
     return { dispose() {}, resetCamera() {}, clearSelection() {}, setComposition() {} };
   }
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? LAB_RENDER_CONFIG.mobileMaxPixelRatio : LAB_RENDER_CONFIG.maxPixelRatio));
+  const renderProfile = resolveLaboratoryRenderProfile({
+    isMobile,
+    deviceMemory,
+    hardwareConcurrency,
+    maxTextureSize: renderer.capabilities.maxTextureSize
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, renderProfile.pixelRatioCap));
   renderer.setSize(Math.max(canvasHost.clientWidth, 1), Math.max(canvasHost.clientHeight, 1), false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = renderProfile.shadowsEnabled;
+  renderer.info.autoReset = true;
   canvasHost.replaceChildren(renderer.domElement);
 
   const canvas = renderer.domElement;
   canvas.className = "lab-three-canvas";
+  canvas.dataset.qualityTier = renderProfile.id;
   canvas.setAttribute("aria-label", "Escena tridimensional interactiva del laboratorio de perfumería");
   canvas.setAttribute("role", "application");
   canvas.setAttribute("tabindex", "0");
