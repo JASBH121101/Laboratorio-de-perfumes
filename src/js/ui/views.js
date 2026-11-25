@@ -1,7 +1,8 @@
 import { renderPerfumeLibrary } from "../features/perfume-library/library.js";
 import { renderLabInspector } from "../features/laboratory/inspector.js";
 import { renderMixStudio } from "../features/laboratory/mixing/panel.js";
-import { renderCreativeAnalysis } from "../features/laboratory/analysis/panel.js";\nimport { renderEvolutionSimulator } from "../features/laboratory/evolution/panel.js";
+import { renderCreativeAnalysis } from "../features/laboratory/analysis/panel.js";
+import { renderEvolutionSimulator } from "../features/laboratory/evolution/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -91,7 +92,8 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <div><span class="gesture-icon">◎</span><div><strong>Inspeccionar</strong><small>Tocá un objeto para abrir su ficha</small></div></div>
     </section>
     ${renderMixStudio(mixingState)}
-    ${renderCreativeAnalysis(mixingState, analysisDirection)}\n    ${renderEvolutionSimulator(mixingState, evolutionStage)}
+    ${renderCreativeAnalysis(mixingState, analysisDirection)}
+    ${renderEvolutionSimulator(mixingState, evolutionStage)}
     <p class="lab-boundary-note">Los puntos de composición son ponderaciones creativas abstractas. No representan porcentajes, concentraciones ni dosificaciones reales.</p>
   `;
 }
