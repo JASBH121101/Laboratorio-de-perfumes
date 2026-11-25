@@ -122,3 +122,8 @@ The atelier now builds local CanvasTexture maps for walnut grain, warm stone var
 ### Window-led lighting and contact shadows — Phase 2 Block 5
 
 The atelier now has a warm directional key aligned with its side window, cool fill, a rear rim and restrained warm practicals. All device tiers use inexpensive radial contact-shadow decals under props and table legs; PCF soft shadow maps are enabled only for Desktop High. The bottle, vials, beaker, pipette and tray have been repositioned to meet the workbench. The cache version is `shell-v13`.
+
+
+### Environment reflections and atmosphere — Phase 2 Block 6
+
+The atelier generates a compact equirectangular panorama locally with CanvasTexture, converts it to a PMREM reflection map for glass and metallic surfaces, and uses the same panorama as a restrained background. Mobile uses a 256 px source; desktop uses 512 px. The PMREM target and source texture are disposed when the 3D view closes. No HDRI download or external environment service is used; PWA cache is now `shell-v14`.
