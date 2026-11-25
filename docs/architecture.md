@@ -1,31 +1,31 @@
-# Foundation architecture
+# Foundation and interface architecture
 
 ## Runtime
 
-The first version uses native browser capabilities: semantic HTML, responsive CSS and JavaScript ES modules. It is served as a static site and uses relative asset paths so it can live at the root of a GitHub Pages project site.
-
-Three.js is deliberately deferred until the 3D laboratory block. The 3D engine will be isolated behind a scene module so navigation, content and data logic do not depend on WebGL.
+The application uses semantic HTML, responsive CSS and native JavaScript ES modules. Relative asset paths keep it deployable at the root of the GitHub Pages project site. Three.js is deferred until the 3D laboratory block and will be isolated behind its own scene module.
 
 ## Module boundaries
 
-- `src/js/app.js`: application entrypoint, event delegation, theme preference and service-worker registration.
-- `src/js/core/navigation.js`: supported view identifiers and hash routing.
-- `src/js/ui/views.js`: presentation-only view templates.
-- `src/css/styles.css`: tokens, shell, responsive layout, touch navigation and reduced-motion behavior.
-- `manifest.webmanifest` and `sw.js`: install metadata and static app-shell caching.
-- `scripts/validate-foundation.mjs`: dependency-free structural validation.
-- `tests/`: Node built-in test runner.
+- src/js/app.js: application entrypoint, event delegation, theme preference and PWA UI wiring.
+- src/js/core/navigation.js: supported view identifiers and hash routing.
+- src/js/core/pwa.js: install prompt handling, installation detection, service-worker registration, update checks and controlled activation.
+- src/js/ui/views.js: presentation-only view templates.
+- src/css/styles.css: base shell and responsive layout.
+- src/css/design-system.css: component states, interface tokens, touch targets and install/update notice styling.
+- manifest.webmanifest: installed application identity, display settings and icons.
+- sw.js: versioned app-shell cache, offline fallback and explicit update activation.
+- scripts/validate-foundation.mjs: dependency-free structural validation.
+- tests/: Node built-in test runner.
 
-## Future domain boundaries
+## PWA update lifecycle
 
-The following modules are planned, not implemented in Block 1:
+1. The browser registers the service worker from the site root.
+2. A changed worker downloads the new app shell into a versioned cache.
+3. If an older worker currently controls the page, the new worker waits and the app displays an update notice.
+4. The user chooses Actualizar. The app posts SKIP_WAITING to the waiting worker.
+5. The new worker activates, removes older app-shell caches and takes control; the app reloads once.
 
-1. Fragrance reference library and note taxonomy.
-2. Concept composition model with normalized abstract values, never chemical dosages.
-3. Three.js scene and touch interaction adapters.
-4. Creative evaluation and mentor rules.
-5. Versioned local repository and export adapters.
-6. Similarity research dataset with provenance and confidence.
+Update checks run on launch and when the app returns to the foreground. The visible button also allows a manual check. A network connection is required to download a new release.
 
 ## Product and safety boundary
 
@@ -33,4 +33,4 @@ The product represents fragrance concepts for creative exploration. It is not a 
 
 ## Delivery
 
-Changes are developed on feature branches, validated by pull request and merged into `main` only after review. GitHub Pages should publish `main` from `/(root)`. The quality workflow runs dependency-free checks on Node.js 22; JB Expert QA commands remain a separate optional validation until the package install is confirmed.
+Changes are developed on feature branches, validated by pull request and merged into main only after review. GitHub Pages should publish main from /(root). The quality workflow runs dependency-free tests and structure validation on Node.js 22. JB Expert QA commands remain separate until the dependency is installed and validated.
