@@ -107,3 +107,8 @@ Phase 2 retains lazy-loaded Three.js, touch orbit/pinch controls, object inspect
 ### Adaptive 3D rendering — Phase 2 Block 2
 
 The 3D renderer selects a conservative Mobile Lite, Mobile Standard or Desktop High profile from available device memory, CPU concurrency and WebGL texture capability. Unknown Android capability data falls back to Mobile Lite. Rendering remains on-demand; real-time shadows and post-processing remain disabled until a later block justifies and profiles them. The service worker app-shell cache is now `shell-v10` and includes the profile module.
+
+
+### Atelier architecture — Phase 2 Block 3
+
+The 3D scene now uses a bounded room footprint instead of an infinite floor plane, with two side walls, a rear wall with a door opening, a framed divided window, wall skirting, right-wall inset panels, rear display-wall timber detailing and exposed upper beams/slats. The front remains intentionally open for camera visibility and touch inspection. The geometry is generated locally with Three.js; no external assets or new runtime dependencies are added. The PWA shell cache is now `shell-v11`.
