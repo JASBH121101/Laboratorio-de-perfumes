@@ -159,3 +159,7 @@ The renderer now applies subtle exposure and environment-reflection intensity se
 The Laboratory includes an opt-in local performance audit. Press **Medir rendimiento** to run a short active-render sample and review average FPS, frame timing, draw-call/triangle averages, resource counters, device capability fields and the active quality tier. The test stops when the view is closed or the tab is hidden and does not upload data.
 
 Its FPS comparison is an indicative browser measurement against the tier target, not a formal hardware certification. Browser APIs do not expose reliable GPU-memory bytes, device temperature or battery drain. Final Android sign-off still requires repeated physical-device testing, visual inspection, thermal/battery observation and an offline reopen test. The service-worker app-shell cache is now `shell-v21`.
+
+### Phase 2 Block 13 — Focused Experiment View
+
+An empty composition opens a focused front-facing experiment view with architectural room elements hidden and a clean dark background. Adding active composition entries restores the atelier environment and overview camera. Clearing the composition returns to experiment mode. No new assets or runtime dependencies are added; PWA shell cache advances to `shell-v22`. Physical Android verification remains pending.
