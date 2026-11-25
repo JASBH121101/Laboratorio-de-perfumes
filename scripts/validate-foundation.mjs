@@ -11,7 +11,7 @@ const requiredFiles = [
   "src/css/styles.css", "src/css/design-system.css", "src/css/perfume-library.css", "src/css/laboratory.css",
   "src/js/app.js", "src/js/core/navigation.js", "src/js/core/pwa.js",
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
-  "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js", "src/js/features/laboratory/render-profile.js", "src/js/features/laboratory/architecture.js",
+  "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js", "src/js/features/laboratory/render-profile.js", "src/js/features/laboratory/architecture.js", "src/js/features/laboratory/materials.js",
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
@@ -33,6 +33,7 @@ const app = await readFile("src/js/app.js", "utf8");
 const scene = await readFile("src/js/features/laboratory/scene.js", "utf8");
 const renderProfile = await readFile("src/js/features/laboratory/render-profile.js", "utf8");
 const architecture = await readFile("src/js/features/laboratory/architecture.js", "utf8");
+const materials = await readFile("src/js/features/laboratory/materials.js", "utf8");
 const mixPanel = await readFile("src/js/features/laboratory/mixing/panel.js", "utf8");
 const analysisPanel = await readFile("src/js/features/laboratory/analysis/panel.js", "utf8");
 const evolutionPanel = await readFile("src/js/features/laboratory/evolution/panel.js", "utf8");
@@ -68,6 +69,7 @@ if (!scene.includes("resolveLaboratoryRenderProfile") || !scene.includes("render
 if (!renderProfile.includes("mobile-lite") || !renderProfile.includes("mobile-standard") || !renderProfile.includes("desktop-high")) failures.push("Mobile Lite, Mobile Standard and Desktop High render profiles are required.");
 if (!scene.includes("createRoomArchitecture(scene)") || !scene.includes("windowGlassMaterial") || !scene.includes("PlaneGeometry(room.width, room.depth)") || !architecture.includes("ATELIER_ARCHITECTURE")) failures.push("Bounded atelier room architecture, window glazing or layout config is missing.");
 if (scene.includes("PlaneGeometry(200, 200)")) failures.push("The old infinite laboratory floor must not return.");
+if (!scene.includes("createAtelierMaterials") || !scene.includes("materials.counterstone") || !materials.includes("new THREE.CanvasTexture") || !materials.includes("roughnessMap: brassMaps.roughness")) failures.push("Procedural PBR materials are not integrated across the atelier.");
 if (!scene.includes("function setComposition") || !scene.includes("mixLiquid")) failures.push("3D composition vessel visual is missing.");
 if (LAB_PROPS.length !== 8) failures.push("The 3D scene should expose eight selectable props.");
 if (!app.includes("addMixNote") || !app.includes("setMixNotePoints") || !app.includes("undoMix") || !app.includes("data-mix-dropzone")) failures.push("Virtual mixing actions are not wired to the application.");
@@ -77,7 +79,7 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v11/.test(sw) || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v11 with valid JavaScript source line breaks.");
+if (!/shell-v12/.test(sw) || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v12 with valid JavaScript source line breaks.");
 if (!views.includes("renderEvolutionSimulator(mixingState, evolutionStage)") || !app.includes("data-evolution-stage") || !app.includes("updateEvolutionSimulator")) failures.push("Evolution simulator is not wired into the Laboratory view and state updates.");
 if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includes("analyzeEvolutionStage")) failures.push("Evolution simulator disclaimer or engine is missing.");
 if (!app.includes("createArchiveRepository") || !app.includes("saveCurrentAsVersion") || !app.includes("parseArchiveBackup")) failures.push("Local archive repository, version saving or backup import is not wired.");
