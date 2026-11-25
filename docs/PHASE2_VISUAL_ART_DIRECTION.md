@@ -142,7 +142,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | **Completed — local panorama and PMREM reflections integrated** |
 | 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | **Completed — premium flacon and vial assets integrated** |
 | 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | **Completed — beaker, pipette and organizer refined** |
-| 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | Pending |
+| 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | **Completed — preset views and reduced-motion-aware transitions integrated** |
 | 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | Pending |
 | 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | Pending |
 | 12. Android Performance & Visual Certification | Device profiling, quality-tier tuning, memory/load/FPS checks and final regression certification | Pending |
@@ -338,3 +338,27 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Main 8 props remain in the selectable scene registry.
 - [x] Equipment tests and PWA cache version updated.
 - [ ] Physical Android inspection of label legibility and glass visibility — Block 12.
+
+
+## 16. Block 9 implementation record — Cinematic Camera System
+
+**Implementation branch:** `feature/phase2-block9-cinematic-camera`
+
+- Added three touch-friendly camera presets: Overview, Workbench and Bottle inspection.
+- Preset changes interpolate camera orbit, elevation, distance and target using a short eased transition; the camera still renders only while interacting or transitioning.
+- Camera transitions are interrupted when the user begins orbiting or zooming, preventing input conflicts.
+- Recenter now transitions back to the composed overview instead of snapping.
+- Honors `prefers-reduced-motion` by applying the requested view immediately.
+- Added accessible button labels and keyboard-focusable preset controls.
+- Advanced the service-worker app-shell cache to `shell-v17`.
+- No added dependencies, paid services, remote assets or continuous idle rendering.
+
+### Block 9 acceptance record
+
+- [x] Three camera presets (overview, workbench and bottle close-up).
+- [x] Eased transition of camera target, orbit, elevation and zoom.
+- [x] Transition cancels on touch/mouse orbit and zoom interactions.
+- [x] Recenter returns to the designed default view.
+- [x] Reduced-motion preference disables animated transitions.
+- [x] Accessible labels and PWA cache update included.
+- [ ] Physical Android visual verification — Block 12.
