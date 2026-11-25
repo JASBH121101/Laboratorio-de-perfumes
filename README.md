@@ -39,7 +39,7 @@ Block 4 adds a lazy-loaded Three.js scene with a workbench, perfume bottle, refe
 
 The scene is deliberately static between interactions, uses a capped device pixel ratio, and does not enable real-time shadow maps. This keeps the renderer lighter on mobile devices. A WebGL-unavailable fallback is shown when the browser cannot create a renderer.
 
-Block 4 provides visual inspection only. Virtual composition, quantities and mixing interactions are reserved for Block 5.
+Block 4 provides visual inspection. Block 5 adds a conceptual composition panel, abstract point weights, undo/reset and a live beaker color/level display.
 
 ## Development
 
@@ -57,5 +57,14 @@ JB Expert QA 2.0 is declared as a development dependency. It has not yet been in
 - Block 1 — Foundation & Architecture: integrated and CI-validated.
 - Block 2 — Design System & PWA Experience: integrated and Pages-published.
 - Block 3 — Perfume Library & Official Branding: integrated and Pages-published.
-- Block 4 — 3D Laboratory Core: in development on `feature/block4-3d-laboratory`.
-- Block 5 — Virtual Mixing Studio: planned.
+- Block 4 — 3D Laboratory Core: integrated and Pages-published.
+- Block 5 — Virtual Mixing Studio: in development on `feature/block5-virtual-mixing-studio`.
+
+
+## Virtual Mixing Studio — Block 5
+
+The mixing studio accepts references from the library picker, quick-add chips, note detail cards or selected 3D vials. Desktop users can drag a quick reference into the drop zone; Android users can tap the same reference. Each composition is normalized to 100 **creative points**. Changing one reference redistributes the remaining points, and removing a reference rebalances the rest. Undo and reset are available.
+
+These points are internal creative weights only. They are not percentages, ingredient ratios, concentrations, dosages, production instructions or predictions of a real perfume. The beaker's color and displayed level are visual metaphors based on selected note families and reference count.
+
+The current composition remains in memory for the active app session. Persistent drafts, named variants and export belong to the later archive/persistence block.

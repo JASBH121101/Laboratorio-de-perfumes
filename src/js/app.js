@@ -2,6 +2,8 @@ import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
 import { renderLabInspector } from "./features/laboratory/inspector.js";
+import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
+import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
@@ -11,6 +13,8 @@ const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
 
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
+let mixingState = createMixState();
+let selectedLabPropId = null;
 let labController = null;
 let renderCycle = 0;
 
@@ -50,6 +54,7 @@ function mountLabScene(cycle) {
     .then(({ mountLaboratory }) => {
       if (cycle !== renderCycle || !stage.isConnected) return;
       labController = mountLaboratory(stage);
+      labController.setComposition(mixingState.items);
     })
     .catch((error) => {
       if (cycle !== renderCycle || !stage.isConnected) return;
@@ -71,7 +76,7 @@ function render() {
   labController = null;
   const cycle = ++renderCycle;
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -87,12 +92,33 @@ function updateLibrary() {
   const results = appRoot.querySelector("#library-results");
   const detail = appRoot.querySelector("#library-detail");
   if (results) results.innerHTML = renderLibraryResults(libraryState);
-  if (detail) detail.outerHTML = renderLibraryDetail(libraryState.selectedId);
+  if (detail) detail.outerHTML = renderLibraryDetail(libraryState.selectedId, mixingState);
 }
 
-function updateLabInspector(propId) {
+function updateLabInspector(propId = selectedLabPropId) {
+  selectedLabPropId = propId;
   const inspector = appRoot.querySelector("#lab-inspector");
-  if (inspector) inspector.innerHTML = renderLabInspector(propId);
+  if (inspector) inspector.innerHTML = renderLabInspector(propId, mixingState);
+}
+
+function updateMixStudio() {
+  const panel = appRoot.querySelector("#mix-studio");
+  if (panel) panel.outerHTML = renderMixStudio(mixingState);
+  labController?.setComposition(mixingState.items);
+  updateLibrary();
+  updateLabInspector();
+}
+
+function addNoteToMix(noteId) {
+  if (!noteId) return;
+  const previous = mixingState;
+  mixingState = addMixNote(mixingState, noteId);
+  if (mixingState === previous) {
+    showNotice({ title: "Referencia ya añadida", message: "Esa nota o acorde ya forma parte de la composición." });
+    return;
+  }
+  updateMixStudio();
+  showNotice({ title: "Referencia añadida", message: "La composición conceptual y el recipiente 3D se actualizaron." });
 }
 
 appRoot.addEventListener("lab:item-selected", (event) => {
@@ -114,6 +140,10 @@ appRoot.addEventListener("change", (event) => {
     libraryState.role = event.target.value;
     updateLibrary();
   }
+  if (event.target.matches("[data-mix-weight]")) {
+    mixingState = setMixNotePoints(mixingState, event.target.dataset.mixWeight, event.target.value);
+    updateMixStudio();
+  }
 });
 
 appRoot.addEventListener("click", async (event) => {
@@ -129,6 +159,19 @@ appRoot.addEventListener("click", async (event) => {
   if (noteTarget) {
     libraryState.selectedId = noteTarget.dataset.openNote;
     updateLibrary();
+    return;
+  }
+
+  const addMixTarget = event.target.closest("[data-add-to-mix]");
+  if (addMixTarget) {
+    addNoteToMix(addMixTarget.dataset.addToMix);
+    return;
+  }
+
+  const removeMixTarget = event.target.closest("[data-remove-mix-note]");
+  if (removeMixTarget) {
+    mixingState = removeMixNote(mixingState, removeMixTarget.dataset.removeMixNote);
+    updateMixStudio();
     return;
   }
 
@@ -161,7 +204,43 @@ appRoot.addEventListener("click", async (event) => {
   } else if (action === "clear-lab-selection") {
     labController?.clearSelection();
     updateLabInspector(null);
+  } else if (action === "add-picked-note") {
+    addNoteToMix(appRoot.querySelector("#mix-note-picker")?.value);
+  } else if (action === "undo-mix") {
+    mixingState = undoMix(mixingState);
+    updateMixStudio();
+  } else if (action === "reset-mix") {
+    mixingState = resetMix(mixingState);
+    updateMixStudio();
   }
+});
+
+appRoot.addEventListener("dragstart", (event) => {
+  const source = event.target.closest("[data-drag-note]");
+  if (!source || !event.dataTransfer) return;
+  event.dataTransfer.effectAllowed = "copy";
+  event.dataTransfer.setData("text/plain", source.dataset.dragNote);
+});
+
+appRoot.addEventListener("dragover", (event) => {
+  const dropZone = event.target.closest("[data-mix-dropzone]");
+  if (!dropZone) return;
+  event.preventDefault();
+  dropZone.classList.add("is-drag-over");
+  if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+});
+
+appRoot.addEventListener("dragleave", (event) => {
+  const dropZone = event.target.closest("[data-mix-dropzone]");
+  if (dropZone && !dropZone.contains(event.relatedTarget)) dropZone.classList.remove("is-drag-over");
+});
+
+appRoot.addEventListener("drop", (event) => {
+  const dropZone = event.target.closest("[data-mix-dropzone]");
+  if (!dropZone) return;
+  event.preventDefault();
+  dropZone.classList.remove("is-drag-over");
+  addNoteToMix(event.dataTransfer?.getData("text/plain"));
 });
 
 document.addEventListener("click", (event) => {

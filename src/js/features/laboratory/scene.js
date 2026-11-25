@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { LAB_PROPS, LAB_RENDER_CONFIG } from "./catalog.js";
+import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 
 const color = (hex) => new THREE.Color(hex);
 
@@ -161,6 +162,21 @@ function createBeaker() {
   rim.rotation.x = Math.PI / 2;
   rim.position.y = 0.74;
   group.add(rim);
+
+  const mixLiquid = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.32, 0.38, 0.36, 24),
+    new THREE.MeshStandardMaterial({
+      color: 0xc8a46c,
+      roughness: 0.26,
+      metalness: 0.02,
+      transparent: true,
+      opacity: 0.78
+    })
+  );
+  mixLiquid.position.y = 0.2;
+  mixLiquid.visible = false;
+  group.add(mixLiquid);
+  group.userData.mixLiquid = mixLiquid;
 
   const markMaterial = new THREE.MeshBasicMaterial({ color: 0xd9b27c });
   for (let index = 0; index < 3; index += 1) {
@@ -325,7 +341,7 @@ function findPropRoot(object) {
 
 export function mountLaboratory(stage) {
   const canvasHost = stage?.querySelector("[data-lab-canvas]");
-  if (!canvasHost) return { dispose() {}, resetCamera() {}, clearSelection() {} };
+  if (!canvasHost) return { dispose() {}, resetCamera() {}, clearSelection() {}, setComposition() {} };
 
   const isMobile = window.matchMedia("(max-width: 700px)").matches;
   let renderer;
@@ -339,7 +355,7 @@ export function mountLaboratory(stage) {
   } catch (error) {
     canvasHost.innerHTML = '<div class="lab-webgl-fallback"><strong>Vista 3D no disponible</strong><span>Este navegador o dispositivo no pudo iniciar WebGL. Podés volver a intentar desde otro navegador compatible.</span></div>';
     console.warn("No se pudo inicializar WebGL para el laboratorio:", error);
-    return { dispose() {}, resetCamera() {}, clearSelection() {} };
+    return { dispose() {}, resetCamera() {}, clearSelection() {}, setComposition() {} };
   }
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? LAB_RENDER_CONFIG.mobileMaxPixelRatio : LAB_RENDER_CONFIG.maxPixelRatio));
@@ -394,11 +410,13 @@ export function mountLaboratory(stage) {
 
   const selectable = [];
   const rings = new Map();
+  const propRoots = new Map();
 
   for (const prop of LAB_PROPS) {
     const group = createPropMesh(prop);
     scene.add(group);
     selectable.push(group);
+    propRoots.set(prop.id, group);
     const ring = group.children.find((child) => child.userData?.isSelectionRing);
     if (ring) rings.set(prop.id, ring);
   }
@@ -552,6 +570,54 @@ export function mountLaboratory(stage) {
   if (resizeObserver) resizeObserver.observe(canvasHost);
   else window.addEventListener("resize", resizeHandler);
 
+  const familyColors = {
+    "Cítrica": "#d9bd61",
+    "Frutal": "#bd6a76",
+    "Floral": "#c7869c",
+    "Aromática": "#81a78a",
+    "Verde": "#81986b",
+    "Amaderada": "#987454",
+    "Ámbar y resinosa": "#bb8453",
+    "Especiada": "#c87948",
+    "Gourmand": "#c19a62",
+    "Almizclada": "#a6abb7",
+    "Acuática": "#6f9fae",
+    "Cuero": "#795c58"
+  };
+
+  function setComposition(entries = []) {
+    const beaker = propRoots.get("glass-beaker");
+    const liquid = beaker?.userData.mixLiquid;
+    if (!liquid) return;
+    if (!entries.length) {
+      liquid.visible = false;
+      renderer.render(scene, camera);
+      return;
+    }
+
+    const total = entries.reduce((sum, entry) => sum + Math.max(0, entry.points), 0);
+    if (!total) {
+      liquid.visible = false;
+      renderer.render(scene, camera);
+      return;
+    }
+
+    const blended = new THREE.Color(0x000000);
+    for (const entry of entries) {
+      const note = getPerfumeLibraryItem(entry.id);
+      if (!note || entry.points <= 0) continue;
+      const noteColor = new THREE.Color(familyColors[note.family] || "#c5a16a");
+      blended.add(noteColor.multiplyScalar(entry.points / total));
+    }
+
+    const level = 0.12 + Math.min(entries.length, 6) * 0.035;
+    liquid.material.color.copy(blended);
+    liquid.scale.y = level / 0.36;
+    liquid.position.y = 0.025 + level / 2;
+    liquid.visible = true;
+    renderer.render(scene, camera);
+  }
+
   function resetCamera() {
     theta = 0.74;
     phi = 1.05;
@@ -564,6 +630,7 @@ export function mountLaboratory(stage) {
   return {
     resetCamera,
     clearSelection,
+    setComposition,
     dispose() {
       if (disposed) return;
       disposed = true;

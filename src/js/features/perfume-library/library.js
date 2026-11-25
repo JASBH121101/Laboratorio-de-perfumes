@@ -71,8 +71,9 @@ export function renderLibraryResults(state = {}) {
   `;
 }
 
-export function renderLibraryDetail(selectedId) {
+export function renderLibraryDetail(selectedId, mixingState = { items: [] }) {
   const item = getPerfumeLibraryItem(selectedId);
+  const addedToMix = Boolean(item && mixingState.items?.some((entry) => entry.id === item.id));
   if (!item) return `
     <aside class="library-detail library-detail--empty" id="library-detail" aria-live="polite">
       <span class="detail-symbol">✳</span><p class="eyebrow">FICHA DE REFERENCIA</p>
@@ -87,6 +88,7 @@ export function renderLibraryDetail(selectedId) {
       <p class="eyebrow">${escapeHtml(item.family).toUpperCase()}</p>
       <h3>${escapeHtml(item.name)}</h3>
       <p class="detail-description">${escapeHtml(item.profile)}</p>
+      <button class="mix-add-button" type="button" data-add-to-mix="${escapeHtml(item.id)}" data-drag-note="${escapeHtml(item.id)}" draggable="true" ${addedToMix ? "disabled" : ""}>${addedToMix ? "✓ Ya está en la composición" : "＋ Añadir a composición"}</button>
       <div class="detail-section"><span class="detail-label">UBICACIÓN ORIENTATIVA</span><div class="detail-tags">${item.roles.map((role) => `<span class="detail-tag">${escapeHtml(role)}</span>`).join("")}</div></div>
       <div class="detail-section"><span class="detail-label">FACETAS SENSORIALES</span><div class="detail-tags">${item.facets.map((facet) => `<span class="detail-tag">${escapeHtml(facet)}</span>`).join("")}</div></div>
       <div class="detail-section"><span class="detail-label">AFINIDADES PARA EXPLORAR</span><div class="pairing-list">${item.pairings.map((pair) => `<span>＋ ${escapeHtml(pair)}</span>`).join("")}</div></div>

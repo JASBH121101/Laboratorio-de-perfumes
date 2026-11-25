@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { LAB_PROPS } from "../src/js/features/laboratory/catalog.js";
+import { addMixNote, createMixState, getMixTotal } from "../src/js/features/laboratory/mixing/state.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -9,6 +10,7 @@ const requiredFiles = [
   "src/js/app.js", "src/js/core/navigation.js", "src/js/core/pwa.js",
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
   "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js",
+  "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/panel.js",
   "src/js/ui/views.js"
 ];
 
@@ -24,6 +26,8 @@ const html = await readFile("index.html", "utf8");
 const sw = await readFile("sw.js", "utf8");
 const app = await readFile("src/js/app.js", "utf8");
 const scene = await readFile("src/js/features/laboratory/scene.js", "utf8");
+const mixPanel = await readFile("src/js/features/laboratory/mixing/panel.js", "utf8");
+const labCss = await readFile("src/css/laboratory.css", "utf8");
 
 if (!packageJson.scripts?.test || !packageJson.scripts?.validate) failures.push("Missing test or validate npm script.");
 if (manifest.start_url !== "./" || manifest.scope !== "./") failures.push("PWA paths must be relative for GitHub Pages project sites.");
@@ -42,15 +46,24 @@ if (!html.includes("three@0.187.0") || !html.includes('type="importmap"')) failu
 if (!sw.includes("THREE_MODULE_URL") || !sw.includes("THREE_CORE_URL") || !sw.includes("three@0.187.0")) failures.push("Three.js module and core are not handled by the PWA cache.");
 if (sw.includes("cache.add(new Request(THREE_MODULE_URL")) failures.push("Three.js CDN files should be cached on first 3D use, not during PWA installation.");
 if (!sw.includes("src/js/features/laboratory/scene.js") || !sw.includes("src/css/laboratory.css")) failures.push("3D application modules are missing from the offline shell.");
+if (!sw.includes("mixing/state.js") || !sw.includes("mixing/panel.js")) failures.push("Virtual mixing modules are missing from the PWA offline shell.");
 if (!app.includes('import("./features/laboratory/scene.js")') || !app.includes("[data-lab-stage]")) failures.push("The 3D scene must be lazy-loaded only in the laboratory view.");
 if (!scene.includes("WebGLRenderer") || !scene.includes("Raycaster") || !scene.includes("pointerdown")) failures.push("Interactive 3D renderer or object selection is missing.");
 if (!scene.includes("clearSelection") || !scene.includes("resetCamera")) failures.push("3D selection or camera reset controls are missing.");
+if (!scene.includes("function setComposition") || !scene.includes("mixLiquid")) failures.push("3D composition vessel visual is missing.");
 if (LAB_PROPS.length !== 8) failures.push("The 3D scene should expose eight selectable props.");
+if (!app.includes("addMixNote") || !app.includes("setMixNotePoints") || !app.includes("undoMix") || !app.includes("data-mix-dropzone")) failures.push("Virtual mixing actions are not wired to the application.");
+if (!mixPanel.includes("No son porcentajes") || !mixPanel.includes("mix-note-picker") || !mixPanel.includes("data-mix-dropzone")) failures.push("Conceptual point labels, library picker or drop zone are missing.");
+if (!labCss.includes(".mix-studio") || !labCss.includes(".mix-range")) failures.push("Virtual mixing responsive styles are missing.");
+let sampleMix = createMixState();
+sampleMix = addMixNote(sampleMix, "bergamot");
+sampleMix = addMixNote(sampleMix, "rose");
+if (getMixTotal(sampleMix) !== 100) failures.push("Conceptual mix points must normalize to 100.");
 
 if (failures.length) {
   console.error("Foundation validation failed:");
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Foundation validation passed: ${requiredFiles.length} files, branded PWA, perfume library and lazy-loaded 3D scene verified.`);
+  console.log(`Foundation validation passed: ${requiredFiles.length} files, branded PWA, perfume library, 3D laboratory and conceptual mixing studio verified.`);
 }

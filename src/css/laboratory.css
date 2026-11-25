@@ -109,3 +109,80 @@
   .lab-gesture-guide { grid-template-columns: 1fr; gap: 7px; }
   .lab-gesture-guide > div { padding: 10px 12px; }
 }
+
+
+/* Block 5 — conceptual composition interface */
+.mix-studio {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid rgba(217,178,124,.3);
+  border-radius: 10px;
+  background: linear-gradient(145deg,var(--surface-raised),var(--surface));
+  box-shadow: 0 12px 34px var(--shadow);
+}
+.mix-studio-header { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; margin-bottom:18px; }
+.mix-studio-header .eyebrow { margin-bottom:7px; }
+.mix-studio-header h2 { margin:0 0 7px; color:var(--text); font-family:"Playfair Display",Georgia,serif; font-size:25px; font-weight:500; }
+.mix-studio-header h2 em { color:var(--accent); font-weight:400; }
+.mix-studio-header p:last-child { max-width:620px; margin:0; color:var(--muted); font-size:10px; line-height:1.7; }
+.mix-total-badge { min-width:78px; padding:10px 12px; border:1px solid rgba(217,178,124,.4); border-radius:8px; color:var(--accent); text-align:center; font-family:"Playfair Display",Georgia,serif; font-size:23px; }
+.mix-total-badge small { display:block; margin-top:3px; color:var(--muted-2); font-family:inherit; font-size:7px; letter-spacing:.12em; }
+.mix-note-picker { margin-bottom:13px; padding:13px; border:1px solid var(--line); border-radius:8px; background:var(--bg); }
+.mix-note-picker > label { display:block; margin-bottom:7px; color:var(--muted-2); font-size:8px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+.mix-picker-controls { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+.mix-picker-controls select { min-width:0; min-height:42px; padding:0 11px; border:1px solid var(--line); border-radius:6px; color:var(--text); background:var(--surface); font:inherit; font-size:10px; }
+.mix-add-button { min-height:40px; padding:0 13px; border:1px solid rgba(217,178,124,.55); border-radius:6px; color:#211a1e; background:var(--accent); cursor:pointer; font:inherit; font-size:9px; font-weight:700; }
+.mix-add-button:hover { filter:brightness(1.07); }
+.mix-add-button:disabled { border-color:var(--line); color:var(--muted-2); background:var(--surface); cursor:not-allowed; filter:none; }
+.mix-quick-notes { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+.mix-quick-notes button { min-height:30px; padding:0 10px; border:1px solid var(--line); border-radius:20px; color:var(--muted); background:var(--surface); cursor:grab; font:inherit; font-size:8px; }
+.mix-quick-notes button:hover { border-color:var(--accent); color:var(--accent); }
+.mix-drop-zone { min-height:76px; padding:13px 15px; display:flex; align-items:center; gap:13px; border:1px dashed rgba(217,178,124,.48); border-radius:8px; background:linear-gradient(90deg,rgba(217,178,124,.08),transparent); transition:border-color .15s,background .15s,transform .15s; }
+.mix-drop-zone.has-items { border-style:solid; border-color:rgba(217,178,124,.25); }
+.mix-drop-zone.is-drag-over { border:2px dashed var(--accent); background:rgba(217,178,124,.15); transform:scale(1.005); }
+.mix-drop-symbol { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border:1px solid rgba(217,178,124,.4); border-radius:50%; color:var(--accent); font-size:21px; }
+.mix-drop-zone strong,.mix-drop-zone small { display:block; }
+.mix-drop-zone strong { color:var(--text); font-size:10px; font-weight:700; }
+.mix-drop-zone small { max-width:680px; margin-top:4px; color:var(--muted-2); font-size:8px; line-height:1.6; }
+.mix-item-list { margin-top:12px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.mix-item { min-width:0; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--bg); }
+.mix-item-heading { display:flex; align-items:center; gap:8px; }
+.mix-item-name { min-width:0; flex:1; }
+.mix-item-name strong,.mix-item-name small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mix-item-name strong { color:var(--text); font-family:"Playfair Display",Georgia,serif; font-size:15px; font-weight:500; }
+.mix-item-name small { margin-top:3px; color:var(--muted-2); font-size:7px; }
+.mix-item-points { flex:0 0 auto; color:var(--accent); font-family:"Playfair Display",Georgia,serif; font-size:14px; white-space:nowrap; }
+.mix-remove { width:27px; height:27px; flex:0 0 27px; border:1px solid var(--line); border-radius:50%; color:var(--muted); background:transparent; cursor:pointer; font-size:17px; }
+.mix-remove:hover { border-color:#b76e6e; color:#c98282; }
+.mix-range-label { margin:14px 0 4px; display:flex; justify-content:space-between; gap:8px; color:var(--muted-2); font-size:7px; letter-spacing:.08em; }
+.mix-range { width:100%; min-height:25px; margin:0; accent-color:var(--accent); cursor:pointer; touch-action:pan-y; }
+.mix-range:disabled { opacity:.5; cursor:not-allowed; }
+.mix-empty-list { padding:20px; border:1px dashed var(--line); border-radius:8px; color:var(--muted-2); text-align:center; font-size:9px; }
+.mix-studio-actions { margin-top:13px; display:flex; justify-content:flex-end; gap:8px; }
+.mix-action { min-height:36px; padding:0 12px; border:1px solid var(--line); border-radius:6px; color:var(--muted); background:transparent; cursor:pointer; font:inherit; font-size:9px; }
+.mix-action--undo { color:var(--accent); border-color:rgba(217,178,124,.35); }
+.mix-action:disabled { opacity:.4; cursor:not-allowed; }
+.mix-disclaimer { margin:14px 0 0; padding-top:12px; border-top:1px solid var(--line); color:var(--muted-2); font-size:8px; line-height:1.75; }
+.lab-inspector-note .mix-add-button { width:100%; margin-top:13px; }
+.library-detail .mix-add-button { margin-top:14px; }
+@media (max-width:700px) {
+  .mix-studio { margin-top:14px; padding:13px; border-radius:8px; }
+  .mix-studio-header { gap:10px; }
+  .mix-studio-header h2 { font-size:21px; }
+  .mix-studio-header p:last-child { font-size:9px; }
+  .mix-total-badge { min-width:67px; padding:8px; font-size:20px; }
+  .mix-note-picker { padding:10px; }
+  .mix-picker-controls { grid-template-columns:minmax(0,1fr) auto; gap:6px; }
+  .mix-picker-controls select { min-height:43px; font-size:9px; }
+  .mix-add-button { min-height:40px; padding:0 10px; font-size:8px; }
+  .mix-drop-zone { min-height:72px; padding:10px; gap:9px; }
+  .mix-drop-symbol { width:33px; height:33px; flex-basis:33px; font-size:18px; }
+  .mix-drop-zone strong { font-size:9px; }
+  .mix-drop-zone small { font-size:7px; }
+  .mix-item-list { grid-template-columns:minmax(0,1fr); gap:7px; }
+  .mix-item { padding:11px; }
+  .mix-item-name strong { font-size:14px; }
+  .mix-range { min-height:32px; }
+  .mix-studio-actions { justify-content:stretch; }
+  .mix-action { flex:1; min-height:40px; }
+}

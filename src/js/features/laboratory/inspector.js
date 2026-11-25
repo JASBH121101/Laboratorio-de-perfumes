@@ -1,11 +1,12 @@
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 import { getLabProp } from "./catalog.js";
+import { hasMixNote } from "./mixing/state.js";
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 })[char]);
 
-export function renderLabInspector(propId = null) {
+export function renderLabInspector(propId = null, mixingState = { items: [] }) {
   const prop = propId ? getLabProp(propId) : null;
   if (!prop) {
     return `
@@ -19,6 +20,7 @@ export function renderLabInspector(propId = null) {
   }
 
   const note = prop.noteId ? getPerfumeLibraryItem(prop.noteId) : null;
+  const addedToMix = note ? hasMixNote(mixingState, note.id) : false;
   return `
     <div class="lab-inspector-content">
       <div class="lab-inspector-top"><span class="status-pill">${escapeHtml(prop.category)}</span><button class="lab-inspector-clear" type="button" data-action="clear-lab-selection" aria-label="Quitar selección">×</button></div>
@@ -32,6 +34,7 @@ export function renderLabInspector(propId = null) {
           <span>${escapeHtml(note.family)} · ${escapeHtml(note.kind)}</span>
           <p>${escapeHtml(note.profile)}</p>
           <div class="detail-tags">${note.facets.map((facet) => `<span class="detail-tag">${escapeHtml(facet)}</span>`).join("")}</div>
+          <button class="mix-add-button" type="button" data-add-to-mix="${escapeHtml(note.id)}" data-drag-note="${escapeHtml(note.id)}" draggable="true" ${addedToMix ? "disabled" : ""}>${addedToMix ? "✓ Ya está en la composición" : "＋ Añadir a composición"}</button>
           <a class="lab-library-link" href="#notes" data-nav="notes">Abrir biblioteca olfativa ↗</a>
         </div>
       ` : ""}
