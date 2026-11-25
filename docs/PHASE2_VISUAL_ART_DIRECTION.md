@@ -139,7 +139,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 3. Architectural Environment | Complete room shell, window/opening, walls, ceiling treatment, floor, doors/trim and spatial depth | **Completed — bounded atelier shell integrated** |
 | 4. PBR Material System | Shared materials and locally generated/substantiated texture detail for wood, stone, glass, metal and lacquer | **Completed — procedural PBR library integrated** |
 | 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | **Completed — tiered lighting and contact shadows integrated** |
-| 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | Pending |
+| 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | **Completed — local panorama and PMREM reflections integrated** |
 | 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | Pending |
 | 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | Pending |
 | 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | Pending |
@@ -262,3 +262,30 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Tests, foundation validation, and updated PWA cache entry added.
 - [ ] Environment reflections and atmospheric depth — Block 6.
 - [ ] Physical device brightness/performance/thermal comparison — Block 12.
+
+
+## 13. Block 6 implementation record — Environment & Atmosphere
+
+**Implementation branch:** `feature/phase2-block6-environment-reflections`
+
+- Added `src/js/features/laboratory/environment.js` to generate a compact equirectangular panorama procedurally in a local canvas.
+- Added broad warm and cool light cards to the panorama so glass and brushed metal receive coherent reflection cues.
+- Converts the panorama into a PMREM reflection environment once per 3D mount, then assigns it to `scene.environment`; the same panorama supplies a restrained background for the open-front room.
+- Mobile creates a 256 px source panorama; desktop creates a 512 px source panorama.
+- Added low-density scene fog and controlled `environmentIntensity` / `backgroundIntensity` values for spatial depth without adding post-processing.
+- Environment render target and source texture are released when the Laboratory scene is disposed. PMREM generation has a local panorama fallback.
+- Added tests for local generation, equirectangular mapping, PMREM fallback, adaptive resolution and GPU resource disposal.
+- Added the module to the PWA cache, advanced to `shell-v14`, and added static foundation + CI syntax validation.
+
+### Block 6 acceptance record
+
+- [x] Local environment panorama; no downloaded HDRI or remote service.
+- [x] Equirectangular mapping and PMREM reflection map.
+- [x] Same panorama supplies restrained background context.
+- [x] Mobile/desktop source resolution scales with render profile.
+- [x] Environment intensity, background intensity and fog establish controlled atmosphere.
+- [x] Safe panorama fallback if PMREM generation fails.
+- [x] PMREM render target and canvas texture released on scene disposal.
+- [x] Tests, foundation validation, CI syntax and PWA precache updated.
+- [ ] Actual glass/metal appearance tuning on target Android hardware — Block 12.
+- [ ] Perfume bottle geometry/labels/glass thickness refinement — Block 7.
