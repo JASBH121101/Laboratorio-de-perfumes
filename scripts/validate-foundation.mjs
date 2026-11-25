@@ -75,6 +75,7 @@ if (!scene.includes("createAtelierMaterials") || !scene.includes("materials.coun
 if (!scene.includes("createContactShadowMaterial") || !scene.includes("keyLight.castShadow = renderProfile.shadowsEnabled") || !scene.includes("THREE.PCFSoftShadowMap")) failures.push("Tiered lighting and contact shadow strategy are missing.");
 if (!scene.includes("createAtelierEnvironment(renderer, scene") || !environment.includes("new THREE.PMREMGenerator(renderer)") || !environment.includes("scene.environmentIntensity")) failures.push("Procedural environment reflections and atmosphere are missing.");
 if (!scene.includes("createFlaconGeometry()") || !scene.includes("createRoundedPlateGeometry") || !perfumeAssets.includes("bevelEnabled: true")) failures.push("Premium beveled perfume assets are missing.");
+if (!scene.includes("makeMeasurementTexture") || !scene.includes("materials.vesselGlass") || !scene.includes("const inset = new THREE.Mesh")) failures.push("Refined laboratory beaker, glass or organizer equipment is missing.");
 if (!scene.includes("function setComposition") || !scene.includes("mixLiquid")) failures.push("3D composition vessel visual is missing.");
 if (LAB_PROPS.length !== 8) failures.push("The 3D scene should expose eight selectable props.");
 if (!app.includes("addMixNote") || !app.includes("setMixNotePoints") || !app.includes("undoMix") || !app.includes("data-mix-dropzone")) failures.push("Virtual mixing actions are not wired to the application.");
@@ -84,7 +85,7 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v15/.test(sw) || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v15 with valid JavaScript source line breaks.");
+if (!/shell-v16/.test(sw) || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v16 with valid JavaScript source line breaks.");
 if (!views.includes("renderEvolutionSimulator(mixingState, evolutionStage)") || !app.includes("data-evolution-stage") || !app.includes("updateEvolutionSimulator")) failures.push("Evolution simulator is not wired into the Laboratory view and state updates.");
 if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includes("analyzeEvolutionStage")) failures.push("Evolution simulator disclaimer or engine is missing.");
 if (!app.includes("createArchiveRepository") || !app.includes("saveCurrentAsVersion") || !app.includes("parseArchiveBackup")) failures.push("Local archive repository, version saving or backup import is not wired.");
