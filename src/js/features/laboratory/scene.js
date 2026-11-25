@@ -3,6 +3,7 @@ import { LAB_PROPS, LAB_RENDER_CONFIG } from "./catalog.js";
 import { resolveLaboratoryRenderProfile } from "./render-profile.js";
 import { ATELIER_ARCHITECTURE } from "./architecture.js";
 import { createAtelierMaterials } from "./materials.js";
+import { createAtelierEnvironment } from "./environment.js";
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 
 const color = (hex) => new THREE.Color(hex);
@@ -555,8 +556,9 @@ export function mountLaboratory(stage) {
   canvas.setAttribute("tabindex", "0");
 
   const scene = new THREE.Scene();
-  scene.background = color("#211a21");
-  scene.fog = new THREE.Fog(0x211a21, 15, 28);
+  const environmentResources = createAtelierEnvironment(renderer, scene, {
+    textureSize: isMobile ? 256 : 512
+  });
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
   const target = new THREE.Vector3(0, 1.12, 0);
@@ -891,6 +893,7 @@ export function mountLaboratory(stage) {
           }
         }
       });
+      environmentResources.dispose();
       renderer.dispose();
       renderer.forceContextLoss();
       canvas.remove();
