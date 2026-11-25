@@ -177,6 +177,8 @@ function mountLabScene(cycle) {
       if (cycle !== renderCycle || !stage.isConnected) return;
       labController = mountLaboratory(stage);
       labController.setComposition(mixingState.items);
+      const modeLabel = stage.querySelector("[data-scene-mode-label]");
+      if (modeLabel) modeLabel.textContent = stage.dataset.sceneMode === "experiment" ? "EXPERIMENT VIEW" : "ATELIER VIEW";
     })
     .catch((error) => {
       if (cycle !== renderCycle || !stage.isConnected) return;
@@ -213,6 +215,9 @@ function updateMixStudio() {
   const panel = appRoot.querySelector("#mix-studio");
   if (panel) panel.outerHTML = renderMixStudio(mixingState);
   labController?.setComposition(mixingState.items);
+  const sceneStage = appRoot.querySelector("[data-lab-stage]");
+  const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
+  if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENT VIEW" : "ATELIER VIEW";
   updateCreativeAnalysis();
   updateEvolutionSimulator();
   updateLibrary();
