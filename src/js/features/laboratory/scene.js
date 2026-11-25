@@ -219,6 +219,55 @@ function createTray(materials) {
   return group;
 }
 
+function createContactShadowMaterial() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    return new THREE.MeshBasicMaterial({
+      color: 0x171216,
+      transparent: true,
+      opacity: 0.12,
+      depthWrite: false,
+      toneMapped: false
+    });
+  }
+
+  const gradient = context.createRadialGradient(64, 64, 5, 64, 64, 62);
+  gradient.addColorStop(0, "rgba(17, 12, 15, 0.42)");
+  gradient.addColorStop(0.42, "rgba(17, 12, 15, 0.19)");
+  gradient.addColorStop(1, "rgba(17, 12, 15, 0)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 128, 128);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  return new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    opacity: 0.72,
+    depthWrite: false,
+    toneMapped: false,
+    side: THREE.DoubleSide,
+    polygonOffset: true,
+    polygonOffsetFactor: -1
+  });
+}
+
+function addContactShadow(scene, material, x, z, width, depth, y) {
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(width, depth), material);
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.set(x, y, z);
+  shadow.renderOrder = 2;
+  shadow.userData.isContactShadow = true;
+  scene.add(shadow);
+  return shadow;
+}
+
 function createRoomArchitecture(scene, materials) {
   const { room, window: windowLayout, door } = ATELIER_ARCHITECTURE;
   const centerZ = (room.backZ + room.frontZ) / 2;
@@ -487,6 +536,7 @@ export function mountLaboratory(stage) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = renderProfile.shadowsEnabled;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.info.autoReset = true;
   const hardwareAnisotropy = typeof renderer.capabilities.getMaxAnisotropy === "function"
     ? renderer.capabilities.getMaxAnisotropy()
@@ -525,22 +575,67 @@ export function mountLaboratory(stage) {
     renderer.render(scene, camera);
   };
 
-  scene.add(new THREE.HemisphereLight(0xe8d9ce, 0x382b37, 2.0));
+  const ambientLight = new THREE.HemisphereLight(0xe8d9ce, 0x382b37, 1.35);
+  scene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffe0b8, 2.5);
-  keyLight.position.set(-4, 8, 6);
-  scene.add(keyLight);
+  // Warm daylight is aligned with the atelier's left-side window.
+  const keyLight = new THREE.DirectionalLight(0xffe2c4, 3.0);
+  keyLight.position.set(-5.15, 5.2, -0.65);
+  keyLight.target.position.set(0, 1.0, 0);
+  keyLight.castShadow = renderProfile.shadowsEnabled;
+  if (keyLight.castShadow) {
+    keyLight.shadow.mapSize.set(1024, 1024);
+    keyLight.shadow.camera.near = 0.2;
+    keyLight.shadow.camera.far = 22;
+    keyLight.shadow.camera.left = -7.5;
+    keyLight.shadow.camera.right = 7.5;
+    keyLight.shadow.camera.top = 6;
+    keyLight.shadow.camera.bottom = -4.5;
+    keyLight.shadow.bias = -0.00018;
+    keyLight.shadow.normalBias = 0.025;
+  }
+  scene.add(keyLight, keyLight.target);
 
-  const fillLight = new THREE.DirectionalLight(0xb0c5d7, 1.25);
-  fillLight.position.set(5, 5, -3);
+  const fillLight = new THREE.DirectionalLight(0xb7cbd8, 0.85);
+  fillLight.position.set(4.8, 4.2, 3.4);
   scene.add(fillLight);
 
-  const accentLight = new THREE.PointLight(0xd5a66d, 14, 11);
-  accentLight.position.set(0, 4.2, 1.4);
-  scene.add(accentLight);
+  const rearRimLight = new THREE.DirectionalLight(0xffd7ad, 0.75);
+  rearRimLight.position.set(1.5, 3.8, -4.5);
+  scene.add(rearRimLight);
+
+  // Restrained warm practicals give the shelving and bench a local light source.
+  const shelfPractical = new THREE.PointLight(0xffc98e, 5.5, 6.2);
+  shelfPractical.position.set(-0.5, 3.45, -2.15);
+  scene.add(shelfPractical);
+
+  const benchPractical = new THREE.PointLight(0xd9ad79, 2.6, 4.8);
+  benchPractical.position.set(3.3, 2.3, 0.25);
+  scene.add(benchPractical);
 
   createRoomArchitecture(scene, materials);
   createFurniture(scene, materials);
+
+  const contactShadowMaterial = createContactShadowMaterial();
+  const contactShadowSizes = {
+    "author-bottle": [1.65, 1.08],
+    "bergamot-vial": [0.72, 0.56],
+    "rose-vial": [0.72, 0.56],
+    "sandalwood-vial": [0.72, 0.56],
+    "vanilla-vial": [0.72, 0.56],
+    "glass-beaker": [1.18, 0.92],
+    "glass-pipette": [1.35, 0.44],
+    "note-tray": [1.52, 0.92]
+  };
+  for (const prop of LAB_PROPS) {
+    const [shadowWidth, shadowDepth] = contactShadowSizes[prop.id] || [0.9, 0.7];
+    addContactShadow(scene, contactShadowMaterial, prop.position[0], prop.position[2], shadowWidth, shadowDepth, 0.746);
+  }
+  for (const x of [-4.15, 4.15]) {
+    for (const z of [-1.72, 1.72]) {
+      addContactShadow(scene, contactShadowMaterial, x, z, 0.78, 0.62, -0.029);
+    }
+  }
 
   const selectable = [];
   const rings = new Map();
@@ -553,6 +648,15 @@ export function mountLaboratory(stage) {
     propRoots.set(prop.id, group);
     const ring = group.children.find((child) => child.userData?.isSelectionRing);
     if (ring) rings.set(prop.id, ring);
+  }
+
+  if (renderProfile.shadowsEnabled) {
+    scene.traverse((object) => {
+      if (!object.isMesh) return;
+      object.receiveShadow = true;
+      const objectMaterials = Array.isArray(object.material) ? object.material : [object.material];
+      object.castShadow = objectMaterials.every((material) => !material.transparent);
+    });
   }
 
   const raycaster = new THREE.Raycaster();
