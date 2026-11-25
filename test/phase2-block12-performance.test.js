@@ -29,7 +29,7 @@ test("report differentiates a short-run target result from a physical certificat
   const report = createLabPerformanceReport({
     profileId: "mobile-standard",
     frameIntervals: Array.from({ length: 40 }, () => 16.7),
-    renderStats: { calls: 80, triangles: 40000, geometries: 25, textures: 12 },
+    renderStats: { calls: 82, triangles: 41000, geometries: 25, textures: 12 },
     device: { isMobile: true, deviceMemoryGb: 8, hardwareConcurrency: 8, devicePixelRatio: 2, maxTextureSize: 4096 },
     canvas: { width: 1080, height: 1920, cssWidth: 540, cssHeight: 960 }
   });
