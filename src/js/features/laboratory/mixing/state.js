@@ -44,18 +44,19 @@ export function addMixNote(state, noteId) {
   if (typeof noteId !== "string" || !noteId.trim()) return state;
   if (state.items.some((item) => item.id === noteId)) return state;
 
-  const oldCount = state.items.length;
-  const newCount = oldCount + 1;
-  const points = distribute(100, [...state.items.map((item) => item.points), 1]);
+  const newCount = state.items.length + 1;
+  const nextNotePoints = Math.round(100 / newCount);
+  const existingPoints = distribute(100 - nextNotePoints, state.items.map((item) => item.points));
   const nextItems = [
-    ...state.items.map((item, index) => ({ id: item.id, points: points[index] })),
-    { id: noteId, points: points[newCount - 1] }
+    ...state.items.map((item, index) => ({ id: item.id, points: existingPoints[index] })),
+    { id: noteId, points: nextNotePoints }
   ];
   return commit(state, nextItems);
 }
 
 export function setMixNotePoints(state, noteId, requestedPoints) {
   if (!state.items.some((item) => item.id === noteId)) return state;
+  if (state.items.length === 1) return state.items[0].points === 100 ? state : commit(state, [{ id: noteId, points: 100 }]);
   const target = clampPoints(requestedPoints);
   const others = state.items.filter((item) => item.id !== noteId);
   const otherPoints = distribute(100 - target, others.map((item) => item.points));
