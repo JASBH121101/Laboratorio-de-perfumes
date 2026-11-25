@@ -78,9 +78,14 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
         <div class="lab-canvas" data-lab-canvas>
           <div class="lab-loading"><span class="lab-loading-mark">JB</span><strong>Preparando el laboratorio</strong><small>Cargando escena tridimensional…</small></div>
         </div>
+        <div class="lab-camera-presets" role="group" aria-label="Vistas de cámara">
+          <button type="button" data-camera-preset="overview" aria-label="Vista general">General</button>
+          <button type="button" data-camera-preset="workbench" aria-label="Vista de mesa">Mesa</button>
+          <button type="button" data-camera-preset="bottle" aria-label="Vista de frasco">Frasco</button>
+        </div>
         <div class="lab-stage-bottom">
           <span>ARRASTRÁ PARA GIRAR · PELLIZCÁ PARA ZOOM</span>
-          <button type="button" class="lab-reset-button" data-action="reset-lab-camera">Recentrar cámara ↺</button>
+          <button type="button" class="lab-reset-button" data-action="reset-lab-camera">Recentrar ↺</button>
         </div>
       </div>
       <aside class="lab-inspector" id="lab-inspector" aria-live="polite">
