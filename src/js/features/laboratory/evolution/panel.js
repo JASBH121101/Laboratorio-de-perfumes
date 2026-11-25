@@ -10,8 +10,8 @@ export function renderEvolutionSimulator(state, selectedStage = "opening") {
     </button>`).join("");
   const references = result.references.map((note) => `
     <article class="evolution-note">
-      <div class="evolution-note-head"><strong>${esc(note.name)}</strong><span>${note.share}% stage share</span></div>
-      <small>${esc(note.family)} · ${note.points} creative pts</small>
+      <div class="evolution-note-head"><strong>${esc(note.name)}</strong><span>${note.share}% del perfil de etapa</span></div>
+      <small>${esc(note.family)} · ${note.points} pts creativos</small>
       <p>${esc(note.profile)}</p>
       <div class="evolution-track"><span style="width:${note.share}%"></span></div>
     </article>`).join("");
