@@ -6,6 +6,7 @@ import { createAtelierMaterials } from "./materials.js";
 import { createAtelierEnvironment } from "./environment.js";
 import { createFlaconGeometry, createRoundedPlateGeometry } from "./perfume-assets.js";
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
+import { runLaboratoryPerformanceAudit } from "./performance-audit.js";
 
 const color = (hex) => new THREE.Color(hex);
 
@@ -830,6 +831,8 @@ export function mountLaboratory(stage) {
   let objectFocusFrame = 0;
   const activePointers = new Map();
   let disposed = false;
+  let performanceAuditAbort = null;
+  let performanceAuditRun = null;
 
   function findPropAt(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
@@ -1156,6 +1159,30 @@ export function mountLaboratory(stage) {
     animateCameraPreset("overview");
   }
 
+  function runPerformanceAudit() {
+    if (disposed) return Promise.reject(new Error("La escena 3D ya se cerró."));
+    if (performanceAuditRun) return performanceAuditRun;
+    const controller = new AbortController();
+    performanceAuditAbort = controller;
+    performanceAuditRun = runLaboratoryPerformanceAudit({
+      renderer,
+      scene,
+      camera,
+      profile: renderProfile,
+      device: {
+        isMobile,
+        deviceMemoryGb: deviceMemory,
+        hardwareConcurrency,
+        devicePixelRatio: window.devicePixelRatio || 1
+      },
+      signal: controller.signal
+    }).finally(() => {
+      performanceAuditAbort = null;
+      performanceAuditRun = null;
+    });
+    return performanceAuditRun;
+  }
+
   updateCamera();
 
   return {
@@ -1163,9 +1190,11 @@ export function mountLaboratory(stage) {
     setCameraPreset: animateCameraPreset,
     clearSelection,
     setComposition,
+    runPerformanceAudit,
     dispose() {
       if (disposed) return;
       disposed = true;
+      performanceAuditAbort?.abort();
       stopCameraTransition();
       stopObjectFocusAnimation();
       if (resizeObserver) resizeObserver.disconnect();
