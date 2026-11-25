@@ -86,8 +86,9 @@ if (getMixTotal(sampleMix) !== 100) failures.push("Conceptual mix points must no
 const sampleAnalysis = analyzeComposition(sampleMix);
 if (sampleAnalysis.isEmpty || sampleAnalysis.totalPoints !== 100 || sampleAnalysis.referenceCount !== 2) failures.push("Creative analysis must summarize a valid normalized mix.");
 if (!Array.isArray(suggestAdjustments(sampleMix, "fresher", 3))) failures.push("Creative advisor must return a suggestion list.");
+const archiveVariantMix = addMixNote(sampleMix, "vanilla");
 let sampleArchive = createArchiveCreation({ name: "QA archive", items: sampleMix.items, id: "qa-archive", now: "2026-11-25T00:00:00.000Z" });
-sampleArchive = createArchiveVariant(sampleArchive, { items: sampleMix.items, id: "qa-archive:B", now: "2026-11-25T00:01:00.000Z" });
+sampleArchive = createArchiveVariant(sampleArchive, { items: archiveVariantMix.items, id: "qa-archive:B", now: "2026-11-25T00:01:00.000Z" });
 sampleArchive = saveArchiveVersion(sampleArchive, "qa-archive:B", sampleMix.items, "QA version", "2026-11-25T00:02:00.000Z");
 const archiveRoundTrip = parseArchiveBackup(buildArchiveBackup([sampleArchive]));
 if (archiveRoundTrip[0]?.variants.length !== 2 || archiveRoundTrip[0]?.variants[1]?.versions.length !== 2) failures.push("Creative archive variant/version backup round-trip failed.");
