@@ -444,9 +444,13 @@ appRoot.addEventListener("click", async (event) => {
       libraryState.selectedId = null;
       updateLibrary();
     } else if (action === "reset-lab-camera") {
-      labController?.resetCamera();
+      const experimentMode = labController?.resetCamera?.() === true;
+      const activePreset = experimentMode ? "experiment" : "overview";
+      const sceneStage = appRoot.querySelector("[data-lab-stage]");
+      const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
+      if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENT VIEW" : "ATELIER VIEW";
       appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
-        const active = button.dataset.cameraPreset === "overview";
+        const active = button.dataset.cameraPreset === activePreset;
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
