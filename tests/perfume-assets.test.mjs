@@ -28,7 +28,10 @@ test("bottle asset includes liquid, dip tube, layered label and premium cap deta
 });
 
 test("vials use more detailed glass geometry, collars and layered labels", () => {
-  assert.match(scene, /CylinderGeometry\(0\.19, 0\.21, 0\.57, 32\)/);
+  assert.match(scene, /LatheGeometry\(bodyProfile, 40\)/);
+  assert.match(scene, /LatheGeometry\(contentProfile, 36\)/);
+  assert.match(scene, /liquidMeniscus/);
+  assert.match(scene, /glassHeel/);
   assert.match(scene, /const collar = new THREE\.Mesh\(new THREE\.CylinderGeometry\(0\.125/);
   assert.match(scene, /createRoundedPlateGeometry\(0\.34, 0\.2/);
 });
