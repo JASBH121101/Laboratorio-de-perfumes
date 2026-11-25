@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Personal interactive 3D virtual fragrance laboratory",
+  "description": "Personal Android-first virtual fragrance concept laboratory",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate-foundation.mjs",
     "qa:static": "jb-qa-project .",
     "qa:security": "jb-qa-security .",
     "qa:dashboard": "jb-qa-dashboard",
