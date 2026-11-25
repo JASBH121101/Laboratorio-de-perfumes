@@ -39,7 +39,7 @@ Block 4 adds a lazy-loaded Three.js scene with a workbench, perfume bottle, refe
 
 The scene is deliberately static between interactions, uses a capped device pixel ratio, and does not enable real-time shadow maps. This keeps the renderer lighter on mobile devices. A WebGL-unavailable fallback is shown when the browser cannot create a renderer.
 
-Block 4 provides visual inspection only. Virtual composition, quantities and mixing interactions are reserved for Block 5.
+Block 4 provides visual inspection. Block 5 adds a conceptual composition panel, abstract point weights, undo/reset and a live beaker color/level display.
 
 ## Development
 
@@ -59,7 +59,6 @@ JB Expert QA 2.0 is declared as a development dependency. It has not yet been in
 - Block 3 — Perfume Library & Official Branding: integrated and Pages-published.
 - Block 4 — 3D Laboratory Core: integrated and Pages-published.
 - Block 5 — Virtual Mixing Studio: in development on `feature/block5-virtual-mixing-studio`.
-- Block 5 — Virtual Mixing Studio: planned.
 
 
 ## Virtual Mixing Studio — Block 5
