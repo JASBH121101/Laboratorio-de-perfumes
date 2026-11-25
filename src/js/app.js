@@ -23,8 +23,7 @@ function hideNotice() {
 
 const pwa = createPwaManager({
   onInstallState: ({ installed }) => {
-    const installButton = appRoot.querySelector("[data-action='install']");
-    if (installButton) {
+    for (const installButton of appRoot.querySelectorAll("[data-action='install']")) {
       installButton.hidden = installed;
       installButton.setAttribute("aria-hidden", String(installed));
     }
@@ -40,8 +39,12 @@ const pwa = createPwaManager({
 function render() {
   const activeView = resolveView(window.location.hash);
   appRoot.innerHTML = renderPage(activeView);
-  const installButton = appRoot.querySelector("[data-action='install']");
-  if (installButton && pwa.isInstalled()) installButton.hidden = true;
+  if (pwa.isInstalled()) {
+    appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
+      button.hidden = true;
+      button.setAttribute("aria-hidden", "true");
+    });
+  }
 }
 
 appRoot.addEventListener("click", async (event) => {
