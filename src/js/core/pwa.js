@@ -2,6 +2,15 @@ export function isPwaInstalled(displayMode = "", legacyStandalone = false) {
   return displayMode === "standalone" || displayMode === "fullscreen" || legacyStandalone === true;
 }
 
+export function shouldAnnounceUpdate({
+  waiting = false,
+  controlled = false,
+  silent = false,
+  alreadyAnnounced = false
+} = {}) {
+  return Boolean(waiting && controlled && (!silent || !alreadyAnnounced));
+}
+
 export function createPwaManager({ onInstallState = () => {}, onUpdateAvailable = () => {}, onNotice = () => {} } = {}) {
   let deferredInstallPrompt = null;
   let registration = null;
@@ -110,9 +119,12 @@ export function createPwaManager({ onInstallState = () => {}, onUpdateAvailable 
     lastUpdateCheck = now;
     try {
       await registration.update();
-      if (registration.waiting && navigator.serviceWorker.controller) {
-        announceUpdate();
-      } else if (!silent && !registration.installing) {
+      const waiting = Boolean(registration.waiting);
+      const controlled = Boolean(navigator.serviceWorker.controller);
+      if (shouldAnnounceUpdate({ waiting, controlled, silent, alreadyAnnounced: updateAnnounced })) {
+        updateAnnounced = true;
+        onUpdateAvailable();
+      } else if (!waiting && !silent && !registration.installing) {
         onNotice({ title: "Está todo actualizado", message: "Estás usando la versión más reciente disponible." });
       } else if (!silent && registration.installing) {
         onNotice({ title: "Buscando actualización", message: "Se está descargando una versión nueva. Te avisaremos cuando esté lista." });
