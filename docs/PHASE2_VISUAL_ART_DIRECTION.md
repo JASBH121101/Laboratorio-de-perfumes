@@ -136,7 +136,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 |---|---|---|
 | 1. Visual Benchmark & Art Direction | Audit baseline, define cinematic atelier direction, palette, materials, camera, device tiers and acceptance criteria | **Completed — this document** |
 | 2. Rendering Pipeline Upgrade | Renderer profiles, color management audit, quality selection, capability fallbacks and rendering configuration | **Completed — adaptive profiles integrated** |
-| 3. Architectural Environment | Complete room shell, window/opening, walls, ceiling treatment, floor, doors/trim and spatial depth | Pending |
+| 3. Architectural Environment | Complete room shell, window/opening, walls, ceiling treatment, floor, doors/trim and spatial depth | **Completed — bounded atelier shell integrated** |
 | 4. PBR Material System | Shared materials and locally generated/substantiated texture detail for wood, stone, glass, metal and lacquer | Pending |
 | 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | Pending |
 | 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | Pending |
@@ -183,3 +183,29 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Unit tests, foundation validation and CI syntax coverage added.
 - [x] PWA cache updated to `shell-v10` with the new module precached.
 - [ ] Physical-device FPS, battery and thermal profiling — reserved for Block 12.
+
+
+## 10. Block 3 implementation record — Architectural Environment
+
+**Implementation branch:** `feature/phase2-block3-atelier-architecture`
+
+- Added `src/js/features/laboratory/architecture.js` as a dependency-free layout/material palette definition for a compact 11 × 7.8 × 4 unit atelier.
+- Replaced the 200 × 200 infinite floor plane with a bounded warm-stone floor sized to the room footprint.
+- Built a rear wall with a real door opening, split left wall geometry around a divided window opening, and a continuous right wall.
+- Added window glass, frame, mullions, sill, daylight backing panel, door leaf/casing/handle, timber skirting, rear display-wall slats, right-wall inset panels, upper beams, short ceiling canopy slats and a front threshold.
+- Kept the front open so the existing elevated camera can still inspect the main workbench and selectable objects.
+- Reused local Three.js geometry and materials only; no new runtime dependency, paid service or external asset was introduced.
+- Added layout tests for room dimensions and opening bounds, static foundation checks, CI syntax checking and PWA precache entry. App-shell cache is now `shell-v11`.
+
+### Block 3 acceptance record
+
+- [x] Bounded room footprint replaces the infinite ground plane.
+- [x] Rear wall and side walls establish a coherent room shell.
+- [x] Left-side window opening has glazing, frame, sill and mullions.
+- [x] Rear door opening has leaf, casing and handle detailing.
+- [x] Rear/side wall paneling, skirting and upper ceiling structure add architectural depth.
+- [x] The front remains open for visibility and interaction.
+- [x] Architecture layout, foundation validation, CI syntax check and PWA cache registration added.
+- [ ] Material-level realism and texture system — Block 4.
+- [ ] Lighting/reflections and contact shadow tuning — Blocks 5–6.
+- [ ] Physical Android visual/FPS verification — Block 12.
