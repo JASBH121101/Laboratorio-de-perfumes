@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createArchiveCreation, createArchiveVariant, saveArchiveVersion } from "../src/js/features/archive/model.js";
 import { renderArchiveQuickSave, renderArchiveView } from "../src/js/features/archive/panel.js";
+import { renderPage } from "../src/js/ui/views.js";
+import { createMixState, addMixNote } from "../src/js/features/laboratory/mixing/state.js";
 
 const original = createArchiveCreation({ name: "Jardín nocturno", items: [{ id: "bergamot", points: 100 }], id: "ui-project" });
 
@@ -47,4 +49,24 @@ test("quick save panel offers create or version action based on selection", () =
     selectedVariantId: original.activeVariantId
   });
   assert.match(selected, /data-action="save-archive-version"/);
+});
+
+
+test("Projects route renders the local archive view from persisted records", () => {
+  const html = renderPage("projects", {}, createMixState(), "balanced", "opening", {
+    creations: [original],
+    selectedCreationId: original.id,
+    selectedVariantId: original.activeVariantId
+  });
+  assert.match(html, /BLOCK 08 · PERSISTENCE/);
+  assert.match(html, /Jardín nocturno/);
+  assert.match(html, /archive-root/);
+});
+
+test("Laboratory route includes quick-save access for the current composition", () => {
+  const composition = addMixNote(createMixState(), "bergamot");
+  const html = renderPage("lab", {}, composition, "balanced", "opening", { creations: [] });
+  assert.match(html, /archive-quick-save/);
+  assert.match(html, /save-current-as-creation/);
+  assert.match(html, /archive-quick-name/);
 });
