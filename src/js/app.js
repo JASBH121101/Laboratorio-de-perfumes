@@ -395,6 +395,17 @@ appRoot.addEventListener("click", async (event) => {
     return;
   }
 
+  const cameraPreset = event.target.closest("[data-camera-preset]")?.dataset.cameraPreset;
+  if (cameraPreset) {
+    labController?.setCameraPreset?.(cameraPreset);
+    appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
+      const active = button.dataset.cameraPreset === cameraPreset;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    return;
+  }
+
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (!action) return;
 
@@ -424,6 +435,11 @@ appRoot.addEventListener("click", async (event) => {
       updateLibrary();
     } else if (action === "reset-lab-camera") {
       labController?.resetCamera();
+      appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
+        const active = button.dataset.cameraPreset === "overview";
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
     } else if (action === "clear-lab-selection") {
       labController?.clearSelection();
       updateLabInspector(null);

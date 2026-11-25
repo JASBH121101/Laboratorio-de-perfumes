@@ -142,7 +142,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | **Completed — local panorama and PMREM reflections integrated** |
 | 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | **Completed — premium flacon and vial assets integrated** |
 | 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | **Completed — beaker, pipette and organizer refined** |
-| 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | Pending |
+| 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | **Completed — preset views and reduced-motion-aware transitions integrated** |
 | 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | Pending |
 | 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | Pending |
 | 12. Android Performance & Visual Certification | Device profiling, quality-tier tuning, memory/load/FPS checks and final regression certification | Pending |
@@ -338,3 +338,29 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Main 8 props remain in the selectable scene registry.
 - [x] Equipment tests and PWA cache version updated.
 - [ ] Physical Android inspection of label legibility and glass visibility — Block 12.
+
+
+## 16. Block 9 implementation record — Cinematic Camera System
+
+**Implementation branch:** `feature/phase2-block9-cinematic-camera`
+
+- Exposed the scene's three camera presets in the stage UI as accessible actions: General, Frasco and Mesa.
+- Recalibrated the bottle close-up to target the central concept flacon rather than the left-side reference vial; workbench framing now prioritizes the active vessel and surrounding tools.
+- Preset transitions interpolate orbit, elevation, distance and camera target with a short smoothstep easing curve; rendering remains event-driven and there is no idle animation loop.
+- Touch/pointer orbit, pinch zoom, wheel and keyboard navigation interrupt an in-progress preset transition immediately.
+- The reduced-motion preference skips animation and applies the destination frame directly.
+- Preset controls expose a visible selected state and update `aria-pressed`; Recentrar returns to General.
+- Advanced the PWA app-shell cache to `shell-v18` so updated app, view and style assets are fetched.
+- Added regression tests for preset framing, transition easing/cancellation, reduced motion, UI wiring, active state and keyboard focus.
+
+### Block 9 acceptance record
+
+- [x] General, Frasco and Mesa camera presets available from the stage.
+- [x] Bottle preset frames the actual central bottle.
+- [x] Workbench preset frames the active vessel and work surface.
+- [x] Eased transitions with no continuous idle rendering.
+- [x] Manual pointer, wheel and keyboard input interrupts preset transitions.
+- [x] Reduced-motion preference disables animated transitions.
+- [x] Selected state exposed visually and through `aria-pressed`.
+- [x] PWA cache, test coverage and static foundation validation updated.
+- [ ] Physical Android framing and legibility verification — Block 12.
