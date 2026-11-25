@@ -29,7 +29,7 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes("apple-touch-icon")) failures.push("PWA manifest or Apple touch icon link is missing.");
 if (!html.includes('id="app-notice"')) failures.push("Persistent PWA notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/design-system.css")) failures.push("Application or design-system entrypoint is missing.");
-if (!sw.includes("SKIP_WAITING") || !sw.includes("shell-v2")) failures.push("Versioned service-worker update lifecycle is missing.");
+if (!sw.includes("SKIP_WAITING") || !/shell-v[0-9]+/.test(sw)) failures.push("Versioned service-worker update lifecycle is missing.");
 if (!app.includes("createPwaManager") || !app.includes("check-updates")) failures.push("PWA install/update controls are not wired.");
 
 if (failures.length) {
