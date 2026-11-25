@@ -327,9 +327,9 @@ export function mountLaboratory(stage) {
   const canvasHost = stage?.querySelector("[data-lab-canvas]");
   if (!canvasHost) return { dispose() {}, resetCamera() {} };
 
+  const isMobile = window.matchMedia("(max-width: 700px)").matches;
   let renderer;
   try {
-    const isMobile = window.matchMedia("(max-width: 700px)").matches;
     renderer = new THREE.WebGLRenderer({
       alpha: false,
       antialias: !isMobile,
@@ -352,7 +352,7 @@ export function mountLaboratory(stage) {
   const canvas = renderer.domElement;
   canvas.className = "lab-three-canvas";
   canvas.setAttribute("aria-label", "Escena tridimensional interactiva del laboratorio de perfumería");
-  canvas.setAttribute("role", "img");
+  canvas.setAttribute("role", "application");
   canvas.setAttribute("tabindex", "0");
 
   const scene = new THREE.Scene();
@@ -393,14 +393,12 @@ export function mountLaboratory(stage) {
   createFurniture(scene);
 
   const selectable = [];
-  const propRoots = new Map();
   const rings = new Map();
 
   for (const prop of LAB_PROPS) {
     const group = createPropMesh(prop);
     scene.add(group);
     selectable.push(group);
-    propRoots.set(prop.id, group);
     const ring = group.children.find((child) => child.userData?.isSelectionRing);
     if (ring) rings.set(prop.id, ring);
   }
@@ -497,13 +495,40 @@ export function mountLaboratory(stage) {
     updateCamera();
   }
 
+  function clearSelection() {
+    selectedId = null;
+    for (const ring of rings.values()) ring.visible = false;
+    renderer.render(scene, camera);
+    stage.dispatchEvent(new CustomEvent("lab:item-selected", { bubbles: true, detail: { id: null } }));
+  }
+
   function onKeyDown(event) {
+    const step = 0.08;
     if (event.key === "Escape") {
-      selectedId = null;
-      for (const ring of rings.values()) ring.visible = false;
-      renderer.render(scene, camera);
-      stage.dispatchEvent(new CustomEvent("lab:item-selected", { bubbles: true, detail: { id: null } }));
+      clearSelection();
+    } else if (event.key === "ArrowLeft") {
+      theta -= step;
+      updateCamera();
+    } else if (event.key === "ArrowRight") {
+      theta += step;
+      updateCamera();
+    } else if (event.key === "ArrowUp") {
+      phi = THREE.MathUtils.clamp(phi - step, 0.62, 1.42);
+      updateCamera();
+    } else if (event.key === "ArrowDown") {
+      phi = THREE.MathUtils.clamp(phi + step, 0.62, 1.42);
+      updateCamera();
+    } else if (event.key === "+" || event.key === "=") {
+      radius = Math.max(LAB_RENDER_CONFIG.minCameraRadius, radius - 0.45);
+      updateCamera();
+    } else if (event.key === "-") {
+      radius = Math.min(LAB_RENDER_CONFIG.maxCameraRadius, radius + 0.45);
+      updateCamera();
     }
+  }
+
+  function onContextMenu(event) {
+    event.preventDefault();
   }
 
   canvas.addEventListener("pointerdown", onPointerDown);
@@ -512,9 +537,9 @@ export function mountLaboratory(stage) {
   canvas.addEventListener("pointercancel", onPointerUp);
   canvas.addEventListener("wheel", onWheel, { passive: false });
   canvas.addEventListener("keydown", onKeyDown);
-  canvas.addEventListener("contextmenu", (event) => event.preventDefault());
+  canvas.addEventListener("contextmenu", onContextMenu);
 
-  const resizeObserver = new ResizeObserver(() => {
+  const resizeHandler = () => {
     if (disposed) return;
     const width = Math.max(canvasHost.clientWidth, 1);
     const height = Math.max(canvasHost.clientHeight, 1);
@@ -522,8 +547,10 @@ export function mountLaboratory(stage) {
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
     renderer.render(scene, camera);
-  });
-  resizeObserver.observe(canvasHost);
+  };
+  const resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(resizeHandler) : null;
+  if (resizeObserver) resizeObserver.observe(canvasHost);
+  else window.addEventListener("resize", resizeHandler);
 
   function resetCamera() {
     theta = 0.74;
@@ -536,16 +563,19 @@ export function mountLaboratory(stage) {
 
   return {
     resetCamera,
+    clearSelection,
     dispose() {
       if (disposed) return;
       disposed = true;
-      resizeObserver.disconnect();
+      if (resizeObserver) resizeObserver.disconnect();
+      else window.removeEventListener("resize", resizeHandler);
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerup", onPointerUp);
       canvas.removeEventListener("pointercancel", onPointerUp);
       canvas.removeEventListener("wheel", onWheel);
       canvas.removeEventListener("keydown", onKeyDown);
+      canvas.removeEventListener("contextmenu", onContextMenu);
       scene.traverse((object) => {
         if (object.geometry) object.geometry.dispose();
         if (object.material) {
