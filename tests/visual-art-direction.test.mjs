@@ -29,6 +29,7 @@ test("asset policy excludes paid services and proprietary GTA VI content", () =>
 
 test("Block 1 records design complete and reserves implementation for later blocks", () => {
   assert.match(specification, /1\. Visual Benchmark & Art Direction[\s\S]*?\*\*Completed — this document\*\*/);
-  assert.match(specification, /Actual renderer, room, materials, lighting and props rebuilt — intentionally deferred/);
+  assert.match(specification, /Room, materials, lighting and props rebuilt — deferred to Blocks 3–8/);
+  assert.match(specification, /2\\. Rendering Pipeline Upgrade[\\s\\S]*?\\*\\*Completed — adaptive profiles integrated\\*\\*/);
   assert.match(specification, /Android performance certified — reserved for Block 12/);
 });
