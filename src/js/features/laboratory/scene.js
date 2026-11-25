@@ -955,6 +955,7 @@ export function mountLaboratory(stage) {
   }
 
   function onKeyDown(event) {
+    stopCameraTransition();
     const step = 0.08;
     if (event.key === "Escape") {
       clearSelection();
