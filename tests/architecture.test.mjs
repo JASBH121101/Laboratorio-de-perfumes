@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { ATELIER_ARCHITECTURE } from "../src/js/features/laboratory/architecture.js";
 
 const { room, window, door } = ATELIER_ARCHITECTURE;
@@ -36,4 +37,21 @@ test("architecture presets use the art-direction material palette", () => {
   assert.equal(ATELIER_ARCHITECTURE.materials.stoneColor, "#A99A88");
   assert.equal(ATELIER_ARCHITECTURE.materials.brassColor, "#B9915F");
   assert.equal(ATELIER_ARCHITECTURE.floor.metalness, 0);
+});
+
+test("Three.js scene mounts the bounded room with its window, door and upper structure", async () => {
+  const scene = await readFile(new URL("../src/js/features/laboratory/scene.js", import.meta.url), "utf8");
+  assert.match(scene, /createRoomArchitecture\(scene\)/);
+  assert.match(scene, /windowGlassMaterial/);
+  assert.match(scene, /exteriorGlow/);
+  assert.match(scene, /doorFaceZ/);
+  assert.match(scene, /ceiling slats over the back work zone/);
+  assert.match(scene, /PlaneGeometry\(room\.width, room\.depth\)/);
+  assert.doesNotMatch(scene, /PlaneGeometry\(200, 200\)/);
+});
+
+test("the architecture module is precached and PWA cache version is incremented", async () => {
+  const serviceWorker = await readFile(new URL("../sw.js", import.meta.url), "utf8");
+  assert.match(serviceWorker, /shell-v11/);
+  assert.match(serviceWorker, /features\/laboratory\/architecture\.js/);
 });
