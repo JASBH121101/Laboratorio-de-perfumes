@@ -1,6 +1,8 @@
 const CACHE_PREFIX = "jb-virtual-perfume-lab-";
 const CACHE_NAME = `${CACHE_PREFIX}shell-v5`;
 const THREE_MODULE_URL = "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js";
+const THREE_CORE_URL = "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.core.js";
+const THREE_ASSETS = new Set([THREE_MODULE_URL, THREE_CORE_URL]);
 
 const APP_SHELL = [
   "./",
@@ -29,13 +31,6 @@ self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(APP_SHELL);
-
-    // Optional cross-origin precache: a CDN outage must not block the PWA update.
-    try {
-      await cache.add(new Request(THREE_MODULE_URL, { mode: "cors" }));
-    } catch (error) {
-      console.warn("Three.js CDN could not be precached; the 3D view will require a network fetch:", error);
-    }
   })());
 });
 
@@ -57,13 +52,13 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   if (requestUrl.origin !== self.location.origin) {
-    if (request.url !== THREE_MODULE_URL) return;
+    if (!THREE_ASSETS.has(request.url)) return;
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_NAME);
-      const cached = await cache.match(THREE_MODULE_URL);
+      const cached = await cache.match(request);
       if (cached) return cached;
       const response = await fetch(request);
-      if (response.ok) await cache.put(THREE_MODULE_URL, response.clone());
+      if (response.ok) await cache.put(request, response.clone());
       return response;
     })());
     return;
