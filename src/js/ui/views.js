@@ -73,7 +73,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <div class="lab-stage" data-lab-stage>
         <div class="lab-stage-top">
           <span class="status-pill">JB ATELIER · 3D VIEW</span>
-          <span class="lab-stage-live"><span></span> <span data-scene-mode-label>EXPERIMENT VIEW</span></span>
+          <span class="lab-stage-live"><span class="lab-stage-live-dot" aria-hidden="true"></span><span class="lab-stage-live-label" data-scene-mode-label>EXPERIMENTO</span></span>
         </div>
         <div class="lab-canvas" data-lab-canvas>
           <div class="lab-loading"><span class="lab-loading-mark">JB</span><strong>Preparando el laboratorio</strong><small>Cargando escena tridimensional…</small></div>
