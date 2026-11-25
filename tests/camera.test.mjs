@@ -30,7 +30,7 @@ test("manual pointer, wheel and keyboard controls interrupt a running camera tra
   assert.match(scene, /function onPointerDown\(event\) \{\s*if \(disposed\) return;\s*stopCameraTransition\(\)/);
   assert.match(scene, /function onWheel\(event\) \{\s*stopCameraTransition\(\)/);
   assert.match(scene, /function onKeyDown\(event\) \{\s*stopCameraTransition\(\)/);
-  assert.match(scene, /stopCameraTransition\(\);\s*if \(resizeObserver\)/);
+  assert.match(scene, /stopCameraTransition\(\);\s*stopObjectFocusAnimation\(\);\s*if \(resizeObserver\)/);
 });
 
 test("camera preset controls are accessible and the app connects each button to the controller", () => {
