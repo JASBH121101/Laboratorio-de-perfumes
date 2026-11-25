@@ -51,6 +51,7 @@ test("renderer quality bounds are mobile-conscious", () => {
   assert.equal(LAB_RENDER_CONFIG.threeRevision, "187");
   assert.ok(LAB_RENDER_CONFIG.maxPixelRatio <= 1.5);
   assert.ok(LAB_RENDER_CONFIG.mobileMaxPixelRatio <= 1.25);
+  assert.equal(LAB_RENDER_CONFIG.minCameraRadius, 4.5);
   assert.ok(LAB_RENDER_CONFIG.minCameraRadius < LAB_RENDER_CONFIG.initialCameraRadius);
 });
 
