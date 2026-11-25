@@ -48,5 +48,5 @@ test("Block 15 keeps the scene cached and documents conceptual-only quantities",
   ]);
   assert.match(sw, /shell-v24/);
   assert.match(docs, /15\. Vessel & Glass Realism/);
-  assert.match(docs, /Graduations do not claim calibrated mL/);
+  assert.match(docs, /Graduations are non-calibrated visual index marks/);
 });
