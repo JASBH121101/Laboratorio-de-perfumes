@@ -15,6 +15,8 @@ The application uses semantic HTML, responsive CSS and native JavaScript ES modu
 - src/js/features/laboratory/scene.js: Three.js scene, WebGL renderer, props, raycasting, pointer gestures, camera, composition vessel tint/level and disposal.
 - src/js/features/laboratory/mixing/state.js: normalized 100-point creative composition, add/remove/reweight operations and bounded undo history.
 - src/js/features/laboratory/mixing/panel.js: library picker, draggable quick notes, drop zone, weight sliders, undo and reset.
+- src/js/features/laboratory/analysis/engine.js: transparent heuristic summaries of families, indicative pyramid role coverage, repeated facets, editorial descriptor signals and candidate ranking.
+- src/js/features/laboratory/analysis/panel.js: analysis view, creative direction selector and suggested references with rationale/trade-off.
 - src/js/ui/views.js: presentation-only view templates.
 - src/css/: base shell, design system, perfume library and 3D workspace styles.
 - manifest.webmanifest: installed application identity, display settings and icons.
