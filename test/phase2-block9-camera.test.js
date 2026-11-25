@@ -24,7 +24,7 @@ test("Phase 2 Block 9 camera presets and transitions are wired", async () => {
   assert.match(css, /lab-camera-presets/);
   assert.equal((views.match(/class="lab-camera-presets"/g) || []).length, 1);
   assert.match(views, /aria-pressed="true"/);
-  assert.match(sw, /shell-v23/);
+  assert.match(sw, /shell-v24/);
   assert.match(spec, /Block 9 implementation record/);
   assert.match(scene, /setExperimentMode/);
   assert.match(scene, /atelier-architecture/);
