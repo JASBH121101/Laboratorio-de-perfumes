@@ -1,18 +1,19 @@
 export const LAB_CAMERA_LIMITS = Object.freeze({
-  minTheta: -0.82,
-  maxTheta: 0.82,
-  minPhi: 0.88,
+  // Keep orbit inside a frontal arc: the atelier remains framed rather than exposing its exterior walls.
+  minTheta: -0.5,
+  maxTheta: 0.5,
+  minPhi: 0.9,
   maxPhi: 1.3,
-  minRadius: 5.25,
-  maxRadius: 12.5
+  minRadius: 5.1,
+  maxRadius: 12.1
 });
 
 export const LAB_CAMERA_PRESETS = Object.freeze({
   overview: Object.freeze({
     theta: 0,
-    phi: 1.08,
-    radius: 12.1,
-    target: Object.freeze([0, 1.55, 0])
+    phi: 1.13,
+    radius: 9.6,
+    target: Object.freeze([0, 1.16, 0.05])
   }),
   workbench: Object.freeze({
     theta: 0,
@@ -25,6 +26,12 @@ export const LAB_CAMERA_PRESETS = Object.freeze({
     phi: 1.2,
     radius: 5.45,
     target: Object.freeze([0, 1.28, 0.12])
+  }),
+  atelier: Object.freeze({
+    theta: 0,
+    phi: 1.08,
+    radius: 12.1,
+    target: Object.freeze([0, 1.55, 0])
   })
 });
 
