@@ -38,8 +38,9 @@
 }
 .lab-stage-top { top: 13px; }
 .lab-stage-top .status-pill,.lab-stage-live,.lab-stage-bottom > span,.lab-reset-button { pointer-events: auto; }
-.lab-stage-live { display: inline-flex; align-items: center; gap: 7px; color: rgba(239,226,216,.7); font-size: 7px; font-weight: 700; letter-spacing: .13em; }
-.lab-stage-live span { width: 6px; height: 6px; border-radius: 50%; background: #83b89a; box-shadow: 0 0 10px rgba(131,184,154,.7); }
+.lab-stage-live { min-width: 0; max-width: 46%; display: inline-flex; align-items: center; gap: 7px; color: rgba(239,226,216,.7); font-size: 7px; font-weight: 700; letter-spacing: .13em; white-space: nowrap; }
+.lab-stage-live-dot { flex: 0 0 6px; width: 6px; height: 6px; border-radius: 50%; background: #83b89a; box-shadow: 0 0 10px rgba(131,184,154,.7); }
+.lab-stage-live-label { min-width: 0; width: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lab-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .lab-three-canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; outline: none; }
 .lab-three-canvas:active { cursor: grabbing; }
@@ -466,16 +467,17 @@
 
 
 /* Phase 2 Block 9 — cinematic camera preset controls */
-.lab-camera-presets { position:absolute; z-index:6; top:58px; left:50%; transform:translateX(-50%); display:flex; gap:5px; padding:4px; border:1px solid rgba(217,178,124,.25); border-radius:8px; background:rgba(27,21,27,.76); backdrop-filter:blur(8px); }
-.lab-camera-presets button { min-height:30px; padding:0 10px; border:1px solid transparent; border-radius:5px; background:transparent; color:rgba(239,226,216,.8); font:inherit; font-size:9px; cursor:pointer; }
-.lab-camera-presets button.is-active {
-  border-color: rgba(217,178,124,.48);
+.lab-camera-presets { position:absolute; z-index:6; top:58px; left:50%; width:max-content; max-width:calc(100% - 20px); transform:translateX(-50%); display:flex; gap:4px; padding:5px; border:1px solid rgba(217,178,124,.3); border-radius:9px; background:rgba(27,21,27,.88); backdrop-filter:blur(8px); }
+.lab-camera-presets button { min-width:0; min-height:38px; padding:0 12px; border:1px solid transparent; border-radius:5px; background:transparent; color:rgba(239,226,216,.86); font:inherit; font-size:10px; white-space:nowrap; touch-action:manipulation; cursor:pointer; }
+.lab-camera-presets button.is-active,.lab-camera-presets button.is-active:hover {
+  border-color: rgba(217,178,124,.6);
   color: #211a1e;
   background: var(--accent);
-  box-shadow: 0 2px 8px rgba(0,0,0,.16);
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
 }
-.lab-camera-presets button:hover,.lab-camera-presets button:focus-visible { border-color:rgba(217,178,124,.5); background:rgba(217,178,124,.13); color:var(--accent); outline:none; }
-@media (max-width:520px) { .lab-camera-presets { top:54px; } .lab-camera-presets button { min-height:32px; padding:0 12px; font-size:10px; } }
+.lab-camera-presets button:hover:not(.is-active) { border-color:rgba(217,178,124,.4); background:rgba(217,178,124,.1); color:var(--accent); }
+.lab-camera-presets button:focus-visible { outline:2px solid rgba(241,202,143,.9); outline-offset:2px; }
+@media (max-width:520px) { .lab-camera-presets { top:54px; gap:3px; padding:4px; } .lab-camera-presets button { min-height:40px; padding:0 10px; font-size:10px; } }
 @media (prefers-reduced-motion: reduce) { .lab-camera-presets button { transition:none; } }
 
 
