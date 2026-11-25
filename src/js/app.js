@@ -1,5 +1,6 @@
 import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
+import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
@@ -7,6 +8,8 @@ const notice = document.querySelector("#app-notice");
 const noticeTitle = document.querySelector("#app-notice-title");
 const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
+
+const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 
 function showNotice({ title, message, action = false }) {
   if (!notice) return;
@@ -38,7 +41,7 @@ const pwa = createPwaManager({
 
 function render() {
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView);
+  appRoot.innerHTML = renderPage(activeView, libraryState);
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
       button.hidden = true;
@@ -47,12 +50,43 @@ function render() {
   }
 }
 
+function updateLibrary() {
+  const results = appRoot.querySelector("#library-results");
+  const detail = appRoot.querySelector("#library-detail");
+  if (results) results.innerHTML = renderLibraryResults(libraryState);
+  if (detail) detail.outerHTML = renderLibraryDetail(libraryState.selectedId);
+}
+
+appRoot.addEventListener("input", (event) => {
+  if (event.target.id === "library-search") {
+    libraryState.query = event.target.value;
+    updateLibrary();
+  }
+});
+
+appRoot.addEventListener("change", (event) => {
+  if (event.target.id === "library-family") {
+    libraryState.family = event.target.value;
+    updateLibrary();
+  } else if (event.target.id === "library-role") {
+    libraryState.role = event.target.value;
+    updateLibrary();
+  }
+});
+
 appRoot.addEventListener("click", async (event) => {
   const navTarget = event.target.closest("[data-nav]");
   if (navTarget) {
     event.preventDefault();
     const target = navTarget.getAttribute("data-nav");
     window.location.hash = target === "home" ? "#home" : `#${target}`;
+    return;
+  }
+
+  const noteTarget = event.target.closest("[data-open-note]");
+  if (noteTarget) {
+    libraryState.selectedId = noteTarget.dataset.openNote;
+    updateLibrary();
     return;
   }
 
@@ -65,6 +99,21 @@ appRoot.addEventListener("click", async (event) => {
     await pwa.install();
   } else if (action === "check-updates") {
     await pwa.checkForUpdates();
+  } else if (action === "clear-library") {
+    libraryState.query = "";
+    libraryState.family = "all";
+    libraryState.role = "all";
+    libraryState.selectedId = null;
+    const search = appRoot.querySelector("#library-search");
+    const family = appRoot.querySelector("#library-family");
+    const role = appRoot.querySelector("#library-role");
+    if (search) search.value = "";
+    if (family) family.value = "all";
+    if (role) role.value = "all";
+    updateLibrary();
+  } else if (action === "close-note-detail") {
+    libraryState.selectedId = null;
+    updateLibrary();
   }
 });
 
