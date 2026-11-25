@@ -1,17 +1,21 @@
 const CACHE_PREFIX = "jb-virtual-perfume-lab-";
-const CACHE_NAME = `${CACHE_PREFIX}shell-v3`;
+const CACHE_NAME = `${CACHE_PREFIX}shell-v4`;
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./assets/icon.svg",
+  "./assets/brand-logo.svg",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
   "./src/css/styles.css",
   "./src/css/design-system.css",
+  "./src/css/perfume-library.css",
   "./src/js/app.js",
   "./src/js/core/navigation.js",
   "./src/js/core/pwa.js",
+  "./src/js/features/perfume-library/data.js",
+  "./src/js/features/perfume-library/library.js",
   "./src/js/ui/views.js"
 ];
 

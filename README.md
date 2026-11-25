@@ -1,6 +1,6 @@
 # JB Virtual Perfume Lab
 
-Personal, Android-first virtual fragrance concept laboratory. The initial product is a touch-friendly Progressive Web App (PWA); interactive 3D, note composition and creative analysis will be delivered in later blocks.
+Personal, Android-first virtual fragrance concept laboratory. The application is a touch-friendly Progressive Web App (PWA); interactive 3D, conceptual composition and creative analysis will be delivered in later blocks.
 
 ## Product principles
 
@@ -11,15 +11,25 @@ Personal, Android-first virtual fragrance concept laboratory. The initial produc
 - Produce creative briefs for professional perfumers and manufacturers.
 - **This is a creative concept tool, not a chemistry simulator.** It does not provide formulas, ingredient dosages, manufacturing instructions, safety certification or claims of real-world performance.
 
+## Official brand asset
+
+The official Perfumería JB logo is maintained in `assets/brand-logo.svg` and used in the application header and PWA icon metadata.
+
 ## Install on Android
 
-Once the site is published over HTTPS, open it in Chrome on Android. Use the **Instalar** control in the app when the browser offers the install prompt. If no prompt is available yet, open Chrome's menu (⋮) and select **Install app** or **Add to Home screen**. The exact label depends on the browser and device.
+Open the published site over HTTPS in Chrome on Android. Use **Instalar** when the browser offers the prompt. If the prompt is unavailable, open Chrome's menu (⋮) and select **Install app** or **Add to Home screen**. The exact label depends on the browser and device.
 
-The install creates a home-screen web app; it is not a separately distributed native APK.
+This creates a home-screen web app; it is not a separately distributed native APK.
 
 ## Updates
 
 The service worker uses a versioned app-shell cache. When a new deployment is available, the app displays an update notice. Selecting **Actualizar** activates the waiting worker and reloads the app with the new files. The app also checks for updates when opened or brought back into the foreground. A network connection is required to fetch a new release.
+
+Increment the shell version in `sw.js` whenever shipping a new app-shell release.
+
+## Perfume Library
+
+The initial editorial library contains notes and accords with family, indicative pyramid role, sensory facets, descriptions and creative pairing ideas. The categories and suggested placements are a learning aid, not fixed technical rules. An accord is a conceptual combination; it is not a single raw material.
 
 ## Development
 
@@ -30,24 +40,11 @@ npm test
 npm run validate
 ```
 
-JB Expert QA 2.0 is declared as a development dependency. The dependency has not yet been installed or runtime-validated in this environment. Its commands are available after a successful install:
-
-```bash
-npm install
-npm run qa:static
-npm run qa:security
-npm run qa:dashboard
-```
-
-## Architecture
-
-The foundation uses native HTML, CSS and JavaScript modules. This keeps the initial PWA lightweight and avoids introducing a build tool before it is needed. Three.js is intentionally deferred to the 3D laboratory block, where it can be added with a deliberate performance and delivery strategy.
-
-See the architecture notes in docs/architecture.md for module boundaries and delivery decisions.
+JB Expert QA 2.0 is declared as a development dependency. It has not yet been installed or runtime-validated in this repository environment.
 
 ## Current status
 
-- Block 1 — Foundation & Architecture: implemented and CI-validated on feature/lab-foundation.
-- Block 2 — Design System & PWA Experience: being built on feature/lab-design-system.
-- Three.js, the note library, virtual mixing and creative analysis remain future blocks.
-- GitHub Pages should publish main from the repository root after the feature PRs are merged.
+- Block 1 — Foundation & Architecture: integrated and CI-validated.
+- Block 2 — Design System & PWA Experience: integrated and Pages-published.
+- Block 3 — Perfume Library & Official Branding: in development on `feature/block3-perfume-library-branding`.
+- Three.js, virtual mixing, creative analysis and local project persistence remain future blocks.
