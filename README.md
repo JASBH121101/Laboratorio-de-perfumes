@@ -112,3 +112,8 @@ The 3D renderer selects a conservative Mobile Lite, Mobile Standard or Desktop H
 ### Atelier architecture — Phase 2 Block 3
 
 The 3D scene now uses a bounded room footprint instead of an infinite floor plane, with two side walls, a rear wall with a door opening, a framed divided window, wall skirting, right-wall inset panels, rear display-wall timber detailing and exposed upper beams/slats. The front remains intentionally open for camera visibility and touch inspection. The geometry is generated locally with Three.js; no external assets or new runtime dependencies are added. The PWA shell cache is now `shell-v11`.
+
+
+### Procedural PBR materials — Phase 2 Block 4
+
+The atelier now builds local CanvasTexture maps for walnut grain, warm stone variation and brushed brass, with bump/roughness maps and shared Three.js material presets. Texture size and anisotropy are capped by the active rendering profile and actual GPU capability. Architecture, workbench, shelves, caps and accents reuse shared materials. No external textures, paid asset packs or new runtime packages are fetched; the PWA cache is now `shell-v12`.

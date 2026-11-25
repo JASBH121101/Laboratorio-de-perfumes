@@ -41,7 +41,7 @@ test("architecture presets use the art-direction material palette", () => {
 
 test("Three.js scene mounts the bounded room with its window, door and upper structure", async () => {
   const scene = await readFile(new URL("../src/js/features/laboratory/scene.js", import.meta.url), "utf8");
-  assert.match(scene, /createRoomArchitecture\(scene\)/);
+  assert.match(scene, /createRoomArchitecture\(scene, materials\)/);
   assert.match(scene, /windowGlassMaterial/);
   assert.match(scene, /exteriorGlow/);
   assert.match(scene, /doorFaceZ/);
@@ -52,6 +52,6 @@ test("Three.js scene mounts the bounded room with its window, door and upper str
 
 test("the architecture module is precached and PWA cache version is incremented", async () => {
   const serviceWorker = await readFile(new URL("../sw.js", import.meta.url), "utf8");
-  assert.match(serviceWorker, /shell-v11/);
+  assert.match(serviceWorker, /shell-v12/);
   assert.match(serviceWorker, /features\/laboratory\/architecture\.js/);
 });

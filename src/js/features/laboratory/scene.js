@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { LAB_PROPS, LAB_RENDER_CONFIG } from "./catalog.js";
 import { resolveLaboratoryRenderProfile } from "./render-profile.js";
 import { ATELIER_ARCHITECTURE } from "./architecture.js";
+import { createAtelierMaterials } from "./materials.js";
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 
 const color = (hex) => new THREE.Color(hex);
@@ -46,19 +47,9 @@ function labelPlane(title, width, height, z) {
   return label;
 }
 
-function createMainBottle(prop) {
+function createMainBottle(prop, materials) {
   const group = new THREE.Group();
-  const glass = new THREE.MeshPhysicalMaterial({
-    color: 0xc7d8d5,
-    roughness: 0.14,
-    metalness: 0.04,
-    transmission: 0.28,
-    thickness: 0.36,
-    transparent: true,
-    opacity: 0.82,
-    clearcoat: 0.75,
-    clearcoatRoughness: 0.12
-  });
+  const glass = materials.bottleGlass;
   const liquid = new THREE.MeshStandardMaterial({
     color: color(prop.color),
     roughness: 0.28,
@@ -66,7 +57,7 @@ function createMainBottle(prop) {
     transparent: true,
     opacity: 0.82
   });
-  const gold = new THREE.MeshStandardMaterial({ color: 0xc99a55, metalness: 0.78, roughness: 0.22 });
+  const gold = materials.brass;
   const body = new THREE.Mesh(new THREE.BoxGeometry(0.88, 1.08, 0.46), glass);
   body.position.y = 0.56;
   group.add(body);
@@ -94,18 +85,9 @@ function createMainBottle(prop) {
   return group;
 }
 
-function createVial(prop) {
+function createVial(prop, materials) {
   const group = new THREE.Group();
-  const glass = new THREE.MeshPhysicalMaterial({
-    color: 0xd5e0dc,
-    roughness: 0.17,
-    metalness: 0.02,
-    transmission: 0.18,
-    thickness: 0.22,
-    transparent: true,
-    opacity: 0.76,
-    clearcoat: 0.65
-  });
+  const glass = materials.bottleGlass;
   const liquid = new THREE.MeshStandardMaterial({
     color: color(prop.color),
     roughness: 0.3,
@@ -126,7 +108,7 @@ function createVial(prop) {
 
   const cap = new THREE.Mesh(
     new THREE.CylinderGeometry(0.12, 0.12, 0.2, 20),
-    new THREE.MeshStandardMaterial({ color: 0xb98b58, metalness: 0.7, roughness: 0.26 })
+    materials.brass
   );
   cap.position.y = 0.82;
   group.add(cap);
@@ -137,7 +119,7 @@ function createVial(prop) {
   return group;
 }
 
-function createBeaker() {
+function createBeaker(materials) {
   const group = new THREE.Group();
   const glass = new THREE.MeshPhysicalMaterial({
     color: 0xa8c9c7,
@@ -159,7 +141,7 @@ function createBeaker() {
 
   const rim = new THREE.Mesh(
     new THREE.TorusGeometry(0.36, 0.025, 8, 32),
-    new THREE.MeshStandardMaterial({ color: 0xc6d8d2, metalness: 0.28, roughness: 0.2 })
+    materials.brass
   );
   rim.rotation.x = Math.PI / 2;
   rim.position.y = 0.74;
@@ -189,7 +171,7 @@ function createBeaker() {
   return group;
 }
 
-function createPipette() {
+function createPipette(materials) {
   const group = new THREE.Group();
   const glass = new THREE.MeshPhysicalMaterial({
     color: 0xd2e2df,
@@ -210,19 +192,16 @@ function createPipette() {
   tip.position.x = 0.6;
   group.add(tip);
 
-  const bulb = new THREE.Mesh(
-    new THREE.SphereGeometry(0.11, 14, 12),
-    new THREE.MeshStandardMaterial({ color: 0x6c4d5d, roughness: 0.3 })
-  );
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 12), materials.lacquer);
   bulb.position.x = -0.58;
   group.add(bulb);
   return group;
 }
 
-function createTray() {
+function createTray(materials) {
   const group = new THREE.Group();
-  const wood = new THREE.MeshStandardMaterial({ color: 0x5c4140, roughness: 0.45, metalness: 0.05 });
-  const gold = new THREE.MeshStandardMaterial({ color: 0xba905b, metalness: 0.65, roughness: 0.25 });
+  const wood = materials.darkWalnut;
+  const gold = materials.brass;
 
   const base = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.1, 0.72), wood);
   group.add(base);
@@ -240,7 +219,7 @@ function createTray() {
   return group;
 }
 
-function createRoomArchitecture(scene) {
+function createRoomArchitecture(scene, materials) {
   const { room, window: windowLayout, door } = ATELIER_ARCHITECTURE;
   const centerZ = (room.backZ + room.frontZ) / 2;
   const halfWidth = room.width / 2;
@@ -250,41 +229,14 @@ function createRoomArchitecture(scene) {
   const leftX = -room.sideHalfWidth;
   const rightX = room.sideHalfWidth;
 
-  const wallMaterial = new THREE.MeshStandardMaterial({
-    color: ATELIER_ARCHITECTURE.materials.wallColor,
-    roughness: 0.84,
-    metalness: 0.02
-  });
-  const walnutMaterial = new THREE.MeshStandardMaterial({
-    color: ATELIER_ARCHITECTURE.materials.walnutColor,
-    roughness: 0.68,
-    metalness: 0.04
-  });
-  const darkWalnutMaterial = new THREE.MeshStandardMaterial({
-    color: 0x33252b,
-    roughness: 0.62,
-    metalness: 0.04
-  });
-  const stoneMaterial = new THREE.MeshStandardMaterial({
-    color: ATELIER_ARCHITECTURE.materials.stoneColor,
-    roughness: ATELIER_ARCHITECTURE.floor.roughness,
-    metalness: ATELIER_ARCHITECTURE.floor.metalness
-  });
-  const brassMaterial = new THREE.MeshStandardMaterial({
-    color: ATELIER_ARCHITECTURE.materials.brassColor,
-    metalness: 0.72,
-    roughness: 0.32
-  });
-  const windowGlassMaterial = new THREE.MeshPhysicalMaterial({
-    color: ATELIER_ARCHITECTURE.materials.glassColor,
-    roughness: 0.16,
-    metalness: 0,
-    transmission: 0.16,
-    thickness: 0.08,
-    transparent: true,
-    opacity: 0.3,
-    side: THREE.DoubleSide
-  });
+  const {
+    wall: wallMaterial,
+    walnut: walnutMaterial,
+    darkWalnut: darkWalnutMaterial,
+    stone: stoneMaterial,
+    brass: brassMaterial,
+    windowGlass: windowGlassMaterial
+  } = materials;
 
   function addBox(width, height, depth, material, x, y, z) {
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
@@ -406,22 +358,22 @@ function createRoomArchitecture(scene) {
   addBox(room.width, 0.045, 0.12, brassMaterial, 0, 0.015, room.frontZ - 0.04);
 }
 
-function createFurniture(scene) {
+function createFurniture(scene, materials) {
   const table = new THREE.Mesh(
     new THREE.BoxGeometry(9.2, 0.22, 4.2),
-    new THREE.MeshStandardMaterial({ color: 0x3b2d33, roughness: 0.38, metalness: 0.12 })
+    materials.counterstone
   );
   table.position.set(0, 0.63, 0);
   scene.add(table);
 
   const trim = new THREE.Mesh(
     new THREE.BoxGeometry(9.22, 0.035, 4.23),
-    new THREE.MeshStandardMaterial({ color: 0xb88b54, metalness: 0.72, roughness: 0.24 })
+    materials.brass
   );
   trim.position.set(0, 0.75, 0);
   scene.add(trim);
 
-  const legMaterial = new THREE.MeshStandardMaterial({ color: 0x292027, roughness: 0.4, metalness: 0.3 });
+  const legMaterial = materials.darkWalnut;
   for (const x of [-4.15, 4.15]) {
     for (const z of [-1.72, 1.72]) {
       const leg = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.62, 0.18), legMaterial);
@@ -430,7 +382,7 @@ function createFurniture(scene) {
     }
   }
 
-  const shelfMaterial = new THREE.MeshStandardMaterial({ color: 0x4a3740, roughness: 0.48, metalness: 0.08 });
+  const shelfMaterial = materials.walnut;
   for (const y of [2.55, 3.35]) {
     const shelf = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.11, 0.48), shelfMaterial);
     shelf.position.set(0, y, -2.58);
@@ -438,13 +390,13 @@ function createFurniture(scene) {
 
     const accent = new THREE.Mesh(
       new THREE.BoxGeometry(7.5, 0.025, 0.49),
-      new THREE.MeshStandardMaterial({ color: 0xb98c57, metalness: 0.62, roughness: 0.3 })
+      materials.brass
     );
     accent.position.set(0, y - 0.06, -2.58);
     scene.add(accent);
   }
 
-  const shelfBottleMaterial = new THREE.MeshStandardMaterial({ color: 0x926f7f, roughness: 0.2, metalness: 0.18 });
+  const shelfBottleMaterial = materials.lacquer;
   for (let i = 0; i < 7; i += 1) {
     const x = -3 + i;
     const height = 0.3 + (i % 3) * 0.07;
@@ -457,13 +409,13 @@ function createFurniture(scene) {
   }
 }
 
-function createPropMesh(prop) {
+function createPropMesh(prop, materials) {
   let group;
-  if (prop.id === "author-bottle") group = createMainBottle(prop);
-  else if (prop.id.endsWith("-vial")) group = createVial(prop);
-  else if (prop.id === "glass-beaker") group = createBeaker();
-  else if (prop.id === "glass-pipette") group = createPipette();
-  else if (prop.id === "note-tray") group = createTray();
+  if (prop.id === "author-bottle") group = createMainBottle(prop, materials);
+  else if (prop.id.endsWith("-vial")) group = createVial(prop, materials);
+  else if (prop.id === "glass-beaker") group = createBeaker(materials);
+  else if (prop.id === "glass-pipette") group = createPipette(materials);
+  else if (prop.id === "note-tray") group = createTray(materials);
   else group = new THREE.Group();
 
   group.position.set(...prop.position);
@@ -536,6 +488,13 @@ export function mountLaboratory(stage) {
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = renderProfile.shadowsEnabled;
   renderer.info.autoReset = true;
+  const hardwareAnisotropy = typeof renderer.capabilities.getMaxAnisotropy === "function"
+    ? renderer.capabilities.getMaxAnisotropy()
+    : 1;
+  const materials = createAtelierMaterials({
+    maxAnisotropy: Math.min(renderProfile.maxAnisotropy, hardwareAnisotropy),
+    textureSize: isMobile ? 256 : 512
+  });
   canvasHost.replaceChildren(renderer.domElement);
 
   const canvas = renderer.domElement;
@@ -580,15 +539,15 @@ export function mountLaboratory(stage) {
   accentLight.position.set(0, 4.2, 1.4);
   scene.add(accentLight);
 
-  createRoomArchitecture(scene);
-  createFurniture(scene);
+  createRoomArchitecture(scene, materials);
+  createFurniture(scene, materials);
 
   const selectable = [];
   const rings = new Map();
   const propRoots = new Map();
 
   for (const prop of LAB_PROPS) {
-    const group = createPropMesh(prop);
+    const group = createPropMesh(prop, materials);
     scene.add(group);
     selectable.push(group);
     propRoots.set(prop.id, group);
