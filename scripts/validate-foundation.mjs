@@ -39,7 +39,8 @@ if (!/shell-v[0-9]+/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("Ve
 if (!app.includes("createPwaManager") || !app.includes("check-updates")) failures.push("PWA install/update controls are not wired.");
 if (!app.includes("renderLibraryResults") || !app.includes("library-family")) failures.push("Perfume Library filters are not wired.");
 if (!html.includes("three@0.187.0") || !html.includes('type="importmap"')) failures.push("Pinned Three.js import map is missing.");
-if (!sw.includes("THREE_MODULE_URL") || !sw.includes("three@0.187.0")) failures.push("Three.js runtime module is not handled by the PWA cache.");
+if (!sw.includes("THREE_MODULE_URL") || !sw.includes("THREE_CORE_URL") || !sw.includes("three@0.187.0")) failures.push("Three.js module and core are not handled by the PWA cache.");
+if (sw.includes("cache.add(new Request(THREE_MODULE_URL")) failures.push("Three.js CDN files should be cached on first 3D use, not during PWA installation.");
 if (!sw.includes("src/js/features/laboratory/scene.js") || !sw.includes("src/css/laboratory.css")) failures.push("3D application modules are missing from the offline shell.");
 if (!app.includes('import("./features/laboratory/scene.js")') || !app.includes("[data-lab-stage]")) failures.push("The 3D scene must be lazy-loaded only in the laboratory view.");
 if (!scene.includes("WebGLRenderer") || !scene.includes("Raycaster") || !scene.includes("pointerdown")) failures.push("Interactive 3D renderer or object selection is missing.");
