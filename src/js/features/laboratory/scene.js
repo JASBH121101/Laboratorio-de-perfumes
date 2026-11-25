@@ -421,8 +421,8 @@ function createTray(materials) {
 
 function createContactShadowMaterial() {
   const canvas = document.createElement("canvas");
-  canvas.width = 128;
-  canvas.height = 128;
+  canvas.width = 160;
+  canvas.height = 160;
   const context = canvas.getContext("2d");
   if (!context) {
     return new THREE.MeshBasicMaterial({
@@ -434,9 +434,11 @@ function createContactShadowMaterial() {
     });
   }
 
-  const gradient = context.createRadialGradient(64, 64, 5, 64, 64, 62);
-  gradient.addColorStop(0, "rgba(17, 12, 15, 0.42)");
-  gradient.addColorStop(0.42, "rgba(17, 12, 15, 0.19)");
+  const gradient = context.createRadialGradient(80, 80, 2, 80, 80, 76);
+  gradient.addColorStop(0, "rgba(10, 8, 11, 0.58)");
+  gradient.addColorStop(0.18, "rgba(10, 8, 11, 0.4)");
+  gradient.addColorStop(0.48, "rgba(17, 12, 15, 0.18)");
+  gradient.addColorStop(0.8, "rgba(17, 12, 15, 0.045)");
   gradient.addColorStop(1, "rgba(17, 12, 15, 0)");
   context.fillStyle = gradient;
   context.fillRect(0, 0, 128, 128);
@@ -449,7 +451,7 @@ function createContactShadowMaterial() {
   return new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true,
-    opacity: 0.72,
+    opacity: 0.66,
     depthWrite: false,
     toneMapped: false,
     side: THREE.DoubleSide,
