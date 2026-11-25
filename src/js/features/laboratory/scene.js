@@ -687,7 +687,7 @@ export function mountLaboratory(stage) {
   renderer.setSize(Math.max(canvasHost.clientWidth, 1), Math.max(canvasHost.clientHeight, 1), false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = renderProfile.exposure;
   renderer.shadowMap.enabled = renderProfile.shadowsEnabled;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.info.autoReset = true;
@@ -703,6 +703,7 @@ export function mountLaboratory(stage) {
   const canvas = renderer.domElement;
   canvas.className = "lab-three-canvas";
   canvas.dataset.qualityTier = renderProfile.id;
+  stage.dataset.visualTier = renderProfile.id;
   canvas.setAttribute("aria-label", "Escena tridimensional interactiva del laboratorio de perfumería");
   canvas.setAttribute("role", "application");
   canvas.setAttribute("tabindex", "0");
@@ -711,6 +712,8 @@ export function mountLaboratory(stage) {
   const environmentResources = createAtelierEnvironment(renderer, scene, {
     textureSize: isMobile ? 256 : 512
   });
+  scene.environmentIntensity = renderProfile.environmentIntensity;
+  scene.backgroundIntensity = renderProfile.backgroundIntensity;
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
   const target = new THREE.Vector3(0, 1.12, 0);
