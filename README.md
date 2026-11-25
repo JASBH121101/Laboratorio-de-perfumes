@@ -25,7 +25,7 @@ This creates a home-screen web app; it is not a separately distributed native AP
 
 The service worker uses a versioned app-shell cache. When a new deployment is available, the app displays an update notice. Selecting **Actualizar** activates the waiting worker and reloads the app with the new files. A network connection is required to fetch a new release.
 
-Three.js is pinned to `0.187.0` and loaded only when the 3D laboratory is opened. The service worker attempts to cache the exact CDN module; failure to cache this optional external dependency does not block installation or PWA updates. Once cached, the 3D module can be served offline. The first visit to the 3D scene requires a network connection if the module was not precached.
+Three.js is pinned to `0.187.0` and loaded only when the 3D laboratory is opened. The service worker caches the pinned Three.js module and its core file on the first successful 3D load. This keeps the general PWA installation and updates lighter. The first visit to the 3D scene requires a network connection; after both files are cached, the scene can load offline.
 
 Increment the shell version in `sw.js` whenever shipping a new app-shell release.
 
