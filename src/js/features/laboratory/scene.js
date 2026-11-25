@@ -316,7 +316,7 @@ function createBeaker(materials) {
   meniscus.position.y = 0.176;
   mixLiquid.add(meniscus);
   mixLiquid.position.y = 0.2;
-  mixLiquid.material = liquidMaterial;
+  mixLiquid.userData.material = liquidMaterial;
   mixLiquid.visible = false;
   group.add(mixLiquid);
   group.userData.mixLiquid = mixLiquid;
@@ -1234,7 +1234,7 @@ export function mountLaboratory(stage) {
     }
 
     const level = 0.12 + Math.min(entries.length, 6) * 0.035;
-    liquid.material.color.copy(blended);
+    liquid.userData.material.color.copy(blended);
     liquid.scale.y = level / 0.36;
     liquid.position.y = 0.025 + level / 2;
     liquid.visible = true;
