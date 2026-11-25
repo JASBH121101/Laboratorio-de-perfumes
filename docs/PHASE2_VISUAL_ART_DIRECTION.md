@@ -467,7 +467,8 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 ## 20. Block 13 implementation record — Focused Experiment View
 
 - Empty composition starts in a focused frontal experiment view.
-- Room architecture is grouped so it can be hidden without destroying meshes/materials.
+- Room architecture and decorative display shelves/bottles are grouped so they can be hidden without destroying meshes/materials.
+- The workbench remains visible in experiment mode, while the room shell and display furniture are hidden.
 - The focused view uses a clean dark background and camera aligned toward the conceptual beaker.
 - Adding active composition entries restores the atelier room and overview camera; clearing the composition returns to experiment mode.
 - Users can switch between Experiment and Atelier views when a composition is active. Empty composition enforces experiment mode.
