@@ -152,3 +152,10 @@ Desktop pointer hover now identifies inspectable objects with a restrained curso
 ### Final visual finish — Phase 2 Block 11
 
 The renderer now applies subtle exposure and environment-reflection intensity settings from the active graphics tier. A lightweight CSS vignette and warm center lift add depth over the 3D canvas; the overlay is pointer-transparent and uses a lighter grade on constrained phones. This avoids a costly bloom/blur post-processing chain and adds no new WebGL pass or external assets. PWA cache advances to `shell-v20`.
+
+
+### Android performance audit — Phase 2 Block 12
+
+The Laboratory includes an opt-in local performance audit. Press **Medir rendimiento** to run a short active-render sample and review average FPS, frame timing, draw-call/triangle averages, resource counters, device capability fields and the active quality tier. The test stops when the view is closed or the tab is hidden and does not upload data.
+
+Its FPS comparison is an indicative browser measurement against the tier target, not a formal hardware certification. Browser APIs do not expose reliable GPU-memory bytes, device temperature or battery drain. Final Android sign-off still requires repeated physical-device testing, visual inspection, thermal/battery observation and an offline reopen test. The service-worker app-shell cache is now `shell-v21`.
