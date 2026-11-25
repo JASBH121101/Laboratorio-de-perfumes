@@ -35,6 +35,7 @@ jobs:
           node --check src/js/features/laboratory/architecture.js
           node --check src/js/features/laboratory/materials.js
           node --check src/js/features/laboratory/environment.js
+          node --check src/js/features/laboratory/perfume-assets.js
           node --check src/js/features/laboratory/catalog.js
           node --check src/js/features/laboratory/inspector.js
           node --check src/js/features/laboratory/mixing/state.js
