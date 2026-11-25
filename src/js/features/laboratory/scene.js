@@ -423,6 +423,8 @@ function addContactShadow(scene, material, x, z, width, depth, y) {
 }
 
 function createRoomArchitecture(scene, materials) {
+  const architectureGroup = new THREE.Group();
+  architectureGroup.name = "atelier-architecture";
   const { room, window: windowLayout, door } = ATELIER_ARCHITECTURE;
   const centerZ = (room.backZ + room.frontZ) / 2;
   const halfWidth = room.width / 2;
@@ -444,7 +446,7 @@ function createRoomArchitecture(scene, materials) {
   function addBox(width, height, depth, material, x, y, z) {
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
     mesh.position.set(x, y, z);
-    scene.add(mesh);
+    architectureGroup.add(mesh);
     return mesh;
   }
 
@@ -455,7 +457,7 @@ function createRoomArchitecture(scene, materials) {
   );
   floor.rotation.x = -Math.PI / 2;
   floor.position.set(0, -0.035, centerZ);
-  scene.add(floor);
+  architectureGroup.add(floor);
 
   // Rear wall: leave a real opening for the atelier door.
   const doorLeft = door.centerX - door.width / 2;
@@ -520,7 +522,7 @@ function createRoomArchitecture(scene, materials) {
   const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.11, 12), brassMaterial);
   handle.rotation.x = Math.PI / 2;
   handle.position.set(handleX, 1.35, doorFaceZ + 0.17);
-  scene.add(handle);
+  architectureGroup.add(handle);
 
   // Quiet vertical timber rhythm behind the display shelves.
   for (let index = 0; index < 15; index += 1) {
@@ -559,6 +561,8 @@ function createRoomArchitecture(scene, materials) {
 
   // Front threshold makes the open side read as a deliberate entrance.
   addBox(room.width, 0.045, 0.12, brassMaterial, 0, 0.015, room.frontZ - 0.04);
+  scene.add(architectureGroup);
+  return architectureGroup;
 }
 
 function createFurniture(scene, materials) {
@@ -715,6 +719,11 @@ export function mountLaboratory(stage) {
   });
   scene.environmentIntensity = renderProfile.environmentIntensity;
   scene.backgroundIntensity = renderProfile.backgroundIntensity;
+  const atelierBackground = scene.background;
+  const experimentBackground = new THREE.Color(0x211a21);
+  let roomArchitectureGroup = null;
+  let experimentMode = true;
+  let compositionHasItems = false;
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
   const target = new THREE.Vector3(0, 1.12, 0);
@@ -773,7 +782,7 @@ export function mountLaboratory(stage) {
   benchPractical.position.set(3.3, 2.3, 0.25);
   scene.add(benchPractical);
 
-  createRoomArchitecture(scene, materials);
+  roomArchitectureGroup = createRoomArchitecture(scene, materials);
   createFurniture(scene, materials);
 
   const contactShadowMaterial = createContactShadowMaterial();
@@ -945,7 +954,8 @@ export function mountLaboratory(stage) {
     const presets = {
       overview: { theta: 0.74, phi: 1.05, radius: LAB_RENDER_CONFIG.initialCameraRadius, target: [0, 1.12, 0] },
       workbench: { theta: 0.18, phi: 1.18, radius: 8.5, target: [0, 0.94, 0.08] },
-      bottle: { theta: 0.52, phi: 1.22, radius: 6.35, target: [0, 1.38, 0.12] }
+      bottle: { theta: 0.52, phi: 1.22, radius: 6.35, target: [0, 1.38, 0.12] },
+      experiment: { theta: 0, phi: 1.42, radius: 7.2, target: [0, 1.12, -1.2] }
     };
     const destination = presets[preset] || presets.overview;
     stopCameraTransition();
@@ -1122,7 +1132,23 @@ export function mountLaboratory(stage) {
     "Cuero": "#795c58"
   };
 
+  function setExperimentMode(enabled) {
+    const nextMode = Boolean(enabled) || !compositionHasItems;
+    if (experimentMode === nextMode) return experimentMode;
+    experimentMode = nextMode;
+    if (roomArchitectureGroup) roomArchitectureGroup.visible = !experimentMode;
+    scene.background = experimentMode ? experimentBackground : atelierBackground;
+    stage.dataset.sceneMode = experimentMode ? "experiment" : "atelier";
+    animateCameraPreset(experimentMode ? "experiment" : "overview");
+    return experimentMode;
+  }
+
   function setComposition(entries = []) {
+    const hasComposition = entries.some((entry) => Number(entry?.points) > 0);
+    if (hasComposition !== compositionHasItems) {
+      compositionHasItems = hasComposition;
+      setExperimentMode(!hasComposition);
+    }
     const beaker = propRoots.get("glass-beaker");
     const liquid = beaker?.userData.mixLiquid;
     if (!liquid) return;
@@ -1187,7 +1213,14 @@ export function mountLaboratory(stage) {
 
   return {
     resetCamera,
-    setCameraPreset: animateCameraPreset,
+    setCameraPreset: (preset) => {
+      if (preset === "experiment") return setExperimentMode(true);
+      if (!compositionHasItems) return setExperimentMode(true);
+      setExperimentMode(false);
+      animateCameraPreset(preset);
+      return experimentMode;
+    },
+    setExperimentMode,
     clearSelection,
     setComposition,
     runPerformanceAudit,
