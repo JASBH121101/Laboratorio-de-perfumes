@@ -138,7 +138,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 2. Rendering Pipeline Upgrade | Renderer profiles, color management audit, quality selection, capability fallbacks and rendering configuration | **Completed — adaptive profiles integrated** |
 | 3. Architectural Environment | Complete room shell, window/opening, walls, ceiling treatment, floor, doors/trim and spatial depth | **Completed — bounded atelier shell integrated** |
 | 4. PBR Material System | Shared materials and locally generated/substantiated texture detail for wood, stone, glass, metal and lacquer | **Completed — procedural PBR library integrated** |
-| 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | Pending |
+| 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | **Completed — tiered lighting and contact shadows integrated** |
 | 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | Pending |
 | 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | Pending |
 | 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | Pending |
@@ -236,3 +236,29 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] PWA cache incremented and the material module precached.
 - [ ] Physical-device visual comparison and tuning — Block 12.
 - [ ] Environment reflections, lighting and shadow strategy — Blocks 5–6.
+
+
+## 12. Block 5 implementation record — Advanced Lighting & Shadows
+
+**Implementation branch:** `feature/phase2-block5-lighting-contact-shadows`
+
+- Rebalanced the ambient, warm directional key, cool directional fill and rear rim light for a readable window-led lighting direction.
+- Added two restrained warm practical point lights near the shelving and workbench.
+- Restricted PCF soft shadow maps to Desktop High; Mobile Lite and Mobile Standard keep dynamic shadow maps disabled.
+- Added low-cost radial contact-shadow decals under all eight selectable props and the four workbench legs. The decal texture is generated locally with CanvasTexture and uses transparent, depth-write-disabled material.
+- Repositioned the signature bottle, four vials, beaker, pipette and reference tray so their lower geometry aligns with the workbench top rather than floating above it.
+- Added tests for profile-specific shadow policy, window-led lighting, prop heights and contact-shadow coverage.
+- Incremented the service-worker cache to `shell-v13`; no paid resources, remote textures or dependencies were added.
+
+### Block 5 acceptance record
+
+- [x] Warm window-aligned key light, cool fill, rear rim and warm local practicals.
+- [x] Mobile tiers avoid real-time shadow-map cost.
+- [x] Desktop High uses PCF soft shadow maps with bounded shadow camera.
+- [x] Procedural radial contact shadows support mobile and desktop.
+- [x] All eight workbench props have contact-shadow placement.
+- [x] Workbench legs have floor contact-shadow placement.
+- [x] Main bottle, vials, beaker, pipette and tray grounded to the workbench.
+- [x] Tests, foundation validation, and updated PWA cache entry added.
+- [ ] Environment reflections and atmospheric depth — Block 6.
+- [ ] Physical device brightness/performance/thermal comparison — Block 12.
