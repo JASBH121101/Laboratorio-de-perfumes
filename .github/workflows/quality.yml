@@ -33,5 +33,7 @@ jobs:
           node --check src/js/features/laboratory/scene.js
           node --check src/js/features/laboratory/catalog.js
           node --check src/js/features/laboratory/inspector.js
+          node --check src/js/features/laboratory/mixing/state.js
+          node --check src/js/features/laboratory/mixing/panel.js
       - name: Validate PWA and application structure
         run: npm run validate
