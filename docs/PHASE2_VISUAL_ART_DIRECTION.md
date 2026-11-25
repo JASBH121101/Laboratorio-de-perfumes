@@ -137,7 +137,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 1. Visual Benchmark & Art Direction | Audit baseline, define cinematic atelier direction, palette, materials, camera, device tiers and acceptance criteria | **Completed — this document** |
 | 2. Rendering Pipeline Upgrade | Renderer profiles, color management audit, quality selection, capability fallbacks and rendering configuration | **Completed — adaptive profiles integrated** |
 | 3. Architectural Environment | Complete room shell, window/opening, walls, ceiling treatment, floor, doors/trim and spatial depth | **Completed — bounded atelier shell integrated** |
-| 4. PBR Material System | Shared materials and locally generated/substantiated texture detail for wood, stone, glass, metal and lacquer | Pending |
+| 4. PBR Material System | Shared materials and locally generated/substantiated texture detail for wood, stone, glass, metal and lacquer | **Completed — procedural PBR library integrated** |
 | 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | Pending |
 | 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | Pending |
 | 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | Pending |
@@ -209,3 +209,30 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [ ] Material-level realism and texture system — Block 4.
 - [ ] Lighting/reflections and contact shadow tuning — Blocks 5–6.
 - [ ] Physical Android visual/FPS verification — Block 12.
+
+
+## 11. Block 4 implementation record — PBR Material System
+
+**Implementation branch:** `feature/phase2-block4-pbr-material-system`
+
+- Added `src/js/features/laboratory/materials.js`, a local procedural material factory using browser CanvasTexture generation.
+- Created walnut grain color/bump maps, travertine-like stone color/bump maps and brushed brass color/roughness maps.
+- Added shared PBR presets for walnut, dark walnut, stone, counter stone, brushed brass, wall, lacquer, bottle glass and window glass.
+- Applied shared materials to room architecture, floor, workbench top/trim, table legs, shelving, door/window trim, perfume bottle glass/caps, vial caps, tray and pipette details.
+- Texture dimensions are 256 px on mobile and 512 px on desktop; anisotropy is capped by both the selected rendering profile and actual GPU maximum.
+- Existing local scene cleanup disposes geometry, material and texture resources when leaving the Laboratory view.
+- No external textures/HDRIs, network asset packs, paid resources or runtime packages were added.
+- Added PBR static regression tests, foundation checks, CI syntax checks and PWA precaching. Cache is now `shell-v12`.
+
+### Block 4 acceptance record
+
+- [x] Local walnut, stone and brushed-brass color textures generated at runtime.
+- [x] Bump/roughness maps add controlled surface variation.
+- [x] Shared material presets reduce duplicated material definitions.
+- [x] Materials are integrated across architecture, furniture and selected props.
+- [x] Texture size and anisotropy adapt to the active graphics profile and device capability.
+- [x] No external runtime assets or paid dependencies.
+- [x] Static material regression checks, foundation validation and CI syntax coverage added.
+- [x] PWA cache incremented and the material module precached.
+- [ ] Physical-device visual comparison and tuning — Block 12.
+- [ ] Environment reflections, lighting and shadow strategy — Blocks 5–6.
