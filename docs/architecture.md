@@ -46,7 +46,7 @@ The Three.js license is MIT; see docs/THIRD-PARTY-NOTICES.md.
 
 ## Product and safety boundary
 
-The product represents fragrance concepts for creative exploration. It is not a chemical formulation tool, laboratory instrument, safety evaluator or substitute for professional perfumery. The 3D objects are visual props, not lab equipment that measures or controls real ingredients. Virtual composition is reserved for Block 5 and will use abstract creative values, not chemical concentrations.
+The product represents fragrance concepts for creative exploration. It is not a chemical formulation tool, laboratory instrument, safety evaluator or substitute for professional perfumery. The 3D objects are visual props, not lab equipment that measures or controls real ingredients. Block 5 uses creative points normalized to 100 only for comparing ideas inside the interface. These points are not percentages, ingredient ratios, concentrations, dosages or manufacturing instructions. The beaker color and level are visual metaphors, not physical measurements. Composition state remains session-only until the archive/persistence block.
 
 ## Delivery
 
