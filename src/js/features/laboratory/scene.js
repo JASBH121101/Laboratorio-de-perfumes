@@ -4,6 +4,7 @@ import { resolveLaboratoryRenderProfile } from "./render-profile.js";
 import { ATELIER_ARCHITECTURE } from "./architecture.js";
 import { createAtelierMaterials } from "./materials.js";
 import { createAtelierEnvironment } from "./environment.js";
+import { createFlaconGeometry, createRoundedPlateGeometry } from "./perfume-assets.js";
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 
 const color = (hex) => new THREE.Color(hex);
@@ -58,28 +59,73 @@ function createMainBottle(prop, materials) {
     transparent: true,
     opacity: 0.82
   });
-  const gold = materials.brass;
-  const body = new THREE.Mesh(new THREE.BoxGeometry(0.88, 1.08, 0.46), glass);
-  body.position.y = 0.56;
+
+  // Curved shoulders, integrated neck and beveled glass edges replace the old box silhouette.
+  const body = new THREE.Mesh(createFlaconGeometry(), glass);
   group.add(body);
 
-  const inner = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.42, 0.13), liquid);
-  inner.position.set(0, 0.28, 0);
+  const inner = new THREE.Mesh(new THREE.BoxGeometry(0.63, 0.48, 0.18), liquid);
+  inner.position.set(0, 0.37, 0);
   group.add(inner);
 
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.2, 0.2, 24), glass);
-  neck.position.y = 1.2;
-  group.add(neck);
+  const dipTube = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.012, 0.012, 0.7, 10),
+    glass
+  );
+  dipTube.position.set(0, 0.44, 0.1);
+  group.add(dipTube);
 
-  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.075, 24), gold);
-  collar.position.y = 1.33;
+  const collar = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.17, 0.17, 0.085, 32),
+    materials.brass
+  );
+  collar.position.y = 1.235;
   group.add(collar);
 
-  const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.34, 24), gold);
-  cap.position.y = 1.52;
+  const cap = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.145, 0.16, 0.29, 32, 1, false),
+    materials.darkWalnut
+  );
+  cap.position.y = 1.42;
   group.add(cap);
 
-  const label = labelPlane("Atelier 001", 0.69, 0.34, 0.236);
+  const capLowerRing = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.165, 0.165, 0.026, 32),
+    materials.brass
+  );
+  capLowerRing.position.y = 1.275;
+  group.add(capLowerRing);
+
+  const capTop = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.12, 0.12, 0.026, 32),
+    materials.brass
+  );
+  capTop.position.y = 1.57;
+  group.add(capTop);
+
+  for (let index = 0; index < 8; index += 1) {
+    const angle = (index / 8) * Math.PI * 2;
+    const groove = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.2, 0.012), materials.brass);
+    groove.position.set(Math.sin(angle) * 0.15, 1.42, Math.cos(angle) * 0.15);
+    groove.rotation.y = angle;
+    group.add(groove);
+  }
+
+  const labelBacking = new THREE.Mesh(
+    createRoundedPlateGeometry(0.72, 0.38, 0.04, 0.065),
+    materials.brass
+  );
+  labelBacking.position.set(0, 0.58, 0.245);
+  group.add(labelBacking);
+
+  const labelInset = new THREE.Mesh(
+    createRoundedPlateGeometry(0.64, 0.3, 0.018, 0.05),
+    materials.darkWalnut
+  );
+  labelInset.position.set(0, 0.58, 0.275);
+  group.add(labelInset);
+
+  const label = labelPlane("Atelier 001", 0.56, 0.21, 0.286);
   label.position.y = 0.58;
   group.add(label);
 
@@ -95,26 +141,48 @@ function createVial(prop, materials) {
     transparent: true,
     opacity: 0.8
   });
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.21, 0.57, 20), glass);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.21, 0.57, 32), glass);
   body.position.y = 0.3;
   group.add(body);
 
-  const contents = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.185, 0.24, 20), liquid);
+  const contents = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.185, 0.24, 28), liquid);
   contents.position.y = 0.16;
   group.add(contents);
 
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.12, 0.14, 16), glass);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.12, 0.14, 20), glass);
   neck.position.y = 0.66;
   group.add(neck);
 
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.125, 0.035, 24), materials.brass);
+  collar.position.y = 0.74;
+  group.add(collar);
+
   const cap = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.12, 0.12, 0.2, 20),
-    materials.brass
+    new THREE.CylinderGeometry(0.12, 0.12, 0.18, 28),
+    materials.darkWalnut
   );
-  cap.position.y = 0.82;
+  cap.position.y = 0.85;
   group.add(cap);
 
-  const label = labelPlane(prop.title.replace("Vial ", ""), 0.31, 0.18, 0.205);
+  const capAccent = new THREE.Mesh(new THREE.CylinderGeometry(0.122, 0.122, 0.018, 28), materials.brass);
+  capAccent.position.y = 0.77;
+  group.add(capAccent);
+
+  const labelBacking = new THREE.Mesh(
+    createRoundedPlateGeometry(0.34, 0.2, 0.022, 0.035),
+    materials.brass
+  );
+  labelBacking.position.set(0, 0.31, 0.202);
+  group.add(labelBacking);
+
+  const labelInset = new THREE.Mesh(
+    createRoundedPlateGeometry(0.31, 0.17, 0.012, 0.025),
+    materials.darkWalnut
+  );
+  labelInset.position.set(0, 0.31, 0.22);
+  group.add(labelInset);
+
+  const label = labelPlane(prop.title.replace("Vial ", ""), 0.27, 0.13, 0.229);
   label.position.y = 0.31;
   group.add(label);
   return group;
