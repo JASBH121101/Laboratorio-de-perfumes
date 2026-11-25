@@ -25,7 +25,9 @@ The application uses semantic HTML, responsive CSS and native JavaScript ES modu
 4. The user chooses Actualizar. The app posts SKIP_WAITING to the waiting worker.
 5. The new worker activates, removes older app-shell caches and takes control; the app reloads once.
 
-Update checks run on launch and when the app returns to the foreground. The visible button also allows a manual check. A network connection is required to download a new release.
+Update checks run on launch and when the app returns to the foreground. The visible button also allows a manual check; manual checks can resurface the update notice after it has been dismissed. A network connection is required to download a new release.
+
+**Release rule:** increment the shell version in sw.js (for example, shell-v3 to shell-v4) whenever shipping a new app-shell release. This gives installed clients a detectable service-worker change and a fresh cache namespace.
 
 ## Product and safety boundary
 
