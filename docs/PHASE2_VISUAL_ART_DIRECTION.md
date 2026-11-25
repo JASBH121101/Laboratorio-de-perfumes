@@ -145,7 +145,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | **Completed — preset views and reduced-motion-aware transitions integrated** |
 | 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | **Completed — hover and selection feedback integrated** |
 | 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | **Completed — profile grade and lightweight vignette integrated** |
-| 12. Android Performance & Visual Certification | Device profiling, quality-tier tuning, memory/load/FPS checks and final regression certification | Pending |
+| 12. Android Performance & Visual Certification | On-device FPS/frame-time audit, draw calls/triangles/resource counts, adaptive-tier verification, visual/offline regression and manual thermal/battery observation | **In progress — local audit harness and regression checks implemented; physical Android sign-off pending** |
 
 ## 8. Block 1 acceptance record
 
@@ -416,3 +416,49 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] ACES tone mapping and sRGB output preserved.
 - [x] Visual finish tests, foundation validation and PWA cache updated.
 - [ ] Physical Android comparison and frame-time/thermal measurement — Block 12.
+
+
+## 19. Block 12 implementation record — Android Performance & Visual Certification
+
+**Implementation branch:** `feature/phase2-block12-android-certification`
+
+### Implemented in the repository
+
+- Added `src/js/features/laboratory/performance-audit.js`, a dependency-free local audit utility.
+- Added an explicit **Medir rendimiento** control inside the Laboratory view. The test runs only after user activation and renders actively for approximately 2.2 seconds; there is no continuous idle loop or automatic background benchmark.
+- Captures observed requestAnimationFrame cadence, average FPS, average frame time, P95 frame time, longest frame and percentage of frame intervals above 33.3 ms.
+- Captures average draw calls and triangles per rendered frame, active geometry/texture counters, WebGL context-lost state, actual canvas buffer dimensions, device pixel ratio, reported device memory/core count and maximum WebGL texture size when exposed by the browser.
+- Compares the short-run observed FPS with the existing Phase 2 targets: Mobile Lite 30 FPS, Mobile Standard 45 FPS and Desktop High 60 FPS. The result is explicitly an indicative short-run target check, not a formal device certification.
+- The audit stops when the document becomes hidden or the scene is disposed. Renderer counters and `autoReset` are restored after the test.
+- Added a report with explicit limitations: browser APIs do not expose reliable GPU memory in bytes, device temperature or battery drain; sustained thermal behavior needs physical observation outside this app.
+- Added regression tests for sample statistics, FPS targets, report fields, interruption and renderer restoration; extended foundation validation.
+- Added the module to the service-worker shell and advanced the cache to `shell-v21`.
+- No paid services, analytics, telemetry uploads, new runtime dependencies or external assets were added. The measurement stays local in the browser.
+
+### Block 12 acceptance record
+
+- [x] On-demand, short active-render performance audit is available from the Laboratory UI.
+- [x] Average FPS, average/P95 frame time, longest frame and slow-frame ratio are reported.
+- [x] Draw-call/triangle averages and geometry/texture counters are reported.
+- [x] Device capability fields, canvas resolution and WebGL context state are reported when exposed.
+- [x] Result is compared with the intended FPS target for the selected graphics tier.
+- [x] Audit is stopped on navigation/disposal or when the tab is hidden.
+- [x] No idle render loop, remote reporting, paid service or new dependency.
+- [x] Regression tests, foundation checks and PWA shell cache entry added.
+- [ ] Run at least three repeated audits on the intended Android phone and retain the on-screen results.
+- [ ] Inspect visual fidelity/label legibility and test orbit, pinch, selection, camera presets and composition updates on the physical phone.
+- [ ] Observe temperature and battery before/after repeated use; these values are not read or inferred by the web app.
+- [ ] Verify offline reopening after the 3D module has been cached, plus scene close/reopen and WebGL context stability.
+- [ ] Final Android certification sign-off and deployment verification.
+
+### Physical certification protocol
+
+1. Open the deployed PWA on the target Android phone, connect once to load the 3D module, then reopen the Laboratory.
+2. Allow the device to settle for one minute; note the phone model, browser and render tier displayed by the app.
+3. Run the local audit three times without switching apps. Record average FPS, P95 frame time, slow-frame ratio, draw calls/frame, triangles/frame and the tier.
+4. Inspect bottle/vial glass, labels, shadows, selection feedback and the three camera presets at normal viewing size.
+5. Use orbit, pinch, tap selection, composition changes and return-to-laboratory cycles. Note any dropped frames, visual artifacts or WebGL reset.
+6. Compare battery percentage and device temperature before and after a five-minute normal interaction session using the Android system UI. Do not treat these as app-measured telemetry.
+7. Load the 3D scene once while online, then test a reload with network disabled. Record whether the scene and its Three.js modules are cached and reopen reliably.
+
+**Certification rule:** the block remains in progress until real Android observations are attached to the checkpoint. CI success and a short browser benchmark do not prove long-session stability, heat behavior, battery efficiency or compatibility on every Android GPU.
