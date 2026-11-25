@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { LAB_PROPS, LAB_RENDER_CONFIG } from "./catalog.js";
 import { resolveLaboratoryRenderProfile } from "./render-profile.js";
+import { ATELIER_ARCHITECTURE } from "./architecture.js";
 import { getPerfumeLibraryItem } from "../perfume-library/library.js";
 
 const color = (hex) => new THREE.Color(hex);
@@ -239,6 +240,172 @@ function createTray() {
   return group;
 }
 
+function createRoomArchitecture(scene) {
+  const { room, window: windowLayout, door } = ATELIER_ARCHITECTURE;
+  const centerZ = (room.backZ + room.frontZ) / 2;
+  const halfWidth = room.width / 2;
+  const wallDepth = 0.18;
+  const wallThickness = 0.18;
+  const insideBackZ = room.backZ + wallDepth / 2 + 0.015;
+  const leftX = -room.sideHalfWidth;
+  const rightX = room.sideHalfWidth;
+
+  const wallMaterial = new THREE.MeshStandardMaterial({
+    color: ATELIER_ARCHITECTURE.materials.wallColor,
+    roughness: 0.84,
+    metalness: 0.02
+  });
+  const walnutMaterial = new THREE.MeshStandardMaterial({
+    color: ATELIER_ARCHITECTURE.materials.walnutColor,
+    roughness: 0.68,
+    metalness: 0.04
+  });
+  const darkWalnutMaterial = new THREE.MeshStandardMaterial({
+    color: 0x33252b,
+    roughness: 0.62,
+    metalness: 0.04
+  });
+  const stoneMaterial = new THREE.MeshStandardMaterial({
+    color: ATELIER_ARCHITECTURE.materials.stoneColor,
+    roughness: ATELIER_ARCHITECTURE.floor.roughness,
+    metalness: ATELIER_ARCHITECTURE.floor.metalness
+  });
+  const brassMaterial = new THREE.MeshStandardMaterial({
+    color: ATELIER_ARCHITECTURE.materials.brassColor,
+    metalness: 0.72,
+    roughness: 0.32
+  });
+  const windowGlassMaterial = new THREE.MeshPhysicalMaterial({
+    color: ATELIER_ARCHITECTURE.materials.glassColor,
+    roughness: 0.16,
+    metalness: 0,
+    transmission: 0.16,
+    thickness: 0.08,
+    transparent: true,
+    opacity: 0.3,
+    side: THREE.DoubleSide
+  });
+
+  function addBox(width, height, depth, material, x, y, z) {
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
+    mesh.position.set(x, y, z);
+    scene.add(mesh);
+    return mesh;
+  }
+
+  // A bounded stone floor replaces the old infinite plane.
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(room.width, room.depth),
+    stoneMaterial
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.set(0, -0.035, centerZ);
+  scene.add(floor);
+
+  // Rear wall: leave a real opening for the atelier door.
+  const doorLeft = door.centerX - door.width / 2;
+  const doorRight = door.centerX + door.width / 2;
+  const rearLeftWidth = doorLeft + halfWidth;
+  const rearRightWidth = halfWidth - doorRight;
+  addBox(rearLeftWidth, room.height, wallDepth, wallMaterial, -halfWidth + rearLeftWidth / 2, room.height / 2, room.backZ);
+  addBox(rearRightWidth, room.height, wallDepth, wallMaterial, doorRight + rearRightWidth / 2, room.height / 2, room.backZ);
+  addBox(door.width, room.height - door.headHeight, wallDepth, wallMaterial, door.centerX, door.headHeight + (room.height - door.headHeight) / 2, room.backZ);
+
+  // Left wall is split around an actual window opening.
+  const windowStart = windowLayout.centerZ - windowLayout.width / 2;
+  const windowEnd = windowLayout.centerZ + windowLayout.width / 2;
+  const rearSideDepth = windowStart - room.backZ;
+  const frontSideDepth = room.frontZ - windowEnd;
+  addBox(wallThickness, room.height, rearSideDepth, wallMaterial, leftX, room.height / 2, room.backZ + rearSideDepth / 2);
+  addBox(wallThickness, room.height, frontSideDepth, wallMaterial, leftX, room.height / 2, windowEnd + frontSideDepth / 2);
+  addBox(wallThickness, windowLayout.sillHeight, windowLayout.width, wallMaterial, leftX, windowLayout.sillHeight / 2, windowLayout.centerZ);
+  const upperWallHeight = room.height - windowLayout.headHeight;
+  addBox(wallThickness, upperWallHeight, windowLayout.width, wallMaterial, leftX, windowLayout.headHeight + upperWallHeight / 2, windowLayout.centerZ);
+
+  // Right wall remains solid but gains framed inset panels for depth.
+  addBox(wallThickness, room.height, room.depth, wallMaterial, rightX, room.height / 2, centerZ);
+
+  // Walnut skirting ties the floor and room shell together.
+  const trimHeight = 0.14;
+  const trimY = trimHeight / 2 + 0.015;
+  addBox(rearLeftWidth, trimHeight, 0.055, walnutMaterial, -halfWidth + rearLeftWidth / 2, trimY, insideBackZ);
+  addBox(rearRightWidth, trimHeight, 0.055, walnutMaterial, doorRight + rearRightWidth / 2, trimY, insideBackZ);
+  addBox(0.055, trimHeight, rearSideDepth, walnutMaterial, leftX + 0.11, trimY, room.backZ + rearSideDepth / 2);
+  addBox(0.055, trimHeight, frontSideDepth, walnutMaterial, leftX + 0.11, trimY, windowEnd + frontSideDepth / 2);
+  addBox(0.055, trimHeight, room.depth, walnutMaterial, rightX - 0.11, trimY, centerZ);
+
+  // Window surround, stone sill, divided glass and a soft exterior light panel.
+  const windowX = leftX + 0.115;
+  const windowHeight = windowLayout.headHeight - windowLayout.sillHeight;
+  const windowMidY = windowLayout.sillHeight + windowHeight / 2;
+  addBox(0.12, 0.12, windowLayout.width + 0.22, stoneMaterial, windowX, windowLayout.sillHeight + 0.015, windowLayout.centerZ);
+  addBox(0.12, 0.12, windowLayout.width + 0.22, walnutMaterial, windowX, windowLayout.headHeight, windowLayout.centerZ);
+  for (const z of [windowStart - 0.015, windowEnd + 0.015]) {
+    addBox(0.12, windowHeight + 0.12, 0.12, walnutMaterial, windowX, windowMidY, z);
+  }
+  addBox(0.035, windowHeight - 0.1, windowLayout.width - 0.12, windowGlassMaterial, leftX + 0.02, windowMidY, windowLayout.centerZ);
+  addBox(0.045, windowHeight - 0.12, 0.045, brassMaterial, leftX + 0.125, windowMidY, windowLayout.centerZ);
+  addBox(0.05, 0.045, windowLayout.width - 0.14, brassMaterial, leftX + 0.125, windowMidY, windowLayout.centerZ);
+  const exteriorGlow = new THREE.MeshBasicMaterial({ color: 0xb9c8c4, toneMapped: false });
+  addBox(0.035, windowHeight - 0.16, windowLayout.width - 0.2, exteriorGlow, leftX - 0.12, windowMidY, windowLayout.centerZ);
+
+  // Door leaf and casing sit inside the rear-wall opening.
+  const doorFaceZ = room.backZ + 0.13;
+  const doorHeight = door.headHeight - 0.08;
+  addBox(door.width - 0.16, doorHeight, 0.09, darkWalnutMaterial, door.centerX, doorHeight / 2 + 0.02, doorFaceZ);
+  for (const x of [doorLeft + 0.015, doorRight - 0.015]) {
+    addBox(0.13, door.headHeight + 0.12, 0.15, walnutMaterial, x, (door.headHeight + 0.12) / 2, doorFaceZ + 0.06);
+    addBox(0.045, door.headHeight - 0.25, 0.035, brassMaterial, x + (x < door.centerX ? 0.045 : -0.045), door.headHeight / 2, doorFaceZ + 0.14);
+  }
+  addBox(door.width + 0.16, 0.14, 0.15, walnutMaterial, door.centerX, door.headHeight + 0.035, doorFaceZ + 0.06);
+  addBox(door.width - 0.38, 0.055, 0.035, walnutMaterial, door.centerX, 1.95, doorFaceZ + 0.07);
+  addBox(door.width - 0.38, 0.055, 0.035, walnutMaterial, door.centerX, 0.72, doorFaceZ + 0.07);
+  const handleX = doorRight - 0.34;
+  addBox(0.09, 0.22, 0.035, brassMaterial, handleX, 1.35, doorFaceZ + 0.09);
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.11, 12), brassMaterial);
+  handle.rotation.x = Math.PI / 2;
+  handle.position.set(handleX, 1.35, doorFaceZ + 0.17);
+  scene.add(handle);
+
+  // Quiet vertical timber rhythm behind the display shelves.
+  for (let index = 0; index < 15; index += 1) {
+    const x = -4.65 + index * 0.5;
+    addBox(0.045, 2.72, 0.045, walnutMaterial, x, 2.38, room.backZ + 0.105);
+  }
+  // Horizontal wall trim frames the shelving zone.
+  addBox(7.85, 0.045, 0.055, brassMaterial, -0.45, 3.84, room.backZ + 0.1);
+  addBox(7.85, 0.045, 0.055, walnutMaterial, -0.45, 1.02, room.backZ + 0.1);
+
+  // Shallow architectural panels on the right-hand wall.
+  const panelX = rightX - 0.115;
+  for (const z of [-1.75, 0.35, 2.45]) {
+    addBox(0.045, 2.05, 1.35, darkWalnutMaterial, panelX, 1.98, z);
+    for (const y of [0.95, 3.01]) {
+      addBox(0.055, 0.045, 1.42, brassMaterial, panelX - 0.035, y, z);
+    }
+    for (const panelZ of [z - 0.71, z + 0.71]) {
+      addBox(0.055, 2.1, 0.045, walnutMaterial, panelX - 0.035, 1.98, panelZ);
+    }
+  }
+
+  // Exposed dark-walnut ceiling beams frame the open-front atelier.
+  for (const z of [room.backZ + 0.14, -0.25, room.frontZ - 0.12]) {
+    addBox(room.width, 0.16, 0.2, darkWalnutMaterial, 0, room.height - 0.07, z);
+    addBox(room.width, 0.025, 0.035, brassMaterial, 0, room.height - 0.155, z + 0.06);
+  }
+  for (const x of [leftX, rightX]) {
+    addBox(0.2, 0.16, room.depth, darkWalnutMaterial, x, room.height - 0.07, centerZ);
+  }
+  // Short ceiling slats over the back work zone hint at an overhead canopy.
+  for (let index = 0; index < 9; index += 1) {
+    const z = -2.1 + index * 0.22;
+    addBox(room.width - 0.55, 0.045, 0.055, walnutMaterial, 0, room.height - 0.22, z);
+  }
+
+  // Front threshold makes the open side read as a deliberate entrance.
+  addBox(room.width, 0.045, 0.12, brassMaterial, 0, 0.015, room.frontZ - 0.04);
+}
+
 function createFurniture(scene) {
   const table = new THREE.Mesh(
     new THREE.BoxGeometry(9.2, 0.22, 4.2),
@@ -262,13 +429,6 @@ function createFurniture(scene) {
       scene.add(leg);
     }
   }
-
-  const wall = new THREE.Mesh(
-    new THREE.BoxGeometry(11, 4, 0.18),
-    new THREE.MeshStandardMaterial({ color: 0x29212a, roughness: 0.72 })
-  );
-  wall.position.set(0, 2.1, -2.95);
-  scene.add(wall);
 
   const shelfMaterial = new THREE.MeshStandardMaterial({ color: 0x4a3740, roughness: 0.48, metalness: 0.08 });
   for (const y of [2.55, 3.35]) {
@@ -295,14 +455,6 @@ function createFurniture(scene) {
     decorativeBottle.position.set(x, 2.55 + 0.055 + height / 2, -2.58);
     scene.add(decorativeBottle);
   }
-
-  const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(200, 200),
-    new THREE.MeshStandardMaterial({ color: 0x1c171d, roughness: 0.92, metalness: 0.02 })
-  );
-  floor.rotation.x = -Math.PI / 2;
-  floor.position.y = -0.02;
-  scene.add(floor);
 }
 
 function createPropMesh(prop) {
@@ -428,6 +580,7 @@ export function mountLaboratory(stage) {
   accentLight.position.set(0, 4.2, 1.4);
   scene.add(accentLight);
 
+  createRoomArchitecture(scene);
   createFurniture(scene);
 
   const selectable = [];
