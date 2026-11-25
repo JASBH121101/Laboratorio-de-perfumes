@@ -7,10 +7,8 @@ const navItems = [
 
 function navLink(item, activeView, compact = false) {
   const active = item.id === activeView;
-  return `<a class="nav-link ${active ? "is-active" : ""} ${compact ? "nav-link--compact" : ""}"
-      href="#${item.id}" data-nav="${item.id}" ${active ? 'aria-current="page"' : ""}>
-    <span class="nav-icon" aria-hidden="true">${item.icon}</span>
-    <span>${item.label}</span>
+  return `<a class="nav-link ${active ? "is-active" : ""} ${compact ? "nav-link--compact" : ""}" href="#${item.id}" data-nav="${item.id}" ${active ? 'aria-current="page"' : ""}>
+    <span class="nav-icon" aria-hidden="true">${item.icon}</span><span>${item.label}</span>
   </a>`;
 }
 
@@ -23,44 +21,26 @@ function homeView() {
         <p class="hero-description">Un espacio para investigar, combinar y dar forma a conceptos de fragancias. Tu proceso creativo empieza aquí.</p>
         <div class="hero-actions">
           <a class="button button--primary" href="#lab" data-nav="lab">Abrir mesa de trabajo <span aria-hidden="true">↗</span></a>
-          <span class="hero-note">Fundación del laboratorio</span>
+          <button class="button button--secondary" type="button" data-action="install">Instalar aplicación</button>
         </div>
       </div>
       <div class="hero-art" aria-label="Ilustración abstracta de un frasco de perfume" role="img">
-        <div class="orb orb--one"></div><div class="orb orb--two"></div>
-        <div class="bottle-shadow"></div>
-        <div class="perfume-bottle">
-          <div class="bottle-cap"></div><div class="bottle-neck"></div>
-          <div class="bottle-glass"><div class="bottle-liquid"></div><div class="bottle-label"><small>JB</small><strong>ATELIER</strong><span>NO. 001</span></div></div>
-        </div>
-        <div class="art-caption"><span>01 / 08</span><span>THE CREATIVE JOURNEY</span></div>
+        <div class="orb orb--one"></div><div class="orb orb--two"></div><div class="bottle-shadow"></div>
+        <div class="perfume-bottle"><div class="bottle-cap"></div><div class="bottle-neck"></div><div class="bottle-glass"><div class="bottle-liquid"></div><div class="bottle-label"><small>JB</small><strong>ATELIER</strong><span>NO. 001</span></div></div></div>
+        <div class="art-caption"><span>02 / 08</span><span>THE CREATIVE JOURNEY</span></div>
       </div>
     </section>
-
-    <div class="section-heading">
-      <div><p class="eyebrow">PUNTO DE PARTIDA</p><h2>Tu espacio creativo</h2></div>
-      <span class="section-counter">01 — FOUNDATION</span>
-    </div>
+    <div class="section-heading"><div><p class="eyebrow">PUNTO DE PARTIDA</p><h2>Tu espacio creativo</h2></div><span class="section-counter">02 — DESIGN SYSTEM</span></div>
     <section class="feature-grid" aria-label="Áreas del laboratorio">
-      <a class="feature-card feature-card--lab" href="#lab" data-nav="lab">
-        <span class="card-kicker">01 · WORKSPACE</span><span class="feature-symbol">◈</span>
-        <h3>Mesa de trabajo</h3><p>El entorno donde tomarán forma tus próximos conceptos.</p><span class="card-link">Explorar espacio <b>↗</b></span>
-      </a>
-      <a class="feature-card" href="#notes" data-nav="notes">
-        <span class="card-kicker">02 · LIBRARY</span><span class="feature-symbol">✳</span>
-        <h3>Biblioteca olfativa</h3><p>Una colección educativa de familias, notas y acordes.</p><span class="card-link">Ver planificación <b>↗</b></span>
-      </a>
-      <a class="feature-card" href="#projects" data-nav="projects">
-        <span class="card-kicker">03 · ARCHIVE</span><span class="feature-symbol">▤</span>
-        <h3>Mis creaciones</h3><p>Un archivo para conservar ideas, versiones y decisiones.</p><span class="card-link">Ver planificación <b>↗</b></span>
-      </a>
+      <a class="feature-card feature-card--lab" href="#lab" data-nav="lab"><span class="card-kicker">01 · WORKSPACE</span><span class="feature-symbol">◈</span><h3>Mesa de trabajo</h3><p>El entorno donde tomarán forma tus próximos conceptos.</p><span class="card-link">Explorar espacio <b>↗</b></span></a>
+      <a class="feature-card" href="#notes" data-nav="notes"><span class="card-kicker">02 · LIBRARY</span><span class="feature-symbol">✳</span><h3>Biblioteca olfativa</h3><p>Una colección educativa de familias, notas y acordes.</p><span class="card-link">Ver planificación <b>↗</b></span></a>
+      <a class="feature-card" href="#projects" data-nav="projects"><span class="card-kicker">03 · ARCHIVE</span><span class="feature-symbol">▤</span><h3>Mis creaciones</h3><p>Un archivo para conservar ideas, versiones y decisiones.</p><span class="card-link">Ver planificación <b>↗</b></span></a>
     </section>
-
     <section class="roadmap-panel">
       <div class="roadmap-intro"><p class="eyebrow">CONSTRUCCIÓN POR ETAPAS</p><h2>De una idea<br>a una fragancia.</h2><p>El laboratorio se construirá por bloques, validando cada fundamento antes de avanzar.</p></div>
       <div class="roadmap-list">
-        <div class="roadmap-step is-current"><span class="step-number">01</span><div><strong>Foundation & Architecture</strong><small>Base PWA, navegación y estructura</small></div><span class="step-status">EN CURSO</span></div>
-        <div class="roadmap-step"><span class="step-number">02</span><div><strong>Design System</strong><small>Identidad visual y controles táctiles</small></div><span class="step-status">PRÓXIMO</span></div>
+        <div class="roadmap-step is-complete"><span class="step-number">01</span><div><strong>Foundation & Architecture</strong><small>Base PWA, navegación y estructura</small></div><span class="step-status">COMPLETADO</span></div>
+        <div class="roadmap-step is-current"><span class="step-number">02</span><div><strong>Design System & PWA Experience</strong><small>Identidad visual, instalación y actualizaciones</small></div><span class="step-status">EN CURSO</span></div>
         <div class="roadmap-step"><span class="step-number">03</span><div><strong>Perfume Library</strong><small>Notas, familias y acordes</small></div><span class="step-status">PLANIFICADO</span></div>
         <div class="roadmap-step"><span class="step-number">04–08</span><div><strong>Studio, Creative Engine & MVP</strong><small>3D, composición conceptual, análisis y guardado</small></div><span class="step-status">PLANIFICADO</span></div>
       </div>
@@ -98,10 +78,15 @@ export function renderPage(activeView = "home") {
     <div class="app-shell">
       <header class="topbar">
         <a class="brand" href="#home" data-nav="home" aria-label="JB Virtual Perfume Lab, inicio"><span class="brand-mark">JB</span><span class="brand-type"><strong>JB</strong><small>VIRTUAL PERFUME LAB</small></span></a>
-        <div class="topbar-right"><span class="topbar-label">PERSONAL CREATIVE SPACE</span><button class="icon-button" type="button" data-action="theme" aria-label="Cambiar tema" title="Cambiar tema"><span aria-hidden="true">◐</span></button></div>
+        <div class="topbar-right">
+          <span class="topbar-label">PERSONAL CREATIVE SPACE</span>
+          <button class="topbar-action" type="button" data-action="check-updates" aria-label="Buscar actualizaciones" title="Buscar actualizaciones"><span aria-hidden="true">↻</span><span class="topbar-action-label">Actualizar</span></button>
+          <button class="topbar-action topbar-action--install" type="button" data-action="install"><span aria-hidden="true">↓</span><span class="topbar-action-label">Instalar</span></button>
+          <button class="icon-button" type="button" data-action="theme" aria-label="Cambiar tema" title="Cambiar tema"><span aria-hidden="true">◐</span></button>
+        </div>
       </header>
       <div class="layout">
-        <aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><nav aria-label="Navegación principal">${navItems.map(item => navLink(item, current)).join("")}</nav><div class="sidebar-bottom"><span class="sidebar-line"></span><small>CREADO PARA EXPLORAR<br>CONCEPTOS OLFATIVOS</small><span class="sidebar-version">FOUNDATION · V0.1</span></div></aside>
+        <aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><nav aria-label="Navegación principal">${navItems.map(item => navLink(item, current)).join("")}</nav><div class="sidebar-bottom"><span class="sidebar-line"></span><small>CREADO PARA EXPLORAR<br>CONCEPTOS OLFATIVOS</small><span class="sidebar-version">DESIGN SYSTEM · V0.2</span></div></aside>
         <main class="main-content" id="main-content" tabindex="-1">${viewContent[current]()}</main>
       </div>
       <nav class="mobile-nav" aria-label="Navegación móvil">${navItems.map(item => navLink(item, current, true)).join("")}</nav>

@@ -11,6 +11,16 @@ Personal, Android-first virtual fragrance concept laboratory. The initial produc
 - Produce creative briefs for professional perfumers and manufacturers.
 - **This is a creative concept tool, not a chemistry simulator.** It does not provide formulas, ingredient dosages, manufacturing instructions, safety certification or claims of real-world performance.
 
+## Install on Android
+
+Once the site is published over HTTPS, open it in Chrome on Android. Use the **Instalar** control in the app when the browser offers the install prompt. If no prompt is available yet, open Chrome's menu (⋮) and select **Install app** or **Add to Home screen**. The exact label depends on the browser and device.
+
+The install creates a home-screen web app; it is not a separately distributed native APK.
+
+## Updates
+
+The service worker uses a versioned app-shell cache. When a new deployment is available, the app displays an update notice. Selecting **Actualizar** activates the waiting worker and reloads the app with the new files. The app also checks for updates when opened or brought back into the foreground. A network connection is required to fetch a new release.
+
 ## Development
 
 Requirements: Node.js 22+ and npm.
@@ -33,12 +43,11 @@ npm run qa:dashboard
 
 The foundation uses native HTML, CSS and JavaScript modules. This keeps the initial PWA lightweight and avoids introducing a build tool before it is needed. Three.js is intentionally deferred to the 3D laboratory block, where it can be added with a deliberate performance and delivery strategy.
 
-See [docs/architecture.md](docs/architecture.md) for module boundaries and delivery decisions.
+See the architecture notes in docs/architecture.md for module boundaries and delivery decisions.
 
 ## Current status
 
-- Repository initialization: completed on `main`.
-- Block 1 — Foundation & Architecture: in progress on `feature/lab-foundation`.
-- Baseline test and static validation scripts: added in this block.
-- GitHub Actions quality workflow: added; execution must be confirmed from GitHub after the branch is pushed.
-- GitHub Pages: publishes only the configured source branch. The foundation will become visible there after the PR is reviewed and merged to `main`, provided Pages is enabled for `main` and `/(root)`.
+- Block 1 — Foundation & Architecture: implemented and CI-validated on feature/lab-foundation.
+- Block 2 — Design System & PWA Experience: being built on feature/lab-design-system.
+- Three.js, the note library, virtual mixing and creative analysis remain future blocks.
+- GitHub Pages should publish main from the repository root after the feature PRs are merged.

@@ -1,14 +1,53 @@
 import { resolveView } from "./core/navigation.js";
+import { createPwaManager } from "./core/pwa.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
+const notice = document.querySelector("#app-notice");
+const noticeTitle = document.querySelector("#app-notice-title");
+const noticeMessage = document.querySelector("#app-notice-message");
+const noticeAction = document.querySelector("#app-notice-action");
+
+function showNotice({ title, message, action = false }) {
+  if (!notice) return;
+  noticeTitle.textContent = title;
+  noticeMessage.textContent = message;
+  noticeAction.hidden = !action;
+  notice.hidden = false;
+}
+
+function hideNotice() {
+  notice.hidden = true;
+  noticeAction.hidden = true;
+}
+
+const pwa = createPwaManager({
+  onInstallState: ({ installed }) => {
+    for (const installButton of appRoot.querySelectorAll("[data-action='install']")) {
+      installButton.hidden = installed;
+      installButton.setAttribute("aria-hidden", String(installed));
+    }
+  },
+  onUpdateAvailable: () => showNotice({
+    title: "Nueva versión disponible",
+    message: "Hay una actualización lista. Aplícala para cargar los últimos cambios del laboratorio.",
+    action: true
+  }),
+  onNotice: showNotice
+});
 
 function render() {
   const activeView = resolveView(window.location.hash);
   appRoot.innerHTML = renderPage(activeView);
+  if (pwa.isInstalled()) {
+    appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
+      button.hidden = true;
+      button.setAttribute("aria-hidden", "true");
+    });
+  }
 }
 
-appRoot.addEventListener("click", (event) => {
+appRoot.addEventListener("click", async (event) => {
   const navTarget = event.target.closest("[data-nav]");
   if (navTarget) {
     event.preventDefault();
@@ -17,35 +56,32 @@ appRoot.addEventListener("click", (event) => {
     return;
   }
 
-  const action = event.target.closest("[data-action='theme']");
-  if (action) {
+  const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "theme") {
     const nextTheme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
     document.documentElement.dataset.theme = nextTheme;
-    try {
-      localStorage.setItem("jb-vpl-theme", nextTheme);
-    } catch {
-      // Theme remains usable when browser storage is unavailable.
-    }
+    try { localStorage.setItem("jb-vpl-theme", nextTheme); } catch { /* Use session theme only. */ }
+  } else if (action === "install") {
+    await pwa.install();
+  } else if (action === "check-updates") {
+    await pwa.checkForUpdates();
   }
+});
+
+document.addEventListener("click", (event) => {
+  const action = event.target.closest("[data-action]")?.dataset.action;
+  if (action === "apply-update") pwa.applyUpdate();
+  if (action === "dismiss-notice") hideNotice();
 });
 
 window.addEventListener("hashchange", render);
 
 try {
   const savedTheme = localStorage.getItem("jb-vpl-theme");
-  if (savedTheme === "light" || savedTheme === "dark") {
-    document.documentElement.dataset.theme = savedTheme;
-  }
+  if (savedTheme === "light" || savedTheme === "dark") document.documentElement.dataset.theme = savedTheme;
 } catch {
   // Use the default theme when browser storage is unavailable.
 }
 
 render();
-
-if ("serviceWorker" in navigator && window.location.protocol !== "file:") {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch((error) => {
-      console.warn("PWA service worker registration failed:", error);
-    });
-  });
-}
+pwa.init();
