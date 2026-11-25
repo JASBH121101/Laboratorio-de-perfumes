@@ -1,4 +1,4 @@
-import { getPerfumeLibraryItem } from "../perfume-library/library.js";
+import { getPerfumeLibraryItem } from "../../perfume-library/library.js";
 
 export const EVOLUTION_STAGES = Object.freeze([
   { id: "opening", label: "Apertura", time: "0–15 min", roles: ["Salida"], description: "Una lectura conceptual de las referencias asociadas a la salida." },
