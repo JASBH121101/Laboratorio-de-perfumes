@@ -25,7 +25,7 @@ export const LAB_RENDER_PROFILES = Object.freeze({
     pixelRatioCap: 1.5,
     antialias: true,
     powerPreference: "default",
-    shadowsEnabled: false,
+    shadowsEnabled: true,
     postProcessingEnabled: false,
     maxAnisotropy: 4
   })
