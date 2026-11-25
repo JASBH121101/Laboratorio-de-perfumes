@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "jb-virtual-perfume-lab-";
-const CACHE_NAME = `${CACHE_PREFIX}shell-v8`;
+const CACHE_NAME = `${CACHE_PREFIX}shell-v9`;
 const THREE_MODULE_URL = "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js";
 const THREE_CORE_URL = "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.core.js";
 const THREE_ASSETS = new Set([THREE_MODULE_URL, THREE_CORE_URL]);
@@ -27,7 +27,12 @@ const APP_SHELL = [
   "./src/js/features/laboratory/mixing/state.js",
   "./src/js/features/laboratory/mixing/panel.js",
   "./src/js/features/laboratory/analysis/engine.js",
-  "./src/js/features/laboratory/analysis/panel.js",\n  "./src/js/features/laboratory/evolution/engine.js",\n  "./src/js/features/laboratory/evolution/panel.js",
+  "./src/js/features/laboratory/analysis/panel.js",
+  "./src/js/features/laboratory/evolution/engine.js",
+  "./src/js/features/laboratory/evolution/panel.js",
+  "./src/js/features/archive/model.js",
+  "./src/js/features/archive/repository.js",
+  "./src/js/features/archive/panel.js",
   "./src/js/ui/views.js"
 ];
 
