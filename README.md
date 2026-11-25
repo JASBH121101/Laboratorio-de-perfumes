@@ -102,3 +102,8 @@ The project data contains only note-library IDs and conceptual creative points. 
 The visual rebuild is tracked block-by-block in [the Phase 2 visual art-direction specification](./docs/PHASE2_VISUAL_ART_DIRECTION.md). Block 1 documents the current Three.js scene audit, cinematic atelier direction, material/lighting principles, Android quality tiers, cost and asset policy, and the complete twelve-block roadmap. It does not yet claim that the 3D scene has been visually rebuilt.
 
 Phase 2 retains lazy-loaded Three.js, touch orbit/pinch controls, object inspection, the conceptual composition vessel, local-first behavior and a mobile-safe rendering profile. No paid assets, APIs or services are part of the plan.
+
+
+### Adaptive 3D rendering — Phase 2 Block 2
+
+The 3D renderer selects a conservative Mobile Lite, Mobile Standard or Desktop High profile from available device memory, CPU concurrency and WebGL texture capability. Unknown Android capability data falls back to Mobile Lite. Rendering remains on-demand; real-time shadows and post-processing remain disabled until a later block justifies and profiles them. The service worker app-shell cache is now `shell-v10` and includes the profile module.
