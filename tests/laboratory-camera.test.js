@@ -37,4 +37,12 @@ test("camera presets keep the workbench as the primary frontal view", () => {
   assert.deepEqual(LAB_CAMERA_PRESETS.workbench.target, [0, 1.16, 0.05]);
   assert.ok(LAB_CAMERA_PRESETS.bottle.radius < LAB_CAMERA_PRESETS.workbench.radius);
   assert.ok(LAB_CAMERA_PRESETS.overview.radius > LAB_CAMERA_PRESETS.workbench.radius);
+  assert.ok(LAB_CAMERA_PRESETS.atelier.radius > LAB_CAMERA_PRESETS.overview.radius);
+  assert.deepEqual(LAB_CAMERA_PRESETS.atelier.target, [0, 1.55, 0]);
+});
+
+test("orbit limits keep the view in a controlled frontal arc", () => {
+  assert.equal(LAB_CAMERA_LIMITS.minTheta, -0.5);
+  assert.equal(LAB_CAMERA_LIMITS.maxTheta, 0.5);
+  assert.ok(LAB_CAMERA_LIMITS.maxRadius <= 12.1);
 });
