@@ -146,7 +146,8 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | **Completed — hover and selection feedback integrated** |
 | 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | **Completed — profile grade and lightweight vignette integrated** |
 | 12. Android Performance & Visual Certification | On-device FPS/frame-time audit, draw calls/triangles/resource counts, adaptive-tier verification, visual/offline regression and manual thermal/battery observation | **In progress — local audit harness and regression checks implemented; physical Android sign-off pending** |
-| 13. Focused Experiment View | Hide architectural room when composition is empty; front camera, clean background, automatic return to atelier when a composition becomes active | **In progress — implementation on feature branch** |
+| 13. Focused Experiment View | Hide architectural room when composition is empty; front camera, clean background, automatic return to atelier when a composition becomes active | **Completed — merged in PR #24; physical Android verification pending** |
+| 14. Analytical Chart System | Improve family distribution, sensory profile and pyramid coverage with responsive visual charts and accessible labels | **In progress — implementation on feature branch** |
 
 ## 8. Block 1 acceptance record
 
@@ -482,4 +483,14 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Clearing composition returns to experiment mode — implemented; pending CI/device verification.
 - [ ] Experiment and atelier camera controls work on Android touch and desktop.
 - [ ] Reduced-motion behavior remains respected.
+- [ ] Regression tests and foundation validation pass.
+
+## 21. Block 14 implementation record — Analytical Chart System
+
+- [ ] Family distribution donut with total creative points in the center and accessible legend.
+- [ ] Sensory-profile radar using the existing six heuristic signals.
+- [ ] Pyramid-coverage cards gain relative visual bars.
+- [ ] Empty state remains graph-free and clearly explains how to populate analysis.
+- [ ] Responsive SVG/CSS graphics, no new runtime dependencies.
+- [ ] PWA shell cache advances to `shell-v23`.
 - [ ] Regression tests and foundation validation pass.
