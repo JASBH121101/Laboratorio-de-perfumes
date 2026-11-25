@@ -11,7 +11,7 @@ const requiredFiles = [
   "src/css/styles.css", "src/css/design-system.css", "src/css/perfume-library.css", "src/css/laboratory.css",
   "src/js/app.js", "src/js/core/navigation.js", "src/js/core/pwa.js",
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
-  "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js", "src/js/features/laboratory/render-profile.js", "src/js/features/laboratory/architecture.js", "src/js/features/laboratory/materials.js", "src/js/features/laboratory/environment.js", "src/js/features/laboratory/perfume-assets.js",
+  "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js", "src/js/features/laboratory/render-profile.js", "src/js/features/laboratory/architecture.js", "src/js/features/laboratory/materials.js", "src/js/features/laboratory/environment.js", "src/js/features/laboratory/perfume-assets.js", "src/js/features/laboratory/performance-audit.js",
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
@@ -32,6 +32,7 @@ const sw = await readFile("sw.js", "utf8");
 const app = await readFile("src/js/app.js", "utf8");
 const scene = await readFile("src/js/features/laboratory/scene.js", "utf8");
 const renderProfile = await readFile("src/js/features/laboratory/render-profile.js", "utf8");
+const performanceAudit = await readFile("src/js/features/laboratory/performance-audit.js", "utf8");
 const architecture = await readFile("src/js/features/laboratory/architecture.js", "utf8");
 const materials = await readFile("src/js/features/laboratory/materials.js", "utf8");
 const environment = await readFile("src/js/features/laboratory/environment.js", "utf8");
@@ -87,7 +88,12 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v20/.test(sw) || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v20 with valid JavaScript source line breaks.");
+if (!/shell-v21/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v21, precache the performance audit module and keep valid JavaScript source line breaks.");
+if (!scene.includes("runPerformanceAudit") || !scene.includes("performanceAuditAbort?.abort()")) failures.push("3D performance audit must be on-demand and abort on scene disposal.");
+if (!views.includes('data-action="run-lab-performance-audit"') || !views.includes('id="lab-performance-report"')) failures.push("Local performance audit controls and report output are missing.");
+if (!app.includes("formatLabPerformanceReport") || !app.includes("run-lab-performance-audit")) failures.push("Performance report UI is not wired to the local audit.");
+if (!performanceAudit.includes("summarizeFrameSamples") || !performanceAudit.includes("p95FrameMs") || !performanceAudit.includes("contextLost")) failures.push("Performance audit must report frame cadence, p95 and WebGL context state.");
+
 if (!views.includes("renderEvolutionSimulator(mixingState, evolutionStage)") || !app.includes("data-evolution-stage") || !app.includes("updateEvolutionSimulator")) failures.push("Evolution simulator is not wired into the Laboratory view and state updates.");
 if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includes("analyzeEvolutionStage")) failures.push("Evolution simulator disclaimer or engine is missing.");
 if (!app.includes("createArchiveRepository") || !app.includes("saveCurrentAsVersion") || !app.includes("parseArchiveBackup")) failures.push("Local archive repository, version saving or backup import is not wired.");
