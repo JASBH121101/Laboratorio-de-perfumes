@@ -188,36 +188,82 @@ function createVial(prop, materials) {
   return group;
 }
 
+function makeMeasurementTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 256;
+  const context = canvas.getContext("2d");
+  if (!context) return null;
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.strokeStyle = "rgba(244, 235, 218, 0.86)";
+  context.fillStyle = "rgba(244, 235, 218, 0.92)";
+  context.lineWidth = 3;
+  context.font = "600 15px Arial";
+  context.textAlign = "left";
+  for (let index = 0; index < 6; index += 1) {
+    const y = 24 + index * 39;
+    const length = index % 2 === 0 ? 74 : 48;
+    context.beginPath();
+    context.moveTo(48, y);
+    context.lineTo(48 + length, y);
+    context.stroke();
+    if (index % 2 === 0) context.fillText(String(250 - index * 50), 4, y + 5);
+  }
+  context.fillText("mL", 4, 250);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  return texture;
+}
+
 function createBeaker(materials) {
   const group = new THREE.Group();
-  const glass = new THREE.MeshPhysicalMaterial({
-    color: 0xa8c9c7,
-    roughness: 0.12,
-    metalness: 0.02,
-    transmission: 0.48,
-    thickness: 0.3,
-    transparent: true,
-    opacity: 0.42,
-    side: THREE.DoubleSide
-  });
-  const walls = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.43, 0.72, 32, 1, true), glass);
-  walls.position.y = 0.37;
+  const glass = materials.vesselGlass;
+
+  const walls = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.365, 0.42, 0.72, 40, 1, true),
+    glass
+  );
+  walls.position.y = 0.38;
   group.add(walls);
 
-  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.055, 32), glass);
-  base.position.y = 0.02;
+  const base = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.42, 0.42, 0.065, 40),
+    glass
+  );
+  base.position.y = 0.025;
   group.add(base);
 
-  const rim = new THREE.Mesh(
-    new THREE.TorusGeometry(0.36, 0.025, 8, 32),
-    materials.brass
-  );
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.365, 0.022, 10, 48), glass);
   rim.rotation.x = Math.PI / 2;
   rim.position.y = 0.74;
   group.add(rim);
 
+  const foot = new THREE.Mesh(new THREE.TorusGeometry(0.405, 0.012, 8, 40), materials.vesselGlass);
+  foot.rotation.x = Math.PI / 2;
+  foot.position.y = 0.058;
+  group.add(foot);
+
+  const measurementTexture = makeMeasurementTexture();
+  if (measurementTexture) {
+    const scaleLabel = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.3, 0.55),
+      new THREE.MeshBasicMaterial({
+        map: measurementTexture,
+        transparent: true,
+        depthWrite: false,
+        toneMapped: false
+      })
+    );
+    scaleLabel.position.set(-0.12, 0.39, 0.385);
+    scaleLabel.userData.ownsTexture = true;
+    group.add(scaleLabel);
+  }
+
   const mixLiquid = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.32, 0.38, 0.36, 24),
+    new THREE.CylinderGeometry(0.32, 0.38, 0.36, 32),
     new THREE.MeshStandardMaterial({
       color: 0xc8a46c,
       roughness: 0.26,
@@ -231,10 +277,14 @@ function createBeaker(materials) {
   group.add(mixLiquid);
   group.userData.mixLiquid = mixLiquid;
 
-  const markMaterial = new THREE.MeshBasicMaterial({ color: 0xd9b27c });
+  const markMaterial = new THREE.MeshStandardMaterial({
+    color: 0xd9c6a7,
+    roughness: 0.48,
+    metalness: 0.08
+  });
   for (let index = 0; index < 3; index += 1) {
-    const mark = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.012, 0.012), markMaterial);
-    mark.position.set(0.31, 0.2 + index * 0.16, 0.19);
+    const mark = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.014, 0.018), markMaterial);
+    mark.position.set(0.31, 0.2 + index * 0.16, 0.25);
     group.add(mark);
   }
   return group;
@@ -242,49 +292,83 @@ function createBeaker(materials) {
 
 function createPipette(materials) {
   const group = new THREE.Group();
-  const glass = new THREE.MeshPhysicalMaterial({
-    color: 0xd2e2df,
-    roughness: 0.12,
-    transmission: 0.3,
-    transparent: true,
-    opacity: 0.68
-  });
-  const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 1.05, 12), glass);
+  const glass = materials.vesselGlass;
+
+  const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.045, 0.92, 20), glass);
   tube.rotation.z = Math.PI / 2;
   group.add(tube);
 
-  const tip = new THREE.Mesh(
-    new THREE.ConeGeometry(0.07, 0.2, 12),
-    glass
-  );
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.24, 18), glass);
   tip.rotation.z = -Math.PI / 2;
-  tip.position.x = 0.6;
+  tip.position.x = 0.57;
   group.add(tip);
 
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 12), materials.lacquer);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 16), materials.lacquer);
   bulb.position.x = -0.58;
   group.add(bulb);
+
+  for (const x of [-0.22, 0.02, 0.25]) {
+    const band = new THREE.Mesh(
+      new THREE.TorusGeometry(0.043, 0.006, 8, 20),
+      materials.brass
+    );
+    band.rotation.y = Math.PI / 2;
+    band.position.set(x, 0, 0);
+    group.add(band);
+  }
+
+  const endStop = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.052, 0.052, 0.035, 18),
+    materials.darkWalnut
+  );
+  endStop.rotation.z = Math.PI / 2;
+  endStop.position.x = -0.42;
+  group.add(endStop);
+
   return group;
 }
 
 function createTray(materials) {
   const group = new THREE.Group();
-  const wood = materials.darkWalnut;
-  const gold = materials.brass;
-
-  const base = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.1, 0.72), wood);
+  const baseGeometry = createRoundedPlateGeometry(1.35, 0.82, 0.1, 0.1);
+  baseGeometry.rotateX(Math.PI / 2);
+  const base = new THREE.Mesh(baseGeometry, materials.darkWalnut);
+  base.position.y = 0.05;
   group.add(base);
 
-  for (const [x, z, sx, sz] of [
-    [0, -0.34, 1.25, 0.04],
-    [0, 0.34, 1.25, 0.04],
-    [-0.61, 0, 0.04, 0.64],
-    [0.61, 0, 0.04, 0.64]
+  const inset = new THREE.Mesh(new THREE.BoxGeometry(1.16, 0.024, 0.62), materials.lacquer);
+  inset.position.y = 0.105;
+  group.add(inset);
+
+  const railMaterial = materials.brass;
+  for (const [x, z, width, depth] of [
+    [0, -0.37, 1.29, 0.045],
+    [0, 0.37, 1.29, 0.045],
+    [-0.63, 0, 0.045, 0.7],
+    [0.63, 0, 0.045, 0.7]
   ]) {
-    const rail = new THREE.Mesh(new THREE.BoxGeometry(sx, 0.13, sz), gold);
-    rail.position.set(x, 0.07, z);
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(width, 0.11, depth), railMaterial);
+    rail.position.set(x, 0.145, z);
     group.add(rail);
   }
+
+  for (const x of [-0.23, 0.24]) {
+    const divider = new THREE.Mesh(
+      new THREE.BoxGeometry(0.028, 0.075, 0.61),
+      materials.darkWalnut
+    );
+    divider.position.set(x, 0.16, 0);
+    group.add(divider);
+  }
+
+  for (const x of [-0.56, 0.56]) {
+    for (const z of [-0.3, 0.3]) {
+      const rivet = new THREE.Mesh(new THREE.SphereGeometry(0.026, 12, 10), railMaterial);
+      rivet.position.set(x, 0.205, z);
+      group.add(rivet);
+    }
+  }
+
   return group;
 }
 

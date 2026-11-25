@@ -84,7 +84,7 @@ export const LAB_PROPS = Object.freeze([
     category: "ORGANIZADOR",
     description: "Superficie para organizar visualmente las referencias que después podrás incorporar a una composición conceptual.",
     noteId: null,
-    position: [-3.1, 0.79, -0.78],
+    position: [-3.1, 0.74, -0.78],
     color: "#9b7b58",
     scale: 1
   }

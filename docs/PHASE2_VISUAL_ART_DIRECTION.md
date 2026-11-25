@@ -141,7 +141,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 5. Advanced Lighting & Shadows | Window key, fill/practicals, contact grounding, selective shadow strategy and profile-based cost | **Completed — tiered lighting and contact shadows integrated** |
 | 6. Environment & Atmosphere | Reflection environment, background depth, restrained atmosphere and scene composition | **Completed — local panorama and PMREM reflections integrated** |
 | 7. High-Quality Perfume Assets | Signature bottles, caps, labels, glass thickness cues and liquid presentation | **Completed — premium flacon and vial assets integrated** |
-| 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | Pending |
+| 8. Laboratory Equipment & Props | Refined vials, vessels, pipettes, trays, furniture details and supporting props | **Completed — beaker, pipette and organizer refined** |
 | 9. Cinematic Camera System | Default framing, camera presets/transitions, inspection controls and accessibility | Pending |
 | 10. Animation & Interaction Polish | Lightweight object feedback, transitions, controlled motion and reduced-motion behavior | Pending |
 | 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | Pending |
@@ -315,3 +315,26 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Tests, structure validator, CI syntax check and PWA cache updated.
 - [ ] Real-world reference comparison for glass/refraction and physical scale — Block 12.
 - [ ] Additional laboratory equipment and furniture details — Block 8.
+
+
+## 15. Block 8 implementation record — Laboratory Equipment & Props
+
+**Implementation branch:** `feature/phase2-block8-laboratory-props`
+
+- Added a dedicated transparent physical-glass preset for reusable lab vessels.
+- Rebuilt the exploration beaker with a hollow 40-segment glass cylinder, thick base, rolled rim, foot ring and local measurement-scale texture.
+- Rebuilt the pipette with a tapered precision tip, rounded plum bulb, three brass graduation bands and a dark end stop.
+- Rebuilt the reference tray as a rounded/beveled organizer with a burgundy inset, brass rails, two dividers and small corner rivets.
+- Aligned the tray base to the workbench surface.
+- Preserved all eight selectable props and their IDs, descriptions, selection rings and inspector behavior.
+- Added equipment regression tests, foundation checks, and incremented the PWA cache to `shell-v16`.
+
+### Block 8 acceptance record
+
+- [x] Beaker hollow wall, thick base, rolled glass rim and measurement graphic.
+- [x] Pipette taper, bulb, graduation bands and end stop.
+- [x] Rounded tray base, inset, divider compartments, brass rails and rivets.
+- [x] Dedicated vessel-glass material preset.
+- [x] Main 8 props remain in the selectable scene registry.
+- [x] Equipment tests and PWA cache version updated.
+- [ ] Physical Android inspection of label legibility and glass visibility — Block 12.

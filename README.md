@@ -132,3 +132,8 @@ The atelier generates a compact equirectangular panorama locally with CanvasText
 ### Premium perfume assets — Phase 2 Block 7
 
 The main concept flacon now uses a custom beveled ExtrudeGeometry silhouette with rounded shoulders, an integrated neck, internal liquid and dip tube, layered label plates, a dark cap, and brushed-brass collar/rings. Reference vials receive more detailed cylindrical geometry and matching label/cap treatment. Geometry is generated locally and disposed with the scene; the new module is in PWA cache `shell-v15`.
+
+
+### Laboratory equipment and props — Phase 2 Block 8
+
+The exploration beaker now has a hollow glass wall, thick base, rolled lip and local measurement scale. The pipette has a tapered tip, rounded bulb and metallic graduation bands. The reference tray is now a beveled organizer with a burgundy inset, dividers and brass corner details. Equipment uses a dedicated transparent PBR vessel-glass preset; all eight props remain selectable. PWA cache advances to `shell-v16`.
