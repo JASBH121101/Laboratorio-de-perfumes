@@ -2,7 +2,7 @@ export const LAB_RENDER_CONFIG = Object.freeze({
   threeRevision: "187",
   maxPixelRatio: 1.5,
   mobileMaxPixelRatio: 1.25,
-  minCameraRadius: 7.2,
+  minCameraRadius: 4.5,
   maxCameraRadius: 15,
   initialCameraRadius: 10.8
 });
