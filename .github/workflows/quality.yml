@@ -39,5 +39,9 @@ jobs:
           node --check src/js/features/laboratory/analysis/panel.js
           node --check src/js/features/laboratory/evolution/engine.js
           node --check src/js/features/laboratory/evolution/panel.js
+          node --check src/js/features/archive/model.js
+          node --check src/js/features/archive/repository.js
+          node --check src/js/features/archive/panel.js
+          node --check sw.js
       - name: Validate PWA and application structure
         run: npm run validate
