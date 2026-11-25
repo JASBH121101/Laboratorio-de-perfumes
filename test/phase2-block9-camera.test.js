@@ -14,7 +14,7 @@ test("Phase 2 Block 9 camera presets and transitions are wired", async () => {
     read("sw.js"),
     read("docs/PHASE2_VISUAL_ART_DIRECTION.md")
   ]);
-  for (const preset of ["overview", "workbench", "bottle"]) {
+  for (const preset of ["overview", "workbench", "bottle", "experiment"]) {
     assert.match(scene, new RegExp(preset));
     assert.match(views, new RegExp(`data-camera-preset="${preset}"`));
   }
@@ -24,6 +24,14 @@ test("Phase 2 Block 9 camera presets and transitions are wired", async () => {
   assert.match(css, /lab-camera-presets/);
   assert.equal((views.match(/class="lab-camera-presets"/g) || []).length, 1);
   assert.match(views, /aria-pressed="true"/);
-  assert.match(sw, /shell-v21/);
+  assert.match(sw, /shell-v22/);
   assert.match(spec, /Block 9 implementation record/);
+  assert.match(scene, /setExperimentMode/);
+  assert.match(scene, /atelier-architecture/);
+  assert.match(scene, /experimentBackground/);
+  assert.match(scene, /roomArchitectureGroup\.visible = false/);
+  assert.match(scene, /target\.set\(0, 1\.12, -1\.2\)/);
+  assert.match(scene, /return !compositionHasItems/);
+  assert.match(app, /resetCamera\?\.\(\) === true/);
+  assert.match(views, /data-camera-preset="experiment"/);
 });

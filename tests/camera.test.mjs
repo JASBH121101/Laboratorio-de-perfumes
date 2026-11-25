@@ -8,11 +8,13 @@ const app = await readFile(new URL("../src/js/app.js", import.meta.url), "utf8")
 const styles = await readFile(new URL("../src/css/laboratory.css", import.meta.url), "utf8");
 
 test("camera offers overview, bottle and workbench presets with distinct cinematic framing", () => {
-  for (const preset of ["overview", "bottle", "workbench"]) {
+  for (const preset of ["overview", "bottle", "workbench", "experiment"]) {
     assert.ok(scene.includes(`${preset}:`), `Missing camera preset: ${preset}`);
   }
   assert.match(scene, /animateCameraPreset/);
-  assert.match(scene, /setCameraPreset: animateCameraPreset/);
+  assert.match(scene, /setCameraPreset: \(preset\) =>/);
+  assert.match(scene, /setExperimentMode/);
+  assert.match(scene, /experiment: \{ theta: 0, phi: 1\.42/);
   assert.match(scene, /target: \[0, 1\.38, 0\.12\]/);
   assert.match(scene, /target: \[0, 0\.94, 0\.08\]/);
   assert.match(scene, /radius: 6\.35/);
@@ -41,7 +43,7 @@ test("camera preset controls are accessible and the app connects each button to 
   assert.equal((view.match(/class="lab-camera-presets"/g) || []).length, 1, "Stage must expose one camera preset group");
   assert.match(view, /aria-pressed="true"/);
   assert.match(app, /labController\?\.setCameraPreset\?\.\(cameraPreset\)/);
-  assert.match(app, /button\.dataset\.cameraPreset === cameraPreset/);
+  assert.match(app, /button\.dataset\.cameraPreset === activePreset/);
   assert.match(app, /button\.setAttribute\("aria-pressed", String\(active\)\)/);
 });
 
