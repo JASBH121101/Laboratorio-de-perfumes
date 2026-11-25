@@ -476,9 +476,9 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 
 ### Acceptance criteria
 
-- [ ] Empty composition hides room architecture and defaults to frontal experiment camera.
-- [ ] Active composition restores atelier environment and overview camera.
-- [ ] Clearing composition returns to experiment mode.
+- [x] Empty composition hides room architecture and defaults to frontal experiment camera — implemented; pending CI/device verification.
+- [x] Active composition restores atelier environment and overview camera — implemented; pending CI/device verification.
+- [x] Clearing composition returns to experiment mode — implemented; pending CI/device verification.
 - [ ] Experiment and atelier camera controls work on Android touch and desktop.
 - [ ] Reduced-motion behavior remains respected.
 - [ ] Regression tests and foundation validation pass.
