@@ -858,8 +858,8 @@ export function mountLaboratory(stage) {
   function animateCameraPreset(preset) {
     const presets = {
       overview: { theta: 0.74, phi: 1.05, radius: LAB_RENDER_CONFIG.initialCameraRadius, target: [0, 1.12, 0] },
-      workbench: { theta: 0.18, phi: 1.18, radius: 8.8, target: [0, 0.9, 0.2] },
-      bottle: { theta: 0.42, phi: 1.28, radius: 6.1, target: [-1.15, 1.05, 0.35] }
+      workbench: { theta: 0.18, phi: 1.18, radius: 8.5, target: [0, 0.94, 0.08] },
+      bottle: { theta: 0.52, phi: 1.22, radius: 6.35, target: [0, 1.38, 0.12] }
     };
     const destination = presets[preset] || presets.overview;
     stopCameraTransition();
