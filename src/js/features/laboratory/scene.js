@@ -783,6 +783,13 @@ export function mountLaboratory(stage) {
   scene.add(benchPractical);
 
   roomArchitectureGroup = createRoomArchitecture(scene, materials);
+  roomArchitectureGroup.visible = false;
+  scene.background = experimentBackground;
+  stage.dataset.sceneMode = "experiment";
+  theta = 0;
+  phi = 1.42;
+  radius = 7.2;
+  target.set(0, 1.12, -1.2);
   createFurniture(scene, materials);
 
   const contactShadowMaterial = createContactShadowMaterial();
@@ -1182,7 +1189,7 @@ export function mountLaboratory(stage) {
   }
 
   function resetCamera() {
-    animateCameraPreset("overview");
+    animateCameraPreset(compositionHasItems ? "overview" : "experiment");
   }
 
   function runPerformanceAudit() {
