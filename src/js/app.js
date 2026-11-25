@@ -1,6 +1,7 @@
 import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
+import { renderLabInspector } from "./features/laboratory/inspector.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
@@ -10,6 +11,8 @@ const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
 
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
+let labController = null;
+let renderCycle = 0;
 
 function showNotice({ title, message, action = false }) {
   if (!notice) return;
@@ -39,15 +42,45 @@ const pwa = createPwaManager({
   onNotice: showNotice
 });
 
+function mountLabScene(cycle) {
+  const stage = appRoot.querySelector("[data-lab-stage]");
+  if (!stage) return;
+
+  import("./features/laboratory/scene.js")
+    .then(({ mountLaboratory }) => {
+      if (cycle !== renderCycle || !stage.isConnected) return;
+      labController = mountLaboratory(stage);
+    })
+    .catch((error) => {
+      if (cycle !== renderCycle || !stage.isConnected) return;
+      const canvasHost = stage.querySelector("[data-lab-canvas]");
+      if (canvasHost) {
+        canvasHost.innerHTML = `
+          <div class="lab-webgl-fallback">
+            <strong>No se pudo cargar el motor 3D</strong>
+            <span>Revisa tu conexión o vuelve a cargar la sección. La biblioteca y el resto del laboratorio siguen disponibles.</span>
+          </div>
+        `;
+      }
+      console.warn("No se pudo cargar el módulo 3D:", error);
+    });
+}
+
 function render() {
+  labController?.dispose();
+  labController = null;
+  const cycle = ++renderCycle;
   const activeView = resolveView(window.location.hash);
   appRoot.innerHTML = renderPage(activeView, libraryState);
+
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
       button.hidden = true;
       button.setAttribute("aria-hidden", "true");
     });
   }
+
+  if (activeView === "lab") mountLabScene(cycle);
 }
 
 function updateLibrary() {
@@ -56,6 +89,15 @@ function updateLibrary() {
   if (results) results.innerHTML = renderLibraryResults(libraryState);
   if (detail) detail.outerHTML = renderLibraryDetail(libraryState.selectedId);
 }
+
+function updateLabInspector(propId) {
+  const inspector = appRoot.querySelector("#lab-inspector");
+  if (inspector) inspector.innerHTML = renderLabInspector(propId);
+}
+
+appRoot.addEventListener("lab:item-selected", (event) => {
+  updateLabInspector(event.detail?.id ?? null);
+});
 
 appRoot.addEventListener("input", (event) => {
   if (event.target.id === "library-search") {
@@ -114,6 +156,11 @@ appRoot.addEventListener("click", async (event) => {
   } else if (action === "close-note-detail") {
     libraryState.selectedId = null;
     updateLibrary();
+  } else if (action === "reset-lab-camera") {
+    labController?.resetCamera();
+  } else if (action === "clear-lab-selection") {
+    labController?.clearSelection();
+    updateLabInspector(null);
   }
 });
 
