@@ -55,7 +55,7 @@ test("short or interrupted samples are not marked as meeting the target", () => 
   assert.match(formatLabPerformanceReport(report), /interrumpida/);
 });
 
-test("active audit restores renderer counters and stops when aborted", async () => {
+test("active audit restores renderer counters after a timed sample", async () => {
   let currentTime = 0;
   let nextFrameId = 0;
   const pending = [];
@@ -99,6 +99,35 @@ test("active audit restores renderer counters and stops when aborted", async () 
   assert.equal(report.render.geometries, 3);
   assert.ok(renderer.info.render.calls >= 0);
   assert.equal(removedListeners.length, 1);
+});
+
+test("audit resolves as interrupted and restores renderer settings when aborted", async () => {
+  const controller = new AbortController();
+  let queuedFrame;
+  let removed = false;
+  const renderer = {
+    info: { autoReset: true, render: { calls: 0, triangles: 0 }, memory: { geometries: 1, textures: 1 }, reset() {} },
+    capabilities: { maxTextureSize: 2048 },
+    domElement: { width: 320, height: 240, clientWidth: 320, clientHeight: 240 },
+    render() {},
+    getContext() { return { isContextLost: () => false }; }
+  };
+  const resultPromise = runLaboratoryPerformanceAudit({
+    renderer, scene: {}, camera: {}, signal: controller.signal,
+    now: () => 0,
+    requestFrame(callback) { queuedFrame = callback; return 1; },
+    cancelFrame() {},
+    isHidden: () => false,
+    onVisibilityChange() {},
+    removeVisibilityChange() { removed = true; }
+  });
+  controller.abort();
+  const report = await resultPromise;
+  assert.equal(report.status, "interrupted");
+  assert.equal(report.evaluation, "incomplete");
+  assert.equal(renderer.info.autoReset, true);
+  assert.equal(removed, true);
+  assert.equal(typeof queuedFrame, "function");
 });
 
 test("audit rejects incomplete renderer inputs", async () => {
