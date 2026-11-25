@@ -4,7 +4,8 @@ import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-li
 import { renderLabInspector } from "./features/laboratory/inspector.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
-import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";\nimport { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
+import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
+import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
@@ -15,7 +16,8 @@ const noticeAction = document.querySelector("#app-notice-action");
 
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 let mixingState = createMixState();
-let analysisDirection = "balanced";\nlet evolutionStage = "opening";
+let analysisDirection = "balanced";
+let evolutionStage = "opening";
 let selectedLabPropId = null;
 let labController = null;
 let renderCycle = 0;
@@ -103,7 +105,12 @@ function updateLabInspector(propId = selectedLabPropId) {
   if (inspector) inspector.innerHTML = renderLabInspector(propId, mixingState);
 }
 
-function updateEvolutionSimulator() {\n  const panel = appRoot.querySelector("#evolution-simulator");\n  if (panel) panel.outerHTML = renderEvolutionSimulator(mixingState, evolutionStage);\n}\n\nfunction updateCreativeAnalysis() {
+function updateEvolutionSimulator() {
+  const panel = appRoot.querySelector("#evolution-simulator");
+  if (panel) panel.outerHTML = renderEvolutionSimulator(mixingState, evolutionStage);
+}
+
+function updateCreativeAnalysis() {
   const panel = appRoot.querySelector("#creative-analysis");
   if (panel) panel.outerHTML = renderCreativeAnalysis(mixingState, analysisDirection);
 }
@@ -180,7 +187,14 @@ appRoot.addEventListener("click", async (event) => {
     return;
   }
 
-  const evolutionTarget = event.target.closest("[data-evolution-stage]");\n  if (evolutionTarget) {\n    evolutionStage = evolutionTarget.dataset.evolutionStage;\n    updateEvolutionSimulator();\n    return;\n  }\n\n  const removeMixTarget = event.target.closest("[data-remove-mix-note]");
+  const evolutionTarget = event.target.closest("[data-evolution-stage]");
+  if (evolutionTarget) {
+    evolutionStage = evolutionTarget.dataset.evolutionStage;
+    updateEvolutionSimulator();
+    return;
+  }
+
+  const removeMixTarget = event.target.closest("[data-remove-mix-note]");
   if (removeMixTarget) {
     mixingState = removeMixNote(mixingState, removeMixTarget.dataset.removeMixNote);
     updateMixStudio();
