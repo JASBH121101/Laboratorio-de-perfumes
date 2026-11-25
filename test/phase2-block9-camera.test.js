@@ -30,7 +30,7 @@ test("Phase 2 Block 9 camera presets and transitions are wired", async () => {
   assert.match(scene, /atelier-architecture/);
   assert.match(scene, /experimentBackground/);
   assert.match(scene, /roomArchitectureGroup\.visible = false/);
-  assert.match(scene, /target\.set\(0, 1\.12, -1\.2\)/);
+  assert.match(scene, /target\.set\(0, 1\.14, -1\.05\)/);
   assert.match(scene, /return experimentMode/);
   assert.match(scene, /if \(preset === "overview" \|\| preset === "bottle" \|\| preset === "workbench"\)/);
   assert.match(scene, /stage\.dataset\.cameraPreset = preset/);
