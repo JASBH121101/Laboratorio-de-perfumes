@@ -35,11 +35,12 @@ test("manual pointer, wheel and keyboard controls interrupt a running camera tra
 
 test("camera preset controls are accessible and the app connects each button to the controller", () => {
   for (const preset of ["overview", "bottle", "workbench"]) {
-    assert.ok(view.includes(`data-action="camera-preset-${preset}"`));
+    assert.ok(view.includes(`data-camera-preset="${preset}"`));
   }
   assert.match(view, /role="group" aria-label="Encuadres de cámara"/);
   assert.match(view, /aria-pressed="true"/);
-  assert.match(app, /labController\?\.setCameraPreset\?\.\(preset\)/);
+  assert.match(app, /labController\?\.setCameraPreset\?\.\(cameraPreset\)/);
+  assert.match(app, /button\.dataset\.cameraPreset === cameraPreset/);
   assert.match(app, /button\.setAttribute\("aria-pressed", String\(active\)\)/);
 });
 
