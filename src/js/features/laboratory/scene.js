@@ -718,13 +718,18 @@ export function mountLaboratory(stage) {
 
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 80);
   const target = new THREE.Vector3(0, 1.12, 0);
-  let theta = 0.74;
-  let phi = 1.05;
-  let radius = LAB_RENDER_CONFIG.initialCameraRadius;
+  // Default to a composed frontal experiment view instead of an exterior room angle.
+  let theta = 0;
+  let phi = 1.12;
+  let radius = 8.8;
+  const CAMERA_LIMITS = Object.freeze({ theta: 1.08, phiMin: 0.72, phiMax: 1.38, radiusMin: 5.8, radiusMax: 11.8 });
   let cameraTransition = null;
   let cameraTransitionFrame = 0;
 
   const updateCamera = () => {
+    theta = THREE.MathUtils.clamp(theta, -CAMERA_LIMITS.theta, CAMERA_LIMITS.theta);
+    phi = THREE.MathUtils.clamp(phi, CAMERA_LIMITS.phiMin, CAMERA_LIMITS.phiMax);
+    radius = THREE.MathUtils.clamp(radius, CAMERA_LIMITS.radiusMin, CAMERA_LIMITS.radiusMax);
     const sinPhi = Math.sin(phi);
     camera.position.set(
       target.x + radius * sinPhi * Math.sin(theta),
@@ -943,9 +948,9 @@ export function mountLaboratory(stage) {
 
   function animateCameraPreset(preset) {
     const presets = {
-      overview: { theta: 0.74, phi: 1.05, radius: LAB_RENDER_CONFIG.initialCameraRadius, target: [0, 1.12, 0] },
-      workbench: { theta: 0.18, phi: 1.18, radius: 8.5, target: [0, 0.94, 0.08] },
-      bottle: { theta: 0.52, phi: 1.22, radius: 6.35, target: [0, 1.38, 0.12] }
+      overview: { theta: 0, phi: 1.12, radius: 8.8, target: [0, 1.02, 0.48] },
+      workbench: { theta: 0, phi: 1.18, radius: 7.8, target: [0, 0.94, 0.12] },
+      bottle: { theta: 0, phi: 1.22, radius: 5.8, target: [0, 1.38, 0.12] }
     };
     const destination = presets[preset] || presets.overview;
     stopCameraTransition();
@@ -1007,7 +1012,7 @@ export function mountLaboratory(stage) {
     if (activePointers.size >= 2) {
       const distance = pointerDistance();
       if (lastPinch !== null && distance !== null) {
-        radius = THREE.MathUtils.clamp(radius + (lastPinch - distance) * 0.018, LAB_RENDER_CONFIG.minCameraRadius, LAB_RENDER_CONFIG.maxCameraRadius);
+        radius = THREE.MathUtils.clamp(radius + (lastPinch - distance) * 0.018, CAMERA_LIMITS.radiusMin, CAMERA_LIMITS.radiusMax);
       }
       lastPinch = distance;
       didMove = true;
@@ -1018,8 +1023,8 @@ export function mountLaboratory(stage) {
     if (!pointerStart) return;
     if (Math.abs(event.clientX - pointerStart.x) + Math.abs(event.clientY - pointerStart.y) > 3) didMove = true;
     if (didMove) {
-      theta -= dx * 0.008;
-      phi = THREE.MathUtils.clamp(phi + dy * 0.006, 0.62, 1.42);
+      theta = THREE.MathUtils.clamp(theta - dx * 0.008, -CAMERA_LIMITS.theta, CAMERA_LIMITS.theta);
+      phi = THREE.MathUtils.clamp(phi + dy * 0.006, CAMERA_LIMITS.phiMin, CAMERA_LIMITS.phiMax);
       updateCamera();
     }
   }
@@ -1043,7 +1048,7 @@ export function mountLaboratory(stage) {
   function onWheel(event) {
     stopCameraTransition();
     event.preventDefault();
-    radius = THREE.MathUtils.clamp(radius + event.deltaY * 0.004, LAB_RENDER_CONFIG.minCameraRadius, LAB_RENDER_CONFIG.maxCameraRadius);
+    radius = THREE.MathUtils.clamp(radius + event.deltaY * 0.004, CAMERA_LIMITS.radiusMin, CAMERA_LIMITS.radiusMax);
     updateCamera();
   }
 
@@ -1073,10 +1078,10 @@ export function mountLaboratory(stage) {
       phi = THREE.MathUtils.clamp(phi + step, 0.62, 1.42);
       updateCamera();
     } else if (event.key === "+" || event.key === "=") {
-      radius = Math.max(LAB_RENDER_CONFIG.minCameraRadius, radius - 0.45);
+      radius = Math.max(CAMERA_LIMITS.radiusMin, radius - 0.45);
       updateCamera();
     } else if (event.key === "-") {
-      radius = Math.min(LAB_RENDER_CONFIG.maxCameraRadius, radius + 0.45);
+      radius = Math.min(CAMERA_LIMITS.radiusMax, radius + 0.45);
       updateCamera();
     }
   }
