@@ -150,6 +150,7 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 14. Analytical Chart System | Improve family distribution, sensory profile and pyramid coverage with responsive visual charts and accessible labels | **Completed — merged in PR #25; CI certified** |
 | 15. Vessel & Glass Realism | Refine flacons, vials, liquid surfaces, meniscus, graduated glass and pipette details with Android-conscious PBR | **Completed — implementation merged after CI; physical Android visual/performance sign-off pending** |
 | 16. Environmental Surface Realism | Refine mineral wall finish, honed stone response and low-cost contact-shadow falloff without increasing mobile render cost | **Implemented — CI certified; physical Android visual review pending** |
+| 17. Android Interaction & Camera Reliability | Repair touch camera presets, synchronize selected state, improve portrait framing and correct clipped scene status | **Implemented — CI/device visual validation pending** |
 
 ## 8. Block 1 acceptance record
 
@@ -528,3 +529,28 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] PWA shell cache advances to `shell-v25`; no new dependency, paid asset or remote texture.
 - [ ] Inspect wall texture scale, tabletop highlights, shadow halos/z-fighting and scene readability on the physical Android device.
 - [ ] Run the Block 12 repeated performance, thermal, battery and offline-reopen protocol before device certification.
+
+
+## 24. Block 17 implementation record — Android Interaction & Camera Reliability
+
+- Removed the empty-composition guard that forced every camera selection back into Experiment mode. Atelier, Bottle and Workbench presets now remain usable even before a formula is populated.
+- Decoupled the scene presentation mode from composition state. Empty composition still opens in the focused Experiment view; crossing between empty and active composition states still selects the intended default view.
+- Camera presets publish their active ID on the stage. The app now synchronizes the selected button and `aria-pressed` state from that ID after clicks, recentering and composition changes.
+- Recenter now returns to the overview of the current scene mode instead of always forcing Experiment whenever the mix is empty.
+- Camera preset distances and targets were recalibrated for a wider 40-degree field of view and portrait-stage aspect compensation.
+- Rebuilt the stage status markup so the green readiness dot no longer applies its 6 px width to the text label. Compact Spanish mode labels fit the mobile header.
+- Camera controls now have 40 px mobile touch targets, distinct selected styling and a separate keyboard focus outline.
+- Advanced the PWA shell cache to `shell-v26`. No new dependencies, remote assets, paid services or continuous render loop were added.
+
+### Acceptance record
+
+- [x] Atelier, Frasco and Mesa are accepted with an empty composition and invoke their own camera preset.
+- [x] Experiment, Atelier, Frasco and Mesa state is synchronized with the selected control and `aria-pressed`.
+- [x] Composition transitions continue to select Experiment when cleared and Atelier overview when populated.
+- [x] Recenter preserves the current scene mode.
+- [x] Portrait aspect framing is compensated and camera presets use adjusted target distances.
+- [x] Mobile stage status dot/text layout is separated and no longer clips the label.
+- [x] Camera controls meet the 40 px mobile touch-target minimum.
+- [x] Regression tests, syntax validation and PWA foundation validation pass.
+- [ ] Physically verify all four buttons, camera transitions, pinch/orbit and composition changes on Android after deployment.
+- [ ] Inspect actual model scale, glass appearance, material quality and frame-time on the target Android device.
