@@ -53,3 +53,11 @@ test("contact shadows are placed beneath each prop and the workbench legs", () =
   assert.match(scene, /for \(const x of \[-4\.15, 4\.15\]\)/);
   assert.match(scene, /isContactShadow/);
 });
+
+
+test("contact-shadow decal has a stronger central contact core and soft outer falloff", () => {
+  assert.match(scene, /createRadialGradient\(80, 80, 2, 80, 80, 76\)/);
+  assert.match(scene, /rgba\(10, 8, 11, 0\.58\)/);
+  assert.match(scene, /opacity: 0\.66/);
+  assert.match(scene, /polygonOffsetFactor: -1/);
+});

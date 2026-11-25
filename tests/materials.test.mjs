@@ -46,3 +46,17 @@ test("shared PBR library includes dedicated transparent lab-vessel glass", () =>
   assert.match(materialModule, /ior: 1\.47/);
   assert.match(materialModule, /vesselGlass,/);
 });
+
+
+test("atelier walls use a subtle locally generated mineral-plaster finish", () => {
+  assert.match(materialModule, /function createPlasterMaps/);
+  assert.match(materialModule, /const plasterMaps = createPlasterMaps\(size, anisotropy\)/);
+  assert.match(materialModule, /map: plasterMaps\.color \|\| null/);
+  assert.match(materialModule, /bumpMap: plasterMaps\.bump \|\| null/);
+  assert.match(materialModule, /bumpScale: 0\.009/);
+  assert.match(materialModule, /roughness: 0\.94/);
+});
+
+test("workbench stone uses a restrained honed finish", () => {
+  assert.match(materialModule, /bumpScale: 0\.012,\s*roughness: 0\.7,\s*metalness: 0\.015/);
+});

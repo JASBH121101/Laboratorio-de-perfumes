@@ -131,6 +131,60 @@ function createStoneMaps(size, anisotropy) {
   };
 }
 
+function createPlasterMaps(size, anisotropy) {
+  const colorSource = makeCanvas(size, "#e9e2e4");
+  const bumpSource = makeCanvas(size, "#808080");
+  if (!colorSource || !bumpSource) return { color: null, bump: null };
+
+  const { context: colorContext } = colorSource;
+  const { context: bumpContext } = bumpSource;
+  const gradient = colorContext.createLinearGradient(0, 0, size, size);
+  gradient.addColorStop(0, "#f0e9e9");
+  gradient.addColorStop(0.52, "#e8e0e2");
+  gradient.addColorStop(1, "#e1d8dc");
+  colorContext.fillStyle = gradient;
+  colorContext.fillRect(0, 0, size, size);
+
+  // Deterministic, low-contrast mineral variation keeps the finish readable on mobile.
+  for (let index = 0; index < size * 3; index += 1) {
+    const x = (index * 73) % size;
+    const y = (index * 131) % size;
+    const radius = 1 + (index % 3);
+    colorContext.beginPath();
+    colorContext.ellipse(x, y, radius * 1.4, radius, (index % 5) * 0.31, 0, Math.PI * 2);
+    colorContext.fillStyle = index % 4 === 0
+      ? "rgba(91, 70, 82, 0.035)"
+      : "rgba(255, 249, 244, 0.055)";
+    colorContext.fill();
+
+    const relief = 116 + (index % 5) * 7;
+    bumpContext.beginPath();
+    bumpContext.ellipse(x, y, radius * 1.4, radius, (index % 5) * 0.31, 0, Math.PI * 2);
+    bumpContext.fillStyle = `rgb(${relief}, ${relief}, ${relief})`;
+    bumpContext.fill();
+  }
+
+  for (let x = 11; x < size; x += 23) {
+    colorContext.beginPath();
+    colorContext.moveTo(x, 0);
+    colorContext.lineTo(x + 2, size);
+    colorContext.strokeStyle = "rgba(89, 68, 79, 0.018)";
+    colorContext.lineWidth = 1;
+    colorContext.stroke();
+    bumpContext.beginPath();
+    bumpContext.moveTo(x, 0);
+    bumpContext.lineTo(x + 2, size);
+    bumpContext.strokeStyle = "rgba(112, 112, 112, 0.12)";
+    bumpContext.lineWidth = 1;
+    bumpContext.stroke();
+  }
+
+  return {
+    color: createTexture(colorSource.canvas, { anisotropy, repeatX: 2.4, repeatY: 1.5, colorMap: true }),
+    bump: createTexture(bumpSource.canvas, { anisotropy, repeatX: 2.4, repeatY: 1.5 })
+  };
+}
+
 function createBrushedBrassMaps(size, anisotropy) {
   const colorSource = makeCanvas(size, "#D0B07A");
   const roughnessSource = makeCanvas(size, "#8A8A8A");
@@ -166,6 +220,7 @@ export function createAtelierMaterials({ maxAnisotropy = 1, textureSize = 256 } 
   const woodMaps = createWoodMaps(size, anisotropy);
   const stoneMaps = createStoneMaps(size, anisotropy);
   const brassMaps = createBrushedBrassMaps(size, anisotropy);
+  const plasterMaps = createPlasterMaps(size, anisotropy);
 
   const walnut = new THREE.MeshStandardMaterial({
     color: 0xffffff,
@@ -195,8 +250,8 @@ export function createAtelierMaterials({ maxAnisotropy = 1, textureSize = 256 } 
     color: 0x8f8177,
     map: stoneMaps.color || null,
     bumpMap: stoneMaps.bump || null,
-    bumpScale: 0.018,
-    roughness: 0.78,
+    bumpScale: 0.012,
+    roughness: 0.7,
     metalness: 0.015
   });
   const brass = new THREE.MeshStandardMaterial({
@@ -208,8 +263,11 @@ export function createAtelierMaterials({ maxAnisotropy = 1, textureSize = 256 } 
   });
   const wall = new THREE.MeshStandardMaterial({
     color: 0x302630,
-    roughness: 0.88,
-    metalness: 0.01
+    map: plasterMaps.color || null,
+    bumpMap: plasterMaps.bump || null,
+    bumpScale: 0.009,
+    roughness: 0.94,
+    metalness: 0
   });
   const lacquer = new THREE.MeshPhysicalMaterial({
     color: 0x563541,
