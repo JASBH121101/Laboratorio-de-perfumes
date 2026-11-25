@@ -1,5 +1,6 @@
 import { renderPerfumeLibrary } from "../features/perfume-library/library.js";
 import { renderLabInspector } from "../features/laboratory/inspector.js";
+import { renderMixStudio } from "../features/laboratory/mixing/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -52,12 +53,12 @@ function homeView() {
   `;
 }
 
-function labView() {
+function labView(mixingState) {
   return `
     <section class="page-intro lab-page-intro">
       <p class="eyebrow">BLOCK 04 · INTERACTIVE WORKSPACE</p>
       <h1>Laboratorio <em>3D</em></h1>
-      <p>Una mesa de exploración tridimensional para inspeccionar los objetos del atelier. La composición y dosificación conceptual llegarán en el Bloque 5.</p>
+      <p>Explorá objetos 3D y comenzá una composición creativa con notas de la biblioteca. Ajustá su peso visual sin crear una fórmula química.</p>
     </section>
     <div class="lab-overview-strip">
       <span><strong>08</strong><small>OBJETOS INTERACTIVOS</small></span>
@@ -80,7 +81,7 @@ function labView() {
         </div>
       </div>
       <aside class="lab-inspector" id="lab-inspector" aria-live="polite">
-        ${renderLabInspector()}
+        ${renderLabInspector(null, mixingState)}
       </aside>
     </section>
     <section class="lab-gesture-guide" aria-label="Controles del laboratorio 3D">
@@ -88,7 +89,8 @@ function labView() {
       <div><span class="gesture-icon">⊕</span><div><strong>Acercar o alejar</strong><small>Pellizcá con dos dedos o usá la rueda</small></div></div>
       <div><span class="gesture-icon">◎</span><div><strong>Inspeccionar</strong><small>Tocá un objeto para abrir su ficha</small></div></div>
     </section>
-    <p class="lab-boundary-note">Este bloque ofrece inspección visual 3D. No realiza mezclas, no calcula concentraciones ni representa procesos químicos reales.</p>
+    ${renderMixStudio(mixingState)}
+    <p class="lab-boundary-note">Los puntos de composición son ponderaciones creativas abstractas. No representan porcentajes, concentraciones ni dosificaciones reales.</p>
   `;
 }
 
@@ -110,7 +112,7 @@ const viewContent = {
   projects: () => projectsView()
 };
 
-export function renderPage(activeView = "home", libraryState = {}) {
+export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }) {
   const current = viewContent[activeView] ? activeView : "home";
   return `
     <div class="app-shell">
@@ -128,7 +130,7 @@ export function renderPage(activeView = "home", libraryState = {}) {
       </header>
       <div class="layout">
         <aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><nav aria-label="Navegación principal">${navItems.map(item => navLink(item, current)).join("")}</nav><div class="sidebar-bottom"><span class="sidebar-line"></span><small>CREADO PARA EXPLORAR<br>CONCEPTOS OLFATIVOS</small><span class="sidebar-version">3D LABORATORY · V0.4</span></div></aside>
-        <main class="main-content" id="main-content" tabindex="-1">${viewContent[current](libraryState)}</main>
+        <main class="main-content" id="main-content" tabindex="-1">${viewContent[current](current === "lab" ? mixingState : libraryState)}</main>
       </div>
       <nav class="mobile-nav" aria-label="Navegación móvil">${navItems.map(item => navLink(item, current, true)).join("")}</nav>
       <footer class="app-footer"><span>JB VIRTUAL PERFUME LAB</span><span>CREATIVE CONCEPTS · NOT CHEMICAL FORMULAS</span></footer>
