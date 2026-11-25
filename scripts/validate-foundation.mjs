@@ -88,7 +88,7 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v21/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v21, precache the performance audit module and keep valid JavaScript source line breaks.");
+if (!/shell-v22/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v21, precache the performance audit module and keep valid JavaScript source line breaks.");
 if (!scene.includes("runPerformanceAudit") || !scene.includes("performanceAuditAbort?.abort()")) failures.push("3D performance audit must be on-demand and abort on scene disposal.");
 if (!views.includes('data-action="run-lab-performance-audit"') || !views.includes('id="lab-performance-report"')) failures.push("Local performance audit controls and report output are missing.");
 if (!app.includes("formatLabPerformanceReport") || !app.includes("run-lab-performance-audit")) failures.push("Performance report UI is not wired to the local audit.");
