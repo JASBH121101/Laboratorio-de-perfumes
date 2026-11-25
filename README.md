@@ -137,3 +137,8 @@ The main concept flacon now uses a custom beveled ExtrudeGeometry silhouette wit
 ### Laboratory equipment and props — Phase 2 Block 8
 
 The exploration beaker now has a hollow glass wall, thick base, rolled lip and local measurement scale. The pipette has a tapered tip, rounded bulb and metallic graduation bands. The reference tray is now a beveled organizer with a burgundy inset, dividers and brass corner details. Equipment uses a dedicated transparent PBR vessel-glass preset; all eight props remain selectable. PWA cache advances to `shell-v16`.
+
+
+### Cinematic camera presets — Phase 2 Block 9
+
+The 3D stage now exposes three accessible camera framings: General, Frasco and Mesa. Presets use short eased transitions, update their selected state for assistive technology, stop when the user begins orbit/zoom/keyboard navigation, and switch immediately when reduced motion is requested. Manual touch orbit, pinch zoom, wheel and arrow-key controls remain available. The PWA shell cache is now `shell-v18`.
