@@ -107,7 +107,7 @@ function projectsView() {
 
 const viewContent = {
   home: () => homeView(),
-  lab: () => labView(),
+  lab: (mixingState) => labView(mixingState),
   notes: (libraryState) => notesView(libraryState),
   projects: () => projectsView()
 };
