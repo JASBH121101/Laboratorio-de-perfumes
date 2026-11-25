@@ -197,8 +197,9 @@ export function compareArchiveVariants(creation, leftVariantId, rightVariantId) 
   };
 }
 
-export function deleteArchiveCreation(creation, creationId) {
-  return creation.filter((item) => item.id !== creationId);
+export function deleteArchiveCreation(creations, creationId) {
+  if (!Array.isArray(creations)) throw new Error("La lista de creaciones no es válida.");
+  return creations.filter((item) => item.id !== creationId);
 }
 
 function validateVersion(version, previousNumber = 0) {
