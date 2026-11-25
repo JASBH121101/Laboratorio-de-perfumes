@@ -178,7 +178,8 @@ function mountLabScene(cycle) {
       labController = mountLaboratory(stage);
       labController.setComposition(mixingState.items);
       const modeLabel = stage.querySelector("[data-scene-mode-label]");
-      if (modeLabel) modeLabel.textContent = stage.dataset.sceneMode === "experiment" ? "EXPERIMENT VIEW" : "ATELIER VIEW";
+      if (modeLabel) modeLabel.textContent = stage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
+      syncLabCameraPreset(stage);
     })
     .catch((error) => {
       if (cycle !== renderCycle || !stage.isConnected) return;
@@ -186,6 +187,16 @@ function mountLabScene(cycle) {
       if (canvasHost) canvasHost.innerHTML = `<div class="lab-webgl-fallback"><strong>No se pudo cargar el motor 3D</strong><span>Revisa tu conexión o vuelve a cargar la sección. La biblioteca y el resto del laboratorio siguen disponibles.</span></div>`;
       console.warn("No se pudo cargar el módulo 3D:", error);
     });
+}
+
+function syncLabCameraPreset(stage = appRoot.querySelector("[data-lab-stage]")) {
+  const activePreset = stage?.dataset.cameraPreset
+    || (stage?.dataset.sceneMode === "experiment" ? "experiment" : "overview");
+  appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
+    const active = button.dataset.cameraPreset === activePreset;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
 }
 
 function updateLibrary() {
@@ -217,7 +228,8 @@ function updateMixStudio() {
   labController?.setComposition(mixingState.items);
   const sceneStage = appRoot.querySelector("[data-lab-stage]");
   const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
-  if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENT VIEW" : "ATELIER VIEW";
+  if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
+  syncLabCameraPreset(sceneStage);
   updateCreativeAnalysis();
   updateEvolutionSimulator();
   updateLibrary();
@@ -403,16 +415,15 @@ appRoot.addEventListener("click", async (event) => {
 
   const cameraPreset = event.target.closest("[data-camera-preset]")?.dataset.cameraPreset;
   if (cameraPreset) {
-    const actualExperimentMode = labController?.setCameraPreset?.(cameraPreset) === true;
-    const activePreset = actualExperimentMode ? "experiment" : cameraPreset;
+    if (typeof labController?.setCameraPreset !== "function") {
+      showNotice({ title: "Cámara 3D", message: "La escena todavía se está preparando. Probá nuevamente en un instante." });
+      return;
+    }
+    labController.setCameraPreset(cameraPreset);
     const sceneStage = appRoot.querySelector("[data-lab-stage]");
     const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
-    if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENT VIEW" : "ATELIER VIEW";
-    appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
-      const active = button.dataset.cameraPreset === activePreset;
-      button.classList.toggle("is-active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
+    if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
+    syncLabCameraPreset(sceneStage);
     return;
   }
 
@@ -444,16 +455,15 @@ appRoot.addEventListener("click", async (event) => {
       libraryState.selectedId = null;
       updateLibrary();
     } else if (action === "reset-lab-camera") {
-      const experimentMode = labController?.resetCamera?.() === true;
-      const activePreset = experimentMode ? "experiment" : "overview";
+      if (typeof labController?.resetCamera !== "function") {
+        showNotice({ title: "Cámara 3D", message: "La escena todavía se está preparando. Probá nuevamente en un instante." });
+        return;
+      }
+      labController.resetCamera();
       const sceneStage = appRoot.querySelector("[data-lab-stage]");
       const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
-      if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENT VIEW" : "ATELIER VIEW";
-      appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
-        const active = button.dataset.cameraPreset === activePreset;
-        button.classList.toggle("is-active", active);
-        button.setAttribute("aria-pressed", String(active));
-      });
+      if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
+      syncLabCameraPreset(sceneStage);
     } else if (action === "run-lab-performance-audit") {
       const button = appRoot.querySelector("[data-action='run-lab-performance-audit']");
       const reportOutput = appRoot.querySelector("#lab-performance-report");
