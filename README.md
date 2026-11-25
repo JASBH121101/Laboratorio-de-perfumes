@@ -117,3 +117,8 @@ The 3D scene now uses a bounded room footprint instead of an infinite floor plan
 ### Procedural PBR materials — Phase 2 Block 4
 
 The atelier now builds local CanvasTexture maps for walnut grain, warm stone variation and brushed brass, with bump/roughness maps and shared Three.js material presets. Texture size and anisotropy are capped by the active rendering profile and actual GPU capability. Architecture, workbench, shelves, caps and accents reuse shared materials. No external textures, paid asset packs or new runtime packages are fetched; the PWA cache is now `shell-v12`.
+
+
+### Window-led lighting and contact shadows — Phase 2 Block 5
+
+The atelier now has a warm directional key aligned with its side window, cool fill, a rear rim and restrained warm practicals. All device tiers use inexpensive radial contact-shadow decals under props and table legs; PCF soft shadow maps are enabled only for Desktop High. The bottle, vials, beaker, pipette and tray have been repositioned to meet the workbench. The cache version is `shell-v13`.
