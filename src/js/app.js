@@ -2,6 +2,7 @@ import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
 import { renderLabInspector } from "./features/laboratory/inspector.js";
+import { formatLabPerformanceReport } from "./features/laboratory/performance-audit.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
@@ -440,6 +441,26 @@ appRoot.addEventListener("click", async (event) => {
         button.classList.toggle("is-active", active);
         button.setAttribute("aria-pressed", String(active));
       });
+    } else if (action === "run-lab-performance-audit") {
+      const button = appRoot.querySelector("[data-action='run-lab-performance-audit']");
+      const reportOutput = appRoot.querySelector("#lab-performance-report");
+      if (!button || !reportOutput || typeof labController?.runPerformanceAudit !== "function") {
+        showNotice({ title: "Diagnóstico 3D", message: "La escena todavía se está preparando. Intentá de nuevo cuando aparezca SCENE READY." });
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "Midiendo…";
+      reportOutput.hidden = false;
+      reportOutput.textContent = "Ejecutando una prueba breve de renderizado activo. No cierres esta vista.";
+      try {
+        const report = await labController.runPerformanceAudit();
+        reportOutput.textContent = formatLabPerformanceReport(report);
+      } catch (error) {
+        reportOutput.textContent = `No se pudo completar el diagnóstico: ${error instanceof Error ? error.message : "error desconocido"}`;
+      } finally {
+        button.disabled = false;
+        button.textContent = "Medir de nuevo";
+      }
     } else if (action === "clear-lab-selection") {
       labController?.clearSelection();
       updateLabInspector(null);
