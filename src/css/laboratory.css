@@ -448,3 +448,22 @@
 .lab-camera-presets button:hover,.lab-camera-presets button:focus-visible { border-color:rgba(217,178,124,.5); background:rgba(217,178,124,.13); color:var(--accent); outline:none; }
 @media (max-width:520px) { .lab-camera-presets { top:54px; } .lab-camera-presets button { min-height:32px; padding:0 12px; font-size:10px; } }
 @media (prefers-reduced-motion: reduce) { .lab-camera-presets button { transition:none; } }
+
+
+/* Phase 2 Block 11 — stage finish grade */
+.lab-stage {
+  --stage-vignette: .2;
+}
+.lab-stage[data-visual-tier="mobile-lite"] { --stage-vignette: .15; }
+.lab-stage[data-visual-tier="mobile-standard"] { --stage-vignette: .21; }
+.lab-stage[data-visual-tier="desktop-high"] { --stage-vignette: .27; }
+.lab-stage::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 47% 36%, rgba(255,231,202,.055) 0%, rgba(255,231,202,0) 56%),
+    radial-gradient(ellipse at 50% 48%, rgba(8,6,10,0) 48%, rgba(8,6,10,var(--stage-vignette)) 100%);
+}
