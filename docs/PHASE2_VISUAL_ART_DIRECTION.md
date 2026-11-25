@@ -147,7 +147,8 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 11. Post-Processing & Final Visual Effects | Tier-gated subtle effects, exposure/color grading and visual regression checks | **Completed — profile grade and lightweight vignette integrated** |
 | 12. Android Performance & Visual Certification | On-device FPS/frame-time audit, draw calls/triangles/resource counts, adaptive-tier verification, visual/offline regression and manual thermal/battery observation | **In progress — local audit harness and regression checks implemented; physical Android sign-off pending** |
 | 13. Focused Experiment View | Hide architectural room when composition is empty; front camera, clean background, automatic return to atelier when a composition becomes active | **Completed — merged in PR #24; physical Android verification pending** |
-| 14. Analytical Chart System | Improve family distribution, sensory profile and pyramid coverage with responsive visual charts and accessible labels | **In progress — implementation on feature branch** |
+| 14. Analytical Chart System | Improve family distribution, sensory profile and pyramid coverage with responsive visual charts and accessible labels | **Completed — merged in PR #25; CI certified** |
+| 15. Vessel & Glass Realism | Refine flacons, vials, liquid surfaces, meniscus, graduated glass and pipette details with Android-conscious PBR | **In progress — implementation on feature branch** |
 
 ## 8. Block 1 acceptance record
 
@@ -487,10 +488,21 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 
 ## 21. Block 14 implementation record — Analytical Chart System
 
-- [ ] Family distribution donut with total creative points in the center and accessible legend.
-- [ ] Sensory-profile radar using the existing six heuristic signals.
-- [ ] Pyramid-coverage cards gain relative visual bars.
-- [ ] Empty state remains graph-free and clearly explains how to populate analysis.
-- [ ] Responsive SVG/CSS graphics, no new runtime dependencies.
-- [ ] PWA shell cache advances to `shell-v23`.
-- [ ] Regression tests and foundation validation pass.
+- [x] Family distribution donut with total creative points in the center and accessible legend — merged in PR #25.
+- [x] Sensory-profile radar using the existing six heuristic signals — merged in PR #25.
+- [x] Pyramid-coverage cards gain relative visual bars — merged in PR #25.
+- [x] Empty state remains graph-free and clearly explains how to populate analysis.
+- [x] Responsive SVG/CSS graphics, no new runtime dependencies.
+- [x] PWA shell cache advances to `shell-v23`.
+- [x] Regression tests and foundation validation pass.
+
+## 22. Block 15 implementation record — Vessel & Glass Realism
+
+- [ ] Flacon liquid volume has rounded edges and a believable visible surface.
+- [ ] Vials use a rounded glass profile, curved liquid fill and a clear meniscus.
+- [ ] Beaker uses a thicker base, inner lip, meniscus surface and graduated visual ticks.
+- [ ] Graduations do not claim calibrated mL or real measured volume.
+- [ ] Glass PBR values balance transmission and Android performance.
+- [ ] Pipette bulb, collar and labels receive tactile detail.
+- [ ] PWA shell cache advances to `shell-v24`.
+- [ ] Unit tests, syntax checks and foundation validation pass.
