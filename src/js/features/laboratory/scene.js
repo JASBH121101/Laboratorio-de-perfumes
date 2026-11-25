@@ -17,19 +17,25 @@ function makeLabelTexture(title, subtitle = "JB ATELIER") {
   const context = canvas.getContext("2d");
   if (!context) return null;
 
-  context.fillStyle = "#211820";
+  context.fillStyle = "#eee5d6";
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.strokeStyle = "#d9b27c";
-  context.lineWidth = 5;
+  for (let index = 0; index < 220; index += 1) {
+    const x = (index * 73) % canvas.width;
+    const y = (index * 47) % canvas.height;
+    context.fillStyle = index % 2 ? "rgba(91, 68, 48, 0.035)" : "rgba(255, 255, 255, 0.12)";
+    context.fillRect(x, y, 1, 1);
+  }
+  context.strokeStyle = "#a98558";
+  context.lineWidth = 3;
   context.strokeRect(9, 9, canvas.width - 18, canvas.height - 18);
   context.textAlign = "center";
-  context.fillStyle = "#d9b27c";
+  context.fillStyle = "#80623f";
   context.font = "600 25px Georgia";
   context.fillText(subtitle, 256, 70);
-  context.fillStyle = "#f5eee9";
+  context.fillStyle = "#30252a";
   context.font = "600 39px Georgia";
   context.fillText(title.toUpperCase().slice(0, 20), 256, 145);
-  context.fillStyle = "#b9a6ae";
+  context.fillStyle = "#75666a";
   context.font = "500 17px Arial";
   context.fillText("PERFUMERÍA JB", 256, 194);
 
@@ -65,8 +71,9 @@ function createMainBottle(prop, materials) {
   const body = new THREE.Mesh(createFlaconGeometry(), glass);
   group.add(body);
 
-  const inner = new THREE.Mesh(new THREE.BoxGeometry(0.63, 0.48, 0.18), liquid);
+  const inner = new THREE.Mesh(createRoundedPlateGeometry(0.63, 0.48, 0.18, 0.075), liquid);
   inner.position.set(0, 0.37, 0);
+  inner.userData.isConceptualLiquid = true;
   group.add(inner);
 
   const dipTube = new THREE.Mesh(
@@ -136,19 +143,40 @@ function createMainBottle(prop, materials) {
 function createVial(prop, materials) {
   const group = new THREE.Group();
   const glass = materials.bottleGlass;
-  const liquid = new THREE.MeshStandardMaterial({
-    color: color(prop.color),
-    roughness: 0.3,
-    transparent: true,
-    opacity: 0.8
-  });
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.21, 0.57, 32), glass);
-  body.position.y = 0.3;
+  const bodyProfile = [
+    new THREE.Vector2(0, 0.012), new THREE.Vector2(0.15, 0.012),
+    new THREE.Vector2(0.19, 0.035), new THREE.Vector2(0.205, 0.075),
+    new THREE.Vector2(0.205, 0.475), new THREE.Vector2(0.198, 0.52),
+    new THREE.Vector2(0.17, 0.565), new THREE.Vector2(0, 0.565)
+  ];
+  const body = new THREE.Mesh(new THREE.LatheGeometry(bodyProfile, 40), glass);
   group.add(body);
 
-  const contents = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.185, 0.24, 28), liquid);
-  contents.position.y = 0.16;
+  const liquidMaterial = new THREE.MeshPhysicalMaterial({
+    color: color(prop.color), roughness: 0.16, metalness: 0,
+    transmission: 0.06, thickness: 0.08, transparent: true, opacity: 0.9,
+    clearcoat: 0.72, clearcoatRoughness: 0.08
+  });
+  const contentProfile = [
+    new THREE.Vector2(0, 0.035), new THREE.Vector2(0.15, 0.035),
+    new THREE.Vector2(0.18, 0.055), new THREE.Vector2(0.18, 0.235),
+    new THREE.Vector2(0.165, 0.265), new THREE.Vector2(0.13, 0.278),
+    new THREE.Vector2(0, 0.278)
+  ];
+  const contents = new THREE.Mesh(new THREE.LatheGeometry(contentProfile, 36), liquidMaterial);
   group.add(contents);
+  const liquidSurface = new THREE.Mesh(new THREE.CircleGeometry(0.15, 36), liquidMaterial);
+  liquidSurface.rotation.x = -Math.PI / 2;
+  liquidSurface.position.set(0, 0.269, 0);
+  group.add(liquidSurface);
+  const liquidMeniscus = new THREE.Mesh(new THREE.TorusGeometry(0.155, 0.004, 6, 36), liquidMaterial);
+  liquidMeniscus.rotation.x = Math.PI / 2;
+  liquidMeniscus.position.y = 0.263;
+  group.add(liquidMeniscus);
+  const glassHeel = new THREE.Mesh(new THREE.TorusGeometry(0.185, 0.009, 8, 40), glass);
+  glassHeel.rotation.x = Math.PI / 2;
+  glassHeel.position.y = 0.045;
+  group.add(glassHeel);
 
   const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.12, 0.14, 20), glass);
   neck.position.y = 0.66;
@@ -196,21 +224,22 @@ function makeMeasurementTexture() {
   const context = canvas.getContext("2d");
   if (!context) return null;
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.strokeStyle = "rgba(244, 235, 218, 0.86)";
-  context.fillStyle = "rgba(244, 235, 218, 0.92)";
-  context.lineWidth = 3;
-  context.font = "600 15px Arial";
+  context.strokeStyle = "rgba(238, 229, 214, 0.82)";
+  context.fillStyle = "rgba(238, 229, 214, 0.9)";
+  context.lineWidth = 2;
+  context.font = "700 11px Arial";
   context.textAlign = "left";
-  for (let index = 0; index < 6; index += 1) {
-    const y = 24 + index * 39;
-    const length = index % 2 === 0 ? 74 : 48;
+  context.fillText("JB", 6, 15);
+  for (let index = 0; index < 9; index += 1) {
+    const y = 34 + index * 23;
+    const length = index % 4 === 0 ? 74 : index % 2 === 0 ? 48 : 30;
     context.beginPath();
     context.moveTo(48, y);
     context.lineTo(48 + length, y);
     context.stroke();
-    if (index % 2 === 0) context.fillText(String(250 - index * 50), 4, y + 5);
   }
-  context.fillText("mL", 4, 250);
+  context.font = "600 9px Arial";
+  context.fillText("VISUAL INDEX", 5, 246);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
@@ -231,21 +260,28 @@ function createBeaker(materials) {
   group.add(walls);
 
   const base = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.42, 0.42, 0.065, 40),
+    new THREE.CylinderGeometry(0.42, 0.42, 0.065, 48),
     glass
   );
   base.position.y = 0.025;
   group.add(base);
+  const innerBase = new THREE.Mesh(new THREE.CylinderGeometry(0.365, 0.365, 0.018, 48), glass);
+  innerBase.position.y = 0.068;
+  group.add(innerBase);
 
   const rim = new THREE.Mesh(new THREE.TorusGeometry(0.365, 0.022, 10, 48), glass);
   rim.rotation.x = Math.PI / 2;
   rim.position.y = 0.74;
   group.add(rim);
 
-  const foot = new THREE.Mesh(new THREE.TorusGeometry(0.405, 0.012, 8, 40), materials.vesselGlass);
+  const foot = new THREE.Mesh(new THREE.TorusGeometry(0.405, 0.012, 10, 48), materials.vesselGlass);
   foot.rotation.x = Math.PI / 2;
   foot.position.y = 0.058;
   group.add(foot);
+  const innerLip = new THREE.Mesh(new THREE.TorusGeometry(0.343, 0.007, 8, 48), glass);
+  innerLip.rotation.x = Math.PI / 2;
+  innerLip.position.y = 0.724;
+  group.add(innerLip);
 
   const measurementTexture = makeMeasurementTexture();
   if (measurementTexture) {
@@ -263,29 +299,34 @@ function createBeaker(materials) {
     group.add(scaleLabel);
   }
 
-  const mixLiquid = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.32, 0.38, 0.36, 32),
-    new THREE.MeshStandardMaterial({
-      color: 0xc8a46c,
-      roughness: 0.26,
-      metalness: 0.02,
-      transparent: true,
-      opacity: 0.78
-    })
-  );
+  const liquidMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xc8a46c, roughness: 0.16, metalness: 0,
+    transmission: 0.08, thickness: 0.1, transparent: true, opacity: 0.9,
+    clearcoat: 0.8, clearcoatRoughness: 0.07
+  });
+  const mixLiquid = new THREE.Group();
+  mixLiquid.name = "conceptual-liquid-volume";
+  mixLiquid.add(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.38, 0.36, 48, 1, false), liquidMaterial));
+  const liquidSurface = new THREE.Mesh(new THREE.CircleGeometry(0.32, 48), liquidMaterial);
+  liquidSurface.rotation.x = -Math.PI / 2;
+  liquidSurface.position.y = 0.18;
+  mixLiquid.add(liquidSurface);
+  const meniscus = new THREE.Mesh(new THREE.TorusGeometry(0.315, 0.006, 8, 48), liquidMaterial);
+  meniscus.rotation.x = Math.PI / 2;
+  meniscus.position.y = 0.176;
+  mixLiquid.add(meniscus);
   mixLiquid.position.y = 0.2;
+  mixLiquid.userData.material = liquidMaterial;
   mixLiquid.visible = false;
   group.add(mixLiquid);
   group.userData.mixLiquid = mixLiquid;
 
-  const markMaterial = new THREE.MeshStandardMaterial({
-    color: 0xd9c6a7,
-    roughness: 0.48,
-    metalness: 0.08
-  });
-  for (let index = 0; index < 3; index += 1) {
-    const mark = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.014, 0.018), markMaterial);
-    mark.position.set(0.31, 0.2 + index * 0.16, 0.25);
+  const markMaterial = new THREE.MeshBasicMaterial({ color: 0xe8ddca, transparent: true, opacity: 0.82 });
+  for (let index = 0; index < 13; index += 1) {
+    const major = index % 4 === 0;
+    const width = major ? 0.12 : index % 2 === 0 ? 0.085 : 0.055;
+    const mark = new THREE.Mesh(new THREE.BoxGeometry(width, 0.006, 0.008), markMaterial);
+    mark.position.set(0.205 + width / 2, 0.14 + index * 0.043, 0.345);
     group.add(mark);
   }
   return group;
@@ -304,9 +345,14 @@ function createPipette(materials) {
   tip.position.x = 0.57;
   group.add(tip);
 
-  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 16), materials.lacquer);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 20), materials.lacquer);
+  bulb.scale.set(1.08, 0.84, 0.84);
   bulb.position.x = -0.58;
   group.add(bulb);
+  const bulbCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.055, 24), materials.brass);
+  bulbCollar.rotation.z = Math.PI / 2;
+  bulbCollar.position.x = -0.445;
+  group.add(bulbCollar);
 
   for (const x of [-0.22, 0.02, 0.25]) {
     const band = new THREE.Mesh(
@@ -1188,7 +1234,7 @@ export function mountLaboratory(stage) {
     }
 
     const level = 0.12 + Math.min(entries.length, 6) * 0.035;
-    liquid.material.color.copy(blended);
+    liquid.userData.material.color.copy(blended);
     liquid.scale.y = level / 0.36;
     liquid.position.y = 0.025 + level / 2;
     liquid.visible = true;
