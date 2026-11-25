@@ -28,7 +28,7 @@ Pointer interaction supports one-finger orbit, two-finger pinch zoom and tap-to-
 
 ## Three.js delivery and offline behavior
 
-Three.js is pinned to 0.187.0 from jsDelivr. The PWA install attempts to precache the exact CORS-enabled module; that optional network fetch is isolated so a CDN outage cannot block the service-worker installation. Cross-origin fetch handling is restricted to the single pinned Three.js module URL. If it is successfully cached, the module can be used offline; otherwise the first opening of the 3D view needs a network connection.
+Three.js is pinned to 0.187.0 from jsDelivr. The app-shell install does not download Three.js. On first use of the 3D view, the service worker caches both the pinned module and its relative core dependency. Cross-origin fetch handling is restricted to those two exact URLs. This keeps PWA installation and updates lighter; the first opening of the 3D view needs a network connection, while later openings can use the cached files offline.
 
 The Three.js license is MIT; see docs/THIRD-PARTY-NOTICES.md.
 
