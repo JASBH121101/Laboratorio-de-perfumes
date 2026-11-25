@@ -231,15 +231,16 @@ export function createAtelierMaterials({ maxAnisotropy = 1, textureSize = 256 } 
     clearcoatRoughness: 0.08
   });
   const vesselGlass = new THREE.MeshPhysicalMaterial({
-    color: 0xb9d0ce,
-    roughness: 0.12,
+    color: 0xdcebe8,
+    roughness: 0.085,
     metalness: 0,
-    transmission: 0.42,
-    thickness: 0.24,
+    transmission: 0.52,
+    thickness: 0.32,
+    ior: 1.47,
     transparent: true,
-    opacity: 0.48,
-    clearcoat: 0.72,
-    clearcoatRoughness: 0.1,
+    opacity: 0.42,
+    clearcoat: 0.86,
+    clearcoatRoughness: 0.07,
     side: THREE.DoubleSide
   });
   const windowGlass = new THREE.MeshPhysicalMaterial({
