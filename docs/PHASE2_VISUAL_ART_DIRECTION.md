@@ -507,3 +507,20 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] PWA shell cache advances to `shell-v24`.
 - [x] 154 automated tests pass; browser module syntax and PWA foundation validation pass.
 - [ ] Inspect the new scene on a physical Android phone and run the performance/thermal/offline protocol from Block 12.
+
+
+## 23. Block 16 implementation record — Environmental Surface Realism
+
+- Added a locally generated, deterministic mineral-plaster color/bump texture for the atelier walls; the existing dark mauve wall palette is preserved.
+- Recalibrated the workbench stone to a more honed, less aggressively bumped finish so its reflection reads as a broad, restrained surface response.
+- Refined the procedural contact-shadow texture with a tighter central occlusion and a wider, softer falloff. It remains a single lightweight decal per prop/leg; no mobile shadow maps were enabled.
+- Kept the existing procedural panorama, PMREM reflections, window-led lighting, camera modes and event-driven rendering. No new runtime dependency, remote asset, paid service or extra post-processing pass was introduced.
+- Advanced the PWA shell cache to `shell-v25`.
+
+### Acceptance criteria
+
+- [ ] Plaster texture remains subtle at mobile viewing size and preserves the existing room palette.
+- [ ] Contact shadows ground props without visible dark halos or z-fighting.
+- [ ] Countertop reflection and wall texture remain legible across render tiers.
+- [ ] Automated tests, browser syntax validation, foundation validation and deployment pass.
+- [ ] Physical Android visual/performance/thermal/offline protocol from Block 12 is still required before device certification.
