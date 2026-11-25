@@ -38,6 +38,7 @@ test("camera preset controls are accessible and the app connects each button to 
     assert.ok(view.includes(`data-camera-preset="${preset}"`));
   }
   assert.match(view, /role="group" aria-label="Encuadres de cámara"/);
+  assert.equal((view.match(/class="lab-camera-presets"/g) || []).length, 1, "Stage must expose one camera preset group");
   assert.match(view, /aria-pressed="true"/);
   assert.match(app, /labController\?\.setCameraPreset\?\.\(cameraPreset\)/);
   assert.match(app, /button\.dataset\.cameraPreset === cameraPreset/);
