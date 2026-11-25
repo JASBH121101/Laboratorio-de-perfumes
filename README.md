@@ -158,7 +158,11 @@ The renderer now applies subtle exposure and environment-reflection intensity se
 
 The Laboratory includes an opt-in local performance audit. Press **Medir rendimiento** to run a short active-render sample and review average FPS, frame timing, draw-call/triangle averages, resource counters, device capability fields and the active quality tier. The test stops when the view is closed or the tab is hidden and does not upload data.
 
-Its FPS comparison is an indicative browser measurement against the tier target, not a formal hardware certification. Browser APIs do not expose reliable GPU-memory bytes, device temperature or battery drain. Final Android sign-off still requires repeated physical-device testing, visual inspection, thermal/battery observation and an offline reopen test. The service-worker app-shell cache is now `shell-v21`.
+Its FPS comparison is an indicative browser measurement against the tier target, not a formal hardware certification. Browser APIs do not expose reliable GPU-memory bytes, device temperature or battery drain. Final Android sign-off still requires repeated physical-device testing, visual inspection, thermal/battery observation and an offline reopen test. The service-worker app-shell cache is now `shell-v22`.
+
+### Phase 2 Block 14 — Analytical Chart System
+
+The Creative Analysis panel now includes a family-distribution donut, a sensory-profile radar, and visual pyramid-coverage bars. These graphics are generated locally with SVG and CSS, have no new dependencies, and remain responsive on Android. PWA shell cache advances to `shell-v23`.
 
 ### Phase 2 Block 13 — Focused Experiment View
 

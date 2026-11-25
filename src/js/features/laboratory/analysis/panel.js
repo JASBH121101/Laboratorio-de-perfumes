@@ -8,6 +8,58 @@ const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => (
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 })[char]);
 
+const FAMILY_PALETTE = Object.freeze({
+  "Cítrica": "#d7b75d", "Frutal": "#c77978", "Floral": "#bd8ca6",
+  "Aromática": "#8fae92", "Verde": "#91a36e", "Amaderada": "#a17a58",
+  "Ámbar y resinosa": "#c18b5c", "Especiada": "#d08b55", "Gourmand": "#c5a06d",
+  "Almizclada": "#a6abb7", "Acuática": "#7da9b6", "Cuero": "#8c6b64"
+});
+const FALLBACK_COLORS = ["#d7b75d", "#c77978", "#bd8ca6", "#8fae92", "#91a36e", "#a17a58", "#c18b5c", "#d08b55", "#c5a06d", "#a6abb7", "#7da9b6", "#8c6b64"];
+
+function renderFamilyDonut(analysis) {
+  const total = analysis.totalPoints || 0;
+  const radius = 72;
+  const circumference = 2 * Math.PI * radius;
+  let offset = 0;
+  const segments = analysis.families.map((family, index) => {
+    const length = total ? (family.points / total) * circumference : 0;
+    const color = FAMILY_PALETTE[family.label] || FALLBACK_COLORS[index % FALLBACK_COLORS.length];
+    const segment = `<circle class="analysis-donut-segment" cx="110" cy="110" r="${radius}" stroke="${color}" stroke-dasharray="${length.toFixed(2)} ${(circumference - length).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}"/>`;
+    offset += length;
+    return segment;
+  }).join("");
+  const legend = analysis.families.map((family, index) => {
+    const color = FAMILY_PALETTE[family.label] || FALLBACK_COLORS[index % FALLBACK_COLORS.length];
+    return `<div class="analysis-family-legend-row"><span class="analysis-family-swatch" style="background:${color}"></span><span>${escapeHtml(family.label)}</span><strong>${family.share}%</strong><small>${family.points} pts</small></div>`;
+  }).join("");
+  return `<div class="analysis-family-visual"><svg class="analysis-family-donut" viewBox="0 0 220 220" role="img" aria-label="Distribución de puntos por familia"><title>Distribución de familias olfativas</title><circle class="analysis-donut-track" cx="110" cy="110" r="${radius}"/><g transform="rotate(-90 110 110)">${segments}</g><text class="analysis-donut-total" x="110" y="108">${total}</text><text class="analysis-donut-caption" x="110" y="128">PUNTOS</text></svg><div class="analysis-family-legend">${legend}</div></div>`;
+}
+
+function renderProfileRadar(signals = []) {
+  const center = 140;
+  const radius = 91;
+  const items = signals.slice(0, 6);
+  const pointAt = (index, value) => {
+    const angle = -Math.PI / 2 + (index / items.length) * Math.PI * 2;
+    const r = radius * Math.max(0, Math.min(100, value)) / 100;
+    return [center + Math.cos(angle) * r, center + Math.sin(angle) * r];
+  };
+  const grid = [25, 50, 75, 100].map(level => {
+    const points = items.map((_, index) => pointAt(index, level).map(v => v.toFixed(1)).join(",")).join(" ");
+    return `<polygon class="analysis-radar-grid" points="${points}"/>`;
+  }).join("");
+  const axes = items.map((_, index) => {
+    const [x, y] = pointAt(index, 100);
+    return `<line class="analysis-radar-axis" x1="${center}" y1="${center}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;
+  }).join("");
+  const points = items.map((item, index) => pointAt(index, item.share).map(v => v.toFixed(1)).join(",")).join(" ");
+  const dots = items.map((item, index) => {
+    const [x, y] = pointAt(index, item.share);
+    return `<circle class="analysis-radar-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5"/>`;
+  }).join("");
+  return `<svg class="analysis-profile-radar" viewBox="0 0 280 280" role="img" aria-label="Radar de facetas sensoriales"><title>Perfil sensorial conceptual</title>${grid}${axes}<polygon class="analysis-radar-area" points="${points}"/>${dots}</svg>`;
+}
+
 export function renderCreativeAnalysis(state, direction = "balanced") {
   const analysis = analyzeComposition(state);
   const directions = getAnalysisDirections();
@@ -22,16 +74,16 @@ export function renderCreativeAnalysis(state, direction = "balanced") {
     `;
   }
 
-  const familyBars = analysis.families.slice(0, 4).map((family) => `
-    <div class="analysis-bar-row"><div><strong>${escapeHtml(family.label)}</strong><span>${family.points} pts creativos · ${family.share}%</span></div><div class="analysis-track"><span style="width:${family.share}%"></span></div></div>
+  const familyChart = renderFamilyDonut(analysis);
+  const profileRadar = renderProfileRadar(analysis.profileSignals);
+  const profileBars = analysis.profileSignals.map((signal) => `
+    <div class="analysis-profile-row"><div><span>${escapeHtml(signal.label)}</span><strong>${signal.share}%</strong></div><div class="analysis-track"><span style="width:${Math.min(100, signal.share)}%"></span></div></div>
   `).join("");
 
-  const profileBars = analysis.profileSignals.map((signal) => `
-    <div class="analysis-profile-row"><div><span>${escapeHtml(signal.label)}</span><strong>${signal.share}%</strong></div><div class="analysis-track"><span style="width:${signal.share}%"></span></div></div>
-  `).join("");
+
 
   const roles = analysis.roleCoverage.map((role) => `
-    <div class="analysis-role ${role.points ? "is-covered" : "is-missing"}"><span>${escapeHtml(role.role)}</span><strong>${role.points ? `${role.share}%` : "Sin referencias"}</strong></div>
+    <div class="analysis-role ${role.points ? "is-covered" : "is-missing"}"><span>${escapeHtml(role.role)}</span><strong>${role.points ? `${role.share}%` : "Sin referencias"}</strong><div class="analysis-role-track"><span style="width:${Math.min(100, role.share)}%"></span></div></div>
   `).join("");
 
   const notes = analysis.observations.map((observation) => `<li>${escapeHtml(observation)}</li>`).join("");
@@ -59,8 +111,8 @@ export function renderCreativeAnalysis(state, direction = "balanced") {
         <div><strong>${analysis.totalPoints}</strong><small>PUNTOS CREATIVOS</small></div>
       </div>
       <div class="analysis-grid">
-        <section class="analysis-card"><h3>Familias presentes</h3><p class="analysis-help">Distribución de puntos por familia comercial/olfativa.</p>${familyBars || '<p>Sin datos.</p>'}</section>
-        <section class="analysis-card"><h3>Señales sensoriales</h3><p class="analysis-help">Puntos asociados a facetas descritas en la biblioteca. Las categorías pueden solaparse.</p>${profileBars}</section>
+        <section class="analysis-card"><h3>Familias presentes</h3><p class="analysis-help">Participación de cada familia en los puntos creativos.</p>${familyChart}</section>
+        <section class="analysis-card"><h3>Señales sensoriales</h3><p class="analysis-help">Radar conceptual; las facetas pueden solaparse y no suman 100%.</p><div class="analysis-radar-layout">${profileRadar}<div class="analysis-profile-list">${profileBars}</div></div></section>
         <section class="analysis-card"><h3>Cobertura de pirámide</h3><p class="analysis-help">Peso de referencias asociadas a cada zona; una nota puede aparecer en varias.</p><div class="analysis-roles">${roles}</div></section>
         <section class="analysis-card"><h3>Observaciones</h3><p class="analysis-help">Aspectos que conviene revisar, no veredictos automáticos.</p><ul class="analysis-observations">${notes}</ul></section>
       </div>
