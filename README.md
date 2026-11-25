@@ -6,7 +6,7 @@ Personal, Android-first virtual fragrance concept laboratory. The application is
 
 - Explore fragrance ideas, note families and conceptual accords.
 - Use an Android-first interface with touch gestures and desktop controls.
-- Keep experiment data local-first when persistence is introduced.
+- Keep saved creations local-first on the user's device; export JSON backups regularly.
 - Preserve original concepts and make variants instead of silently overwriting work.
 - Produce creative briefs for professional perfumers and manufacturers.
 - **This is a creative concept tool, not a chemistry simulator.** It does not provide formulas, ingredient dosages, manufacturing instructions, safety certification or claims of real-world performance.
@@ -69,7 +69,7 @@ The mixing studio accepts references from the library picker, quick-add chips, n
 
 These points are internal creative weights only. They are not percentages, ingredient ratios, concentrations, dosages, production instructions or predictions of a real perfume. The beaker's color and displayed level are visual metaphors based on selected note families and reference count.
 
-The current composition remains in memory for the active app session. Persistent drafts, named variants and export belong to the later archive/persistence block.
+The live composition remains in memory until explicitly saved. Once saved, a creative record and its variants/version history persist in the browser's local archive. Export JSON backups periodically; browser-data deletion or device loss can remove local records.
 
 
 ## Creative Analysis Engine — Block 6
@@ -84,3 +84,14 @@ All indicators are derived from the library's editorial text and the composition
 ## Conceptual Evolution Simulator — Block 7
 
 The simulator provides an interactive editorial reading of the composition across three stages: opening (0–15 min), heart (15 min–2 h) and drydown (2 h onward). It lists library references assigned to each selected role and normalizes their creative-point shares within that stage. These time ranges are illustrative UI labels, not fragrance performance predictions. It does not model evaporation, chemistry, longevity, projection or actual scent evolution.
+
+
+## Persistence & Creative Archive — Block 8
+
+The Projects/Creations area stores named concepts in IndexedDB on the current device. Each creation starts with variant A and can contain up to three variants (A/B/C). Each variant keeps a version history; saving changes appends a snapshot, and restoring an older version creates a new version instead of overwriting history. The comparison view shows creative-point differences between two variants.
+
+Use **Exportar todo (.json)** to download a backup containing creations, variants and version history. **Importar respaldo JSON** merges the backup into the local archive; colliding creation IDs are remapped so imported records do not overwrite existing ones. A single creation can also be exported from its detail view.
+
+The archive does not sync to GitHub or a cloud account. IndexedDB is the primary storage; localStorage is a fallback when IndexedDB is unavailable. Browser storage can be cleared by the user or the operating system, and it does not transfer automatically to a new phone. Keep an external JSON backup.
+
+The project data contains only note-library IDs and conceptual creative points. It is not a chemical formula or manufacturing recipe. Saved points remain creative weights, not percentages or ingredient concentrations.
