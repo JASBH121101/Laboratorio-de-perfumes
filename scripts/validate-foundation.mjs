@@ -13,6 +13,7 @@ const requiredFiles = [
   "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js",
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
+  "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/ui/views.js"
 ];
 
@@ -30,6 +31,8 @@ const app = await readFile("src/js/app.js", "utf8");
 const scene = await readFile("src/js/features/laboratory/scene.js", "utf8");
 const mixPanel = await readFile("src/js/features/laboratory/mixing/panel.js", "utf8");
 const analysisPanel = await readFile("src/js/features/laboratory/analysis/panel.js", "utf8");
+const evolutionPanel = await readFile("src/js/features/laboratory/evolution/panel.js", "utf8");
+const evolutionEngine = await readFile("src/js/features/laboratory/evolution/engine.js", "utf8");
 const labCss = await readFile("src/css/laboratory.css", "utf8");
 const views = await readFile("src/js/ui/views.js", "utf8");
 
@@ -61,6 +64,9 @@ if (!app.includes("addMixNote") || !app.includes("setMixNotePoints") || !app.inc
 if (!mixPanel.includes("No son porcentajes") || !mixPanel.includes("mix-note-picker") || !mixPanel.includes("data-mix-dropzone")) failures.push("Conceptual point labels, library picker or drop zone are missing.");
 if (!labCss.includes(".mix-studio") || !labCss.includes(".mix-range")) failures.push("Virtual mixing responsive styles are missing.");
 if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") || !app.includes("updateCreativeAnalysis")) failures.push("Creative analysis panel is not connected to the Laboratory view and state updates.");
+if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
+if (!views.includes("renderEvolutionSimulator(mixingState, evolutionStage)") || !app.includes("data-evolution-stage") || !app.includes("updateEvolutionSimulator")) failures.push("Evolution simulator is not wired into the Laboratory view and state updates.");
+if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includes("analyzeEvolutionStage")) failures.push("Evolution simulator disclaimer or engine is missing.");
 if (!analysisPanel.includes("heurística") || !analysisPanel.includes("no miden compatibilidad molecular")) failures.push("Creative analysis limitations must be visible to the user.");
 let sampleMix = createMixState();
 sampleMix = addMixNote(sampleMix, "bergamot");
@@ -75,5 +81,5 @@ if (failures.length) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Foundation validation passed: ${requiredFiles.length} files, branded PWA, perfume library, 3D laboratory and conceptual mixing studio verified.`);
+  console.log(`Foundation validation passed: ${requiredFiles.length} files, branded PWA, perfume library, 3D laboratory, mixing, analysis and evolution simulator verified.`);
 }

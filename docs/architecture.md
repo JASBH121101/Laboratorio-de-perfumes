@@ -17,6 +17,8 @@ The application uses semantic HTML, responsive CSS and native JavaScript ES modu
 - src/js/features/laboratory/mixing/panel.js: library picker, draggable quick notes, drop zone, weight sliders, undo and reset.
 - src/js/features/laboratory/analysis/engine.js: transparent heuristic summaries of families, indicative pyramid role coverage, repeated facets, editorial descriptor signals and candidate ranking.
 - src/js/features/laboratory/analysis/panel.js: analysis view, creative direction selector and suggested references with rationale/trade-off.
+- src/js/features/laboratory/evolution/engine.js: role-filtered conceptual stage summaries and stage-relative point distribution.
+- src/js/features/laboratory/evolution/panel.js: interactive stage tabs and editorial reference cards.
 - src/js/ui/views.js: presentation-only view templates.
 - src/css/: base shell, design system, perfume library and 3D workspace styles.
 - manifest.webmanifest: installed application identity, display settings and icons.
@@ -45,6 +47,10 @@ The Three.js license is MIT; see docs/THIRD-PARTY-NOTICES.md.
 5. The new worker activates, removes older app-shell caches and takes control; the app reloads once.
 
 **Release rule:** increment the shell version in sw.js whenever shipping a new app-shell release.
+
+## Conceptual evolution boundary
+
+Block 7 presents three editorial stages: opening, heart and drydown. Stage times are illustrative interface labels; references are filtered using the library's indicative roles and creative-point weights. This is not a physical evolution/evaporation model and cannot predict scent, performance or actual longevity.
 
 ## Product and safety boundary
 

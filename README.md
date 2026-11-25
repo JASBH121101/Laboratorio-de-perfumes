@@ -59,7 +59,8 @@ JB Expert QA 2.0 is declared as a development dependency. It has not yet been in
 - Block 3 — Perfume Library & Official Branding: integrated and Pages-published.
 - Block 4 — 3D Laboratory Core: integrated and Pages-published.
 - Block 5 — Virtual Mixing Studio: integrated and Pages-published.
-- Block 6 — Creative Analysis Engine: in development on `feature/block6-creative-analysis-engine`.
+- Block 6 — Creative Analysis Engine: integrated and Pages-published.
+- Block 7 — Conceptual Evolution Simulator: integrated and Pages-published.
 
 
 ## Virtual Mixing Studio — Block 5
@@ -78,3 +79,8 @@ The analysis engine reads the current conceptual composition and summarizes fami
 It does not generate a single unexplained quality score. Observations describe patterns to review, not automatic verdicts. The Creative Advisor offers up to three references from the existing library for a selected direction: sweeter, less sweet, fresher, woodier, more floral, spicier, cleaner/intimate or more balanced/contrasted. Each suggestion explains its editorial rationale and possible trade-off and can be added to the conceptual composition.
 
 All indicators are derived from the library's editorial text and the composition's abstract creative points. They are not sensory measurements, objective formula compatibility, molecular analysis, longevity, projection, sillage or safety assessments. The user must evaluate real samples with professional support.
+
+
+## Conceptual Evolution Simulator — Block 7
+
+The simulator provides an interactive editorial reading of the composition across three stages: opening (0–15 min), heart (15 min–2 h) and drydown (2 h onward). It lists library references assigned to each selected role and normalizes their creative-point shares within that stage. These time ranges are illustrative UI labels, not fragrance performance predictions. It does not model evaporation, chemistry, longevity, projection or actual scent evolution.

@@ -2,6 +2,7 @@ import { renderPerfumeLibrary } from "../features/perfume-library/library.js";
 import { renderLabInspector } from "../features/laboratory/inspector.js";
 import { renderMixStudio } from "../features/laboratory/mixing/panel.js";
 import { renderCreativeAnalysis } from "../features/laboratory/analysis/panel.js";
+import { renderEvolutionSimulator } from "../features/laboratory/evolution/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -54,7 +55,7 @@ function homeView() {
   `;
 }
 
-function labView(mixingState, analysisDirection = "balanced") {
+function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening") {
   return `
     <section class="page-intro lab-page-intro">
       <p class="eyebrow">BLOCK 04 · INTERACTIVE WORKSPACE</p>
@@ -92,6 +93,7 @@ function labView(mixingState, analysisDirection = "balanced") {
     </section>
     ${renderMixStudio(mixingState)}
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
+    ${renderEvolutionSimulator(mixingState, evolutionStage)}
     <p class="lab-boundary-note">Los puntos de composición son ponderaciones creativas abstractas. No representan porcentajes, concentraciones ni dosificaciones reales.</p>
   `;
 }
@@ -109,12 +111,12 @@ function projectsView() {
 
 const viewContent = {
   home: () => homeView(),
-  lab: (mixingState, analysisDirection) => labView(mixingState, analysisDirection),
+  lab: (mixingState, analysisDirection, evolutionStage) => labView(mixingState, analysisDirection, evolutionStage),
   notes: (libraryState) => notesView(libraryState),
   projects: () => projectsView()
 };
 
-export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced") {
+export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening") {
   const current = viewContent[activeView] ? activeView : "home";
   return `
     <div class="app-shell">
@@ -132,7 +134,7 @@ export function renderPage(activeView = "home", libraryState = {}, mixingState =
       </header>
       <div class="layout">
         <aside class="sidebar"><div class="sidebar-label">WORKSPACE</div><nav aria-label="Navegación principal">${navItems.map(item => navLink(item, current)).join("")}</nav><div class="sidebar-bottom"><span class="sidebar-line"></span><small>CREADO PARA EXPLORAR<br>CONCEPTOS OLFATIVOS</small><span class="sidebar-version">3D LABORATORY · V0.4</span></div></aside>
-        <main class="main-content" id="main-content" tabindex="-1">${viewContent[current](current === "lab" ? mixingState : libraryState, analysisDirection)}</main>
+        <main class="main-content" id="main-content" tabindex="-1">${viewContent[current](current === "lab" ? mixingState : libraryState, analysisDirection, evolutionStage)}</main>
       </div>
       <nav class="mobile-nav" aria-label="Navegación móvil">${navItems.map(item => navLink(item, current, true)).join("")}</nav>
       <footer class="app-footer"><span>JB VIRTUAL PERFUME LAB</span><span>CREATIVE CONCEPTS · NOT CHEMICAL FORMULAS</span></footer>

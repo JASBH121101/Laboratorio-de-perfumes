@@ -5,6 +5,7 @@ import { renderLabInspector } from "./features/laboratory/inspector.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
+import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { renderPage } from "./ui/views.js";
 
 const appRoot = document.querySelector("#app");
@@ -16,6 +17,7 @@ const noticeAction = document.querySelector("#app-notice-action");
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 let mixingState = createMixState();
 let analysisDirection = "balanced";
+let evolutionStage = "opening";
 let selectedLabPropId = null;
 let labController = null;
 let renderCycle = 0;
@@ -78,7 +80,7 @@ function render() {
   labController = null;
   const cycle = ++renderCycle;
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -101,6 +103,11 @@ function updateLabInspector(propId = selectedLabPropId) {
   selectedLabPropId = propId;
   const inspector = appRoot.querySelector("#lab-inspector");
   if (inspector) inspector.innerHTML = renderLabInspector(propId, mixingState);
+}
+
+function updateEvolutionSimulator() {
+  const panel = appRoot.querySelector("#evolution-simulator");
+  if (panel) panel.outerHTML = renderEvolutionSimulator(mixingState, evolutionStage);
 }
 
 function updateCreativeAnalysis() {
@@ -177,6 +184,13 @@ appRoot.addEventListener("click", async (event) => {
   const addMixTarget = event.target.closest("[data-add-to-mix]");
   if (addMixTarget) {
     addNoteToMix(addMixTarget.dataset.addToMix);
+    return;
+  }
+
+  const evolutionTarget = event.target.closest("[data-evolution-stage]");
+  if (evolutionTarget) {
+    evolutionStage = evolutionTarget.dataset.evolutionStage;
+    updateEvolutionSimulator();
     return;
   }
 
