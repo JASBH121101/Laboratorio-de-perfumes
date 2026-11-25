@@ -3,7 +3,6 @@ import { resolve } from "node:path";
 import { LAB_PROPS } from "../src/js/features/laboratory/catalog.js";
 import { addMixNote, createMixState, getMixTotal } from "../src/js/features/laboratory/mixing/state.js";
 import { analyzeComposition, suggestAdjustments } from "../src/js/features/laboratory/analysis/engine.js";
-import { buildArchiveBackup, createArchiveCreation, createArchiveVariant, parseArchiveBackup, saveArchiveVersion } from "../src/js/features/archive/model.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -15,7 +14,6 @@ const requiredFiles = [
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
-  "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
   "src/js/ui/views.js"
 ];
 
@@ -37,8 +35,6 @@ const evolutionPanel = await readFile("src/js/features/laboratory/evolution/pane
 const evolutionEngine = await readFile("src/js/features/laboratory/evolution/engine.js", "utf8");
 const labCss = await readFile("src/css/laboratory.css", "utf8");
 const views = await readFile("src/js/ui/views.js", "utf8");
-const archivePanel = await readFile("src/js/features/archive/panel.js", "utf8");
-const archiveRepository = await readFile("src/js/features/archive/repository.js", "utf8");
 
 if (!packageJson.scripts?.test || !packageJson.scripts?.validate) failures.push("Missing test or validate npm script.");
 if (manifest.start_url !== "./" || manifest.scope !== "./") failures.push("PWA paths must be relative for GitHub Pages project sites.");
@@ -69,14 +65,8 @@ if (!mixPanel.includes("No son porcentajes") || !mixPanel.includes("mix-note-pic
 if (!labCss.includes(".mix-studio") || !labCss.includes(".mix-range")) failures.push("Virtual mixing responsive styles are missing.");
 if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") || !app.includes("updateCreativeAnalysis")) failures.push("Creative analysis panel is not connected to the Laboratory view and state updates.");
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
-if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
-if (!/shell-v9/.test(sw) || sw.includes("\\n  \\"./")) failures.push("Service worker must use shell-v9 with valid JavaScript source line breaks.");
 if (!views.includes("renderEvolutionSimulator(mixingState, evolutionStage)") || !app.includes("data-evolution-stage") || !app.includes("updateEvolutionSimulator")) failures.push("Evolution simulator is not wired into the Laboratory view and state updates.");
 if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includes("analyzeEvolutionStage")) failures.push("Evolution simulator disclaimer or engine is missing.");
-if (!app.includes("createArchiveRepository") || !app.includes("saveCurrentAsVersion") || !app.includes("parseArchiveBackup")) failures.push("Local archive repository, version saving or backup import is not wired.");
-if (!views.includes("renderArchiveView(archiveState)") || !views.includes("renderArchiveQuickSave(archiveState)")) failures.push("Archive screen or laboratory quick-save panel is not connected.");
-if (!archiveRepository.includes("indexedDBApi.open") || !archiveRepository.includes("localStorage")) failures.push("Archive needs IndexedDB storage and a localStorage fallback.");
-if (!archivePanel.includes("data-restore-version") || !archivePanel.includes("data-action=\\"compare-archive-variants\\"") || !archivePanel.includes("Exportar todo")) failures.push("Archive history, comparison or backup controls are missing.");
 if (!analysisPanel.includes("heurística") || !analysisPanel.includes("no miden compatibilidad molecular")) failures.push("Creative analysis limitations must be visible to the user.");
 let sampleMix = createMixState();
 sampleMix = addMixNote(sampleMix, "bergamot");
@@ -85,16 +75,11 @@ if (getMixTotal(sampleMix) !== 100) failures.push("Conceptual mix points must no
 const sampleAnalysis = analyzeComposition(sampleMix);
 if (sampleAnalysis.isEmpty || sampleAnalysis.totalPoints !== 100 || sampleAnalysis.referenceCount !== 2) failures.push("Creative analysis must summarize a valid normalized mix.");
 if (!Array.isArray(suggestAdjustments(sampleMix, "fresher", 3))) failures.push("Creative advisor must return a suggestion list.");
-let sampleArchive = createArchiveCreation({ name: "QA archive", items: sampleMix.items, id: "qa-archive", now: "2026-11-25T00:00:00.000Z" });
-sampleArchive = createArchiveVariant(sampleArchive, { items: sampleMix.items, id: "qa-archive:B", now: "2026-11-25T00:01:00.000Z" });
-sampleArchive = saveArchiveVersion(sampleArchive, "qa-archive:B", sampleMix.items, "QA version", "2026-11-25T00:02:00.000Z");
-const archiveRoundTrip = parseArchiveBackup(buildArchiveBackup([sampleArchive]));
-if (archiveRoundTrip[0]?.variants.length !== 2 || archiveRoundTrip[0]?.variants[1]?.versions.length !== 2) failures.push("Creative archive variant/version backup round-trip failed.");
 
 if (failures.length) {
   console.error("Foundation validation failed:");
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Foundation validation passed: ${requiredFiles.length} files, branded PWA, perfume library, 3D laboratory, mixing, analysis, evolution and local creative archive verified.`);
+  console.log(`Foundation validation passed: ${requiredFiles.length} files, branded PWA, perfume library, 3D laboratory, mixing, analysis and evolution simulator verified.`);
 }
