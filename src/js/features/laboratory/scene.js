@@ -377,7 +377,7 @@ function createRoomArchitecture(scene) {
   addBox(7.85, 0.045, 0.055, walnutMaterial, -0.45, 1.02, room.backZ + 0.1);
 
   // Shallow architectural panels on the right-hand wall.
-  const panelX = rightX - 0.115;
+  const panelX = rightX - 0.15;
   for (const z of [-1.75, 0.35, 2.45]) {
     addBox(0.045, 2.05, 1.35, darkWalnutMaterial, panelX, 1.98, z);
     for (const y of [0.95, 3.01]) {
