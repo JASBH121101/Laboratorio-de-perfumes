@@ -80,9 +80,7 @@ export function renderCreativeAnalysis(state, direction = "balanced") {
     <div class="analysis-profile-row"><div><span>${escapeHtml(signal.label)}</span><strong>${signal.share}%</strong></div><div class="analysis-track"><span style="width:${Math.min(100, signal.share)}%"></span></div></div>
   `).join("");
 
-  const profileBars = analysis.profileSignals.map((signal) => `
-    <div class="analysis-profile-row"><div><span>${escapeHtml(signal.label)}</span><strong>${signal.share}%</strong></div><div class="analysis-track"><span style="width:${signal.share}%"></span></div></div>
-  `).join("");
+
 
   const roles = analysis.roleCoverage.map((role) => `
     <div class="analysis-role ${role.points ? "is-covered" : "is-missing"}"><span>${escapeHtml(role.role)}</span><strong>${role.points ? `${role.share}%` : "Sin referencias"}</strong><div class="analysis-role-track"><span style="width:${Math.min(100, role.share)}%"></span></div></div>
