@@ -167,3 +167,7 @@ The Creative Analysis panel now includes a family-distribution donut, a sensory-
 ### Phase 2 Block 13 — Focused Experiment View
 
 An empty composition opens a focused front-facing experiment view with architectural room elements hidden and a clean dark background. Adding active composition entries restores the atelier environment and overview camera. Clearing the composition returns to experiment mode. No new assets or runtime dependencies are added; PWA shell cache advances to `shell-v22`. Physical Android verification remains pending.
+
+### Phase 2 Block 15 — Vessel & Glass Realism
+
+The flacon and vial fills use rounded profiles; vial and beaker liquids gain visible surfaces and meniscus edges; the beaker gains thicker base and lip cues with visual-only graduation marks; labels receive a paper-like print treatment and the pipette gets a refined bulb collar. Glass transmission and clearcoat are refined for the local environment map. PWA shell cache advances to `shell-v24`. Liquid quantities remain conceptual, not calibrated chemical volumes.
