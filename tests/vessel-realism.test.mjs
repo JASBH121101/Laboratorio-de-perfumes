@@ -46,7 +46,7 @@ test("Block 15 keeps the scene cached and documents conceptual-only quantities",
     read("sw.js"),
     read("docs/PHASE2_VISUAL_ART_DIRECTION.md")
   ]);
-  assert.match(sw, /shell-v24/);
+  assert.match(sw, /shell-v25/);
   assert.match(docs, /15\. Vessel & Glass Realism/);
   assert.match(docs, /Graduations are non-calibrated visual index marks/);
 });
