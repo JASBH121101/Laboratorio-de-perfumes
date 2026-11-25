@@ -18,11 +18,15 @@ export function analyzeEvolutionStage(mixState, stageId = "opening") {
   }).filter(Boolean);
   const matching = allItems.filter((item) => item.inStage);
   const points = matching.reduce((sum, item) => sum + item.points, 0);
-  const normalized = matching.length ? matching.map((item) => ({ ...item, share: Math.round(item.points / points * 100) })) : [];
-  if (normalized.length) {
-    const totalShares = normalized.reduce((sum, item) => sum + item.share, 0);
-    normalized[normalized.length - 1].share += 100 - totalShares;
-  }
+  const rawShares = matching.length
+    ? (points > 0 ? matching.map((item) => item.points / points * 100) : matching.map(() => 100 / matching.length))
+    : [];
+  const shares = rawShares.map(Math.floor);
+  const remainder = 100 - shares.reduce((sum, value) => sum + value, 0);
+  const order = rawShares.map((value, index) => ({ index, fraction: value - shares[index] }))
+    .sort((a, b) => b.fraction - a.fraction || a.index - b.index);
+  for (let index = 0; index < remainder; index += 1) shares[order[index].index] += 1;
+  const normalized = matching.map((item, index) => ({ ...item, share: shares[index] }));
   return {
     stage,
     totalCompositionPoints: mixState?.items?.reduce((sum, item) => sum + item.points, 0) ?? 0,
