@@ -1196,7 +1196,9 @@ export function mountLaboratory(stage) {
   }
 
   function resetCamera() {
-    animateCameraPreset(compositionHasItems ? "overview" : "experiment");
+    const preset = compositionHasItems ? "overview" : "experiment";
+    animateCameraPreset(preset);
+    return !compositionHasItems;
   }
 
   function runPerformanceAudit() {
