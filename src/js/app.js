@@ -395,6 +395,9 @@ appRoot.addEventListener("click", async (event) => {
     return;
   }
 
+  const cameraPreset = event.target.closest("[data-camera-preset]")?.dataset.cameraPreset;
+  if (cameraPreset) { labController?.setCameraPreset(cameraPreset); return; }
+
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (!action) return;
 
