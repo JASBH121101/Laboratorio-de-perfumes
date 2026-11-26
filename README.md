@@ -11,13 +11,19 @@ La aplicación prioriza la formulación conceptual y la investigación creativa.
 - Análisis de familias, facetas sensoriales y estructura orientativa salida/corazón/fondo.
 - Índice de diferenciación interna contra fórmulas guardadas en el archivo personal.
 - Benchmark local de similitud editorial frente a perfumes árabes, nicho e diseñador, usando notas públicas y familias.
-- Estimador heurístico de persistencia (horas) y proyección (metros), con rangos y confianza baja.
+- Estimador heurístico de persistencia (horas) y proyección (metros), con escenarios de concentración asumida y ambiente seleccionable; rangos y confianza muy baja.
 - Lectura de patrones de identidad creativa y desafíos para explorar familias menos utilizadas.
 - Archivo local de creaciones, variantes, versiones e importación/exportación JSON.
 - Dashboard de indicadores y tendencias con gráficos 2D.
 - PWA instalable, responsive y preparada para funcionamiento local/offline.
 
 **Límite fundamental:** el sistema es una herramienta de exploración editorial y creativa, no un simulador químico ni una guía de fabricación. Los puntos creativos no son porcentajes de ingredientes, concentraciones, dosificaciones ni relaciones de producción. El índice personal compara únicamente el historial local. El benchmark comercial compara notas y perfiles públicos, no fórmulas químicas propietarias. El estimador es una heurística de baja confianza; no garantiza duración, distancia ni desempeño físico.
+
+## Block 19 — Benchmark y rendimiento por escenarios
+
+- Benchmark muestra los mejores perfiles por categoría **Árabe / Ninja**, Diseñador y Nicho, con coincidencias directas de materias, similitud de familias y explicación de la evidencia. La comparación sigue usando descriptores públicos del catálogo local, no fórmulas propietarias.
+- El estimador permite cambiar concentración asumida (EDT, EDP, Parfum) y escenario ambiental (neutro, cálido, fresco, exterior, interior) para recalcular rangos aproximados de horas y metros.
+- Los escenarios son supuestos editoriales, no mediciones. El nivel de confianza es muy bajo hasta realizar pruebas físicas y registrar resultados.
 
 ## Dashboard y analítica
 
@@ -80,7 +86,7 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 17. Benchmark de catálogo comercial | Comparar notas y familias de una fórmula frente a perfumes árabes, nicho e diseñador, con top 3 por categoría, evidencia y fuente | **Completado** — PR #51 fusionado |
 | 18. Estimador conceptual de rendimiento | Estimar rangos amplios de persistencia en horas y proyección en metros en apertura y 1–2 h, con confianza baja y límites explícitos | **Completado** — PR #53 fusionado |
 
-La base funcional vigente pasó **180/180 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 18. Los PR #32 al #53 de funcionalidad están integrados en `main`. La PWA usa `shell-v42` e incluye briefs, posicionamiento, benchmark y estimador en su shell offline. Queda pendiente la aceptación física en Android: revisión visual responsive, actualización PWA en dispositivo, impresión/guardado PDF y verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó **180/180 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 18. Los PR #32 al #53 de funcionalidad están integrados en `main`. La PWA usa `shell-v43` e incluye briefs, posicionamiento, benchmark y estimador en su shell offline. Queda pendiente la aceptación física en Android: revisión visual responsive, actualización PWA en dispositivo, impresión/guardado PDF y verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 17 — Benchmark comercial local
 
@@ -164,4 +170,4 @@ El motor A/B/C ofrece tres rutas conceptuales distintas a partir del brief del a
 
 El módulo de inspiración recibe una etiqueta opcional, los rasgos que gustan y lo que se desea evitar. Extrae familias y descriptores, puede usar la frecuencia de familias del archivo local para ordenar caminos complementarios y muestra tres arquitecturas con referencias ilustrativas. Una dirección puede enviarse al asistente para crear otro brief y generar propuestas A/B/C; no se aplica a la composición activa. No consulta la fórmula de perfumes comerciales, no usa Internet ni certifica originalidad mundial.
 
-La PWA usa `shell-v42`. Los bloques 15–18 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
+La PWA usa `shell-v43`. Los bloques 15–18 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
