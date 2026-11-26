@@ -10,6 +10,8 @@ import { compareSavedCompositions } from "./features/laboratory/comparison/engin
 import { renderAnalyticalComparison } from "./features/laboratory/comparison/panel.js";
 import { renderPersonalSignatureHistory } from "./features/laboratory/signature-history/panel.js";
 import { renderSensoryExperiments } from "./features/laboratory/sensory-experiments/panel.js";
+import { buildProfessionalReport, toProfessionalReportCsv } from "./features/laboratory/professional-reports/engine.js";
+import { renderProfessionalReports } from "./features/laboratory/professional-reports/panel.js";
 import {
   buildSensoryBackup, createSensoryExperiment, mergeSensoryExperiments, parseSensoryBackup
 } from "./features/laboratory/sensory-experiments/model.js";
@@ -44,6 +46,8 @@ let archiveState = {
   comparisonPair: null,
   experiments: [],
   sensorySelection: "",
+  reportSelection: "",
+  professionalReport: null,
   error: "",
   storageMode: globalThis.indexedDB ? "IndexedDB" : "localStorage"
 };
@@ -98,6 +102,8 @@ function updateArchiveUI() {
   if (signatureHistory) signatureHistory.outerHTML = renderPersonalSignatureHistory(archiveState);
   const sensoryPanel = appRoot.querySelector("#sensory-experiments-root");
   if (sensoryPanel) sensoryPanel.outerHTML = renderSensoryExperiments(archiveState);
+  const reportsPanel = appRoot.querySelector("#professional-reports-root");
+  if (reportsPanel) reportsPanel.outerHTML = renderProfessionalReports(archiveState);
   updateOriginalityAnalysis();
 }
 
@@ -108,6 +114,7 @@ async function refreshArchive() {
       archiveRepository.listExperiments()
     ]);
     archiveState.storageMode = archiveRepository.getStorageMode();
+    archiveState.professionalReport = null;
     archiveState.error = "";
     if (archiveState.selectedCreationId) {
       const selected = archiveState.creations.find((creation) => creation.id === archiveState.selectedCreationId);
@@ -196,6 +203,19 @@ function loadVariantIntoLab(creation, variant) {
 
 function downloadJson(payload, filename) {
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.hidden = true;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadText(content, filename, mimeType = "text/plain;charset=utf-8") {
+  const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
@@ -387,6 +407,12 @@ appRoot.addEventListener("change", async (event) => {
     } finally {
       event.target.value = "";
     }
+  }
+  if (event.target.id === "professional-report-variant") {
+    archiveState.reportSelection = event.target.value;
+    archiveState.professionalReport = null;
+    const reportPanel = appRoot.querySelector("#professional-reports-root");
+    if (reportPanel) reportPanel.outerHTML = renderProfessionalReports(archiveState);
   }
   if (event.target.id === "sensory-import-file") {
     try {
@@ -588,6 +614,39 @@ appRoot.addEventListener("click", async (event) => {
         await refreshArchive();
         showNotice({ title: "Observación eliminada", message: "El registro sensorial se eliminó del dispositivo." });
       }
+    } else if (action === "generate-professional-report") {
+      const key = appRoot.querySelector("#professional-report-variant")?.value;
+      let selection;
+      try { selection = JSON.parse(String(key || "")); }
+      catch { throw new Error("Seleccioná una variante válida para el informe."); }
+      const creation = archiveState.creations.find((item) => item.id === selection.creationId);
+      const variant = creation?.variants?.find((item) => item.id === selection.variantId);
+      if (!creation || !variant) throw new Error("La creación o variante seleccionada ya no existe.");
+      archiveState.reportSelection = String(key);
+      archiveState.professionalReport = buildProfessionalReport({
+        creation, variant, experiments: archiveState.experiments
+      });
+      const reportPanel = appRoot.querySelector("#professional-reports-root");
+      if (reportPanel) reportPanel.outerHTML = renderProfessionalReports(archiveState);
+      showNotice({ title: "Informe generado", message: `Dossier preparado para ${creation.name} · variante ${variant.label} · versión ${archiveState.professionalReport.variant.versionNumber}.` });
+    } else if (action === "print-professional-report") {
+      if (!archiveState.professionalReport) throw new Error("Generá un informe antes de imprimirlo.");
+      const cleanup = () => document.body.classList.remove("printing-professional-report");
+      window.addEventListener("afterprint", cleanup, { once: true });
+      document.body.classList.add("printing-professional-report");
+      window.print();
+    } else if (action === "export-professional-report-csv") {
+      if (!archiveState.professionalReport) throw new Error("Generá un informe antes de exportar CSV.");
+      downloadText(
+        toProfessionalReportCsv(archiveState.professionalReport),
+        `${safeFilename(archiveState.professionalReport.creation.name)}-informe.csv`,
+        "text/csv;charset=utf-8"
+      );
+      showNotice({ title: "CSV exportado", message: "El informe tabular está listo para abrirse en una hoja de cálculo." });
+    } else if (action === "export-professional-report-json") {
+      if (!archiveState.professionalReport) throw new Error("Generá un informe antes de exportar JSON.");
+      downloadJson(archiveState.professionalReport, `${safeFilename(archiveState.professionalReport.creation.name)}-informe.json`);
+      showNotice({ title: "Informe JSON exportado", message: "El archivo incluye composición, análisis editorial y observaciones sensoriales." });
     } else if (action === "export-sensory-backup") {
       const backup = buildSensoryBackup(archiveState.experiments);
       downloadJson(backup, `jb-perfume-lab-sensory-${new Date().toISOString().slice(0,10)}.json`);
