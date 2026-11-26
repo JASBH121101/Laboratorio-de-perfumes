@@ -281,8 +281,8 @@ function updateCreativeAnalysis() {
 }
 
 function updateAudienceFit() {
-  const panel = appRoot.querySelector("#audience-fit-analysis");
-  if (panel) panel.outerHTML = renderAudienceFit(mixingState.items);
+  const root = appRoot.querySelector("#audience-fit-root");
+  if (root) root.innerHTML = renderAudienceFit(mixingState.items);
 }
 
 function updateOriginalityAnalysis() {
