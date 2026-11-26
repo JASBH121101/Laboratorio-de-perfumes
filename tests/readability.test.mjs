@@ -40,3 +40,10 @@ test("mobile text controls use a 16px font size", async () => {
   assert.ok(css.includes("font-size: 16px;"));
   assert.ok(css.includes('input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"])'));
 });
+
+
+test("mobile text controls use a 16px font size", async () => {
+  const css = await readFile(new URL("../src/css/design-system.css", import.meta.url), "utf8");
+  assert.ok(css.includes("font-size: 16px;"));
+  assert.ok(css.includes('input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"])'));
+});
