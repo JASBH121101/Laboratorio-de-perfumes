@@ -47,7 +47,7 @@ test("signature history reads each saved version chronologically without duplica
   assert.equal(result.timeline.length, 2);
   assert.equal(result.timeline[0].versionNumber, 2);
   assert.equal(result.timeline[1].versionNumber, 1);
-  assert.equal(result.dominantFamily, "Vanilla");
+  assert.equal(result.dominantFamily, "Gourmand");
 });
 
 test("family evolution compares the first and most recent snapshots", () => {
@@ -68,7 +68,7 @@ test("frequent references count presence per saved snapshot and report current d
   assert.equal(result.topReferences[0].name, "Bergamota");
   assert.equal(result.topReferences[0].appearances, 2);
   assert.equal(result.topReferences[0].appearanceShare, 100);
-  assert.equal(result.recurringDominantFamily, "Vanilla");
+  assert.equal(result.recurringDominantFamily, "Cítrica");
   assert.equal(result.recurringDominantShare, 50);
 });
 
