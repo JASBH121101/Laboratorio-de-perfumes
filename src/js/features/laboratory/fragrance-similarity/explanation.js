@@ -86,7 +86,7 @@ export function explainFragranceSimilarity(comparison, scoreResult) {
 
   if (skippedDimensions.length) {
     limitations.unshift(
-      `No se pudieron comparar estas dimensiones por falta de datos: ${skippedDimensions.map((item) => item.label).join(", ")}.`
+      `Faltan datos para comparar estas dimensiones: ${skippedDimensions.map((item) => item.label).join(", ")}.`
     );
   }
   if (scoreResult.confidence.level === "low" || scoreResult.confidence.level === "very-low") {
