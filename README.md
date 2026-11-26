@@ -64,13 +64,18 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 3. Dashboard analítico | Indicadores locales, familias, actividad e interfaz responsive | **Completado** |
 | 4. Originalidad e identidad | Diferenciación interna, afinidad personal y desafíos creativos | **Completado** |
 | 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | **Completado** — PR #32 fusionado, CI verde y Pages desplegado |
-| 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | Implementado en rama; CI pendiente |
+| 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | **Completado** — PR #33 fusionado |
+| 7. Comparación analítica | Comparar variantes guardadas, coincidencia estructural y diferencias por familia/faceta/rol | En implementación — PR pendiente |
 
-La validación automatizada pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. El PR #32 se integró en `main` y el workflow de GitHub Pages terminó correctamente. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
+La validación de la base original pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. Los PR #32 y #33 se integraron en `main`; el Bloque 6 quedó incluido en el merge de #33. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
 
 ## Bloque 6 — Experiencia del constructor
 
 El constructor incorpora un buscador integrado con filtros por familia, tipo y ubicación orientativa. Los resultados permiten añadir una referencia sin navegar a otra pantalla, muestran cuáles ya pertenecen a la composición y permiten ampliar o reducir el listado. La edición de cada peso combina deslizador y campo numérico; la redistribución conserva el total conceptual de 100 puntos. El borrador local y el archivo existente se mantienen.
+
+## Bloque 7 — Comparación analítica
+
+El módulo permite comparar dos variantes guardadas, incluso cuando pertenecen a creaciones distintas. Calcula coincidencia estructural por puntos creativos compartidos, referencias añadidas o retiradas y cambios por referencia. También presenta distribuciones comparativas por familia olfativa, facetas editoriales y roles orientativos de salida/corazón/fondo. Los gráficos y porcentajes describen exclusivamente los datos conceptuales del archivo local: no predicen olor real, compatibilidad química ni similitud comercial. La comparación es de solo lectura y no modifica las composiciones guardadas.
 
 ## Protección de datos creativos
 
