@@ -15,6 +15,7 @@ import { renderFormulationProposals } from "../features/laboratory/formulation-p
 import { renderInspirationDifferentiation } from "../features/laboratory/inspiration-differentiation/panel.js";
 import { renderClientBriefPanel } from "../features/laboratory/client-brief/panel.js";
 import { renderAudienceFit } from "../features/laboratory/audience-fit/panel.js";
+import { renderProfileHistory } from "../features/laboratory/profile-history/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -77,7 +78,7 @@ function notesView(libraryState) {
 }
 
 function projectsView(archiveState = {}) {
-  return `${renderArchiveView(archiveState)}${renderAnalyticalComparison(archiveState)}${renderSensoryExperiments(archiveState)}${renderProfessionalReports(archiveState)}`;
+  return `${renderArchiveView(archiveState)}${renderAnalyticalComparison(archiveState)}${renderProfileHistory(archiveState)}${renderSensoryExperiments(archiveState)}${renderProfessionalReports(archiveState)}`;
 }
 
 export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}, clientBriefState = {}) {
