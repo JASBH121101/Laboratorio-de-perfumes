@@ -37,6 +37,8 @@ import {
 } from "./features/archive/model.js";
 import { renderArchiveQuickSave, renderArchiveView } from "./features/archive/panel.js";
 import { renderPage } from "./ui/views.js";
+import { buildFragranceSimilarityExperience } from "./features/laboratory/fragrance-similarity/experience.js";
+import { renderFragranceSimilaritySuggestions, renderFragranceSimilarityResults } from "./features/laboratory/fragrance-similarity/panel.js";
 
 const appRoot = document.querySelector("#app");
 const notice = document.querySelector("#app-notice");
@@ -48,6 +50,7 @@ const mixPickerState = { query: "", family: "all", role: "all", kind: "all", exp
 const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
 const inspirationDifferentiationState = { referenceLabel: "", liked: "", avoid: "", result: null };
 const clientBriefState = { fields: {}, label: "", result: null };
+const fragranceSimilarityState = { query: "", selectedReferenceId: "", scope: "global-catalog", filters: {} };
 const performanceScenarioState = { concentration: "edp", environment: "neutral" };
 const archiveRepository = createArchiveRepository();
 
@@ -270,7 +273,7 @@ function safeFilename(value) {
 
 function render() {
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState, creativeAssistantState, inspirationDifferentiationState, clientBriefState);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState, creativeAssistantState, inspirationDifferentiationState, clientBriefState, fragranceSimilarityState);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -328,6 +331,18 @@ function updateCreativeAssistant() {
 function updateInspirationDifferentiation() {
   const panel = appRoot.querySelector("#inspiration-differentiation");
   if (panel) panel.outerHTML = renderInspirationDifferentiation(inspirationDifferentiationState);
+}
+
+function getFragranceSimilaritySession() {
+  return buildFragranceSimilarityExperience(fragranceSimilarityState);
+}
+
+function updateFragranceSimilarityUI() {
+  const session = getFragranceSimilaritySession();
+  const suggestions = appRoot.querySelector("#fragrance-similarity-suggestions");
+  if (suggestions) suggestions.innerHTML = renderFragranceSimilaritySuggestions(session);
+  const output = appRoot.querySelector("#fragrance-similarity-output");
+  if (output) output.innerHTML = renderFragranceSimilarityResults(session);
 }
 
 function updateClientBrief() {
@@ -412,7 +427,15 @@ async function importBackupFile(file) {
 
 
 appRoot.addEventListener("input", (event) => {
-  if (event.target.id === "mix-picker-search") {
+  if (event.target.id === "fragrance-similarity-search") {
+    fragranceSimilarityState.query = event.target.value;
+    fragranceSimilarityState.selectedReferenceId = "";
+    updateFragranceSimilarityUI();
+  } else if (event.target.id === "similarity-filter-house") {
+    fragranceSimilarityState.filters.houseQuery = event.target.value;
+    const output = appRoot.querySelector("#fragrance-similarity-output");
+    if (output) output.innerHTML = renderFragranceSimilarityResults(getFragranceSimilaritySession());
+  } else if (event.target.id === "mix-picker-search") {
     mixPickerState.query = event.target.value;
     mixPickerState.expanded = false;
     updateMixPickerResults();
@@ -436,7 +459,26 @@ appRoot.addEventListener("input", (event) => {
 });
 
 appRoot.addEventListener("change", async (event) => {
-  if (event.target.id === "mix-picker-family") {
+  if (event.target.id === "fragrance-similarity-scope") {
+    fragranceSimilarityState.scope = event.target.value;
+    updateFragranceSimilarityUI();
+  } else if (event.target.id === "similarity-filter-category") {
+    if (event.target.value === "all") delete fragranceSimilarityState.filters.category;
+    else fragranceSimilarityState.filters.category = event.target.value;
+    updateFragranceSimilarityUI();
+  } else if (event.target.id === "similarity-filter-band") {
+    if (event.target.value === "all") delete fragranceSimilarityState.filters.band;
+    else fragranceSimilarityState.filters.band = event.target.value;
+    updateFragranceSimilarityUI();
+  } else if (event.target.id === "similarity-filter-confidence") {
+    if (event.target.value === "all") delete fragranceSimilarityState.filters.confidence;
+    else fragranceSimilarityState.filters.confidence = event.target.value;
+    updateFragranceSimilarityUI();
+  } else if (event.target.id === "similarity-filter-minimum") {
+    const requested = Number(event.target.value);
+    if (Number.isFinite(requested) && requested >= 0 && requested <= 100) fragranceSimilarityState.filters.minimumScore = requested;
+    updateFragranceSimilarityUI();
+  } else if (event.target.id === "mix-picker-family") {
     mixPickerState.family = event.target.value;
     mixPickerState.expanded = false;
     updateMixPickerResults();
@@ -519,6 +561,13 @@ appRoot.addEventListener("change", async (event) => {
 });
 
 appRoot.addEventListener("click", async (event) => {
+  const similarityTarget = event.target.closest("[data-similarity-select]");
+  if (similarityTarget) {
+    fragranceSimilarityState.selectedReferenceId = similarityTarget.dataset.similaritySelect;
+    updateFragranceSimilarityUI();
+    return;
+  }
+
   const navTarget = event.target.closest("[data-nav]");
   if (navTarget) {
     event.preventDefault();
@@ -625,7 +674,17 @@ appRoot.addEventListener("click", async (event) => {
   if (!action) return;
 
   try {
-    if (action === "theme") {
+    if (action === "reset-fragrance-similarity") {
+      fragranceSimilarityState.selectedReferenceId = "";
+      updateFragranceSimilarityUI();
+    } else if (action === "reset-fragrance-similarity-filters") {
+      fragranceSimilarityState.filters = {};
+      for (const [id, value] of [["similarity-filter-category", "all"], ["similarity-filter-band", "all"], ["similarity-filter-confidence", "all"], ["similarity-filter-minimum", "0"], ["similarity-filter-house", ""]]) {
+        const control = appRoot.querySelector("#" + id);
+        if (control) control.value = value;
+      }
+      updateFragranceSimilarityUI();
+    } else if (action === "theme") {
       const nextTheme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
       document.documentElement.dataset.theme = nextTheme;
       try { localStorage.setItem("jb-vpl-theme", nextTheme); } catch { /* Use session theme only. */ }
