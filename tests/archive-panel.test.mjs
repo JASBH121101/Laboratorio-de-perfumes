@@ -105,3 +105,14 @@ test("Projects route exposes sensory experiment records alongside local archive 
   assert.match(html, /sensory-experiment-form/);
   assert.match(html, /Respaldo independiente/);
 });
+
+
+test("Projects route includes professional dossier generator after sensory records", () => {
+  const html = renderPage("projects", {}, createMixState(), "balanced", "opening", {
+    creations: [original],
+    experiments: [],
+    professionalReport: null
+  });
+  assert.match(html, /BLOCK 10 · PROFESSIONAL REPORTS/);
+  assert.match(html, /generate-professional-report/);
+});
