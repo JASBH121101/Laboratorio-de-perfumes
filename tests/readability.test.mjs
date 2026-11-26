@@ -30,7 +30,7 @@ test("the application base text size is 16px with comfortable line spacing", asy
 
 test("PWA cache version advances so installed Android clients refresh the typography", async () => {
   const sw = await readFile(new URL("../sw.js", import.meta.url), "utf8");
-  assert.match(sw, /shell-v49/);
+  assert.match(sw, /shell-v50/);
   assert.doesNotMatch(sw, /shell-v47/);
 });
 
