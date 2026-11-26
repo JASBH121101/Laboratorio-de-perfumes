@@ -25,6 +25,7 @@ import {
   buildSensoryBackup, createSensoryExperiment, mergeSensoryExperiments, parseSensoryBackup
 } from "./features/laboratory/sensory-experiments/model.js";
 import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
+import { renderPerformanceEstimate } from "./features/laboratory/performance-estimator/panel.js";
 import { createArchiveRepository } from "./features/archive/repository.js";
 import {
   activateArchiveVariant, buildArchiveBackup, compareArchiveVariants,
@@ -271,6 +272,8 @@ function updateLibrary() {
 function updateEvolutionSimulator() {
   const panel = appRoot.querySelector("#evolution-simulator");
   if (panel) panel.outerHTML = renderEvolutionSimulator(mixingState, evolutionStage);
+  const performancePanel = appRoot.querySelector("#performance-estimate");
+  if (performancePanel) performancePanel.outerHTML = renderPerformanceEstimate(mixingState.items);
 }
 
 function updateCreativeAnalysis() {

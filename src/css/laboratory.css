@@ -724,3 +724,22 @@
 .reference-benchmark-card a,.reference-benchmark-disclaimer a { display:inline-block; margin-top:7px; color:var(--accent); font-size:8px; text-decoration:underline; text-underline-offset:2px; }
 .reference-benchmark-empty { color:var(--muted-2); font-size:8px; }
 .reference-benchmark-disclaimer { margin:12px 0 0; padding-top:9px; border-top:1px solid var(--line); color:var(--muted-2); font-size:7px; line-height:1.65; }
+
+/* Phase 2 — Block 18 performance estimate */
+.performance-estimate { margin:14px 0; padding:14px; border:1px solid rgba(217,178,124,.26); border-radius:9px; background:var(--surface); }
+.performance-estimate-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.performance-estimate-heading .eyebrow { margin:0 0 5px; color:var(--accent); font-size:8px; letter-spacing:.12em; font-weight:800; }
+.performance-estimate-heading h2 { margin:0; color:var(--text); font:500 21px "Playfair Display",Georgia,serif; }
+.performance-estimate-heading h2 em { color:var(--accent); font-weight:400; }
+.performance-estimate-heading p:last-child { margin:6px 0 0; color:var(--muted); font-size:9px; line-height:1.6; }
+.performance-estimate-confidence { flex:none; padding:5px 8px; border:1px solid var(--line); border-radius:14px; color:var(--muted-2); font-size:7px; }
+.performance-estimate-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:11px; }
+.performance-estimate-card { min-width:0; padding:10px; border:1px solid var(--line); border-radius:7px; background:var(--bg); }
+.performance-estimate-card--wide { grid-column:1/-1; }
+.performance-estimate-card>small { display:block; color:var(--muted-2); font-size:7px; font-weight:800; letter-spacing:.08em; }
+.performance-estimate-card>strong { display:block; margin-top:7px; color:var(--accent); font:500 22px "Playfair Display",Georgia,serif; }
+.performance-estimate-card>span { display:block; margin-top:3px; color:var(--muted); font-size:8px; }
+.performance-estimate-card>p { margin:6px 0 0; color:var(--muted-2); font-size:8px; line-height:1.6; }
+.performance-estimate-empty { margin:10px 0 0; color:var(--muted); font-size:9px; line-height:1.6; }
+.performance-estimate-disclaimer { margin:11px 0 0; padding-top:8px; border-top:1px solid var(--line); color:var(--muted-2); font-size:7px; line-height:1.65; }
+@media(max-width:700px) { .performance-estimate{padding:10px}.performance-estimate-heading h2{font-size:18px}.performance-estimate-grid{grid-template-columns:1fr}.performance-estimate-card--wide{grid-column:auto}.performance-estimate-card>strong{font-size:20px} }
