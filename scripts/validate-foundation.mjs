@@ -6,6 +6,7 @@ import { analyzeComposition } from "../src/js/features/laboratory/analysis/engin
 import { analyzeOriginality } from "../src/js/features/laboratory/originality/engine.js";
 import { compareCompositions } from "../src/js/features/laboratory/comparison/engine.js";
 import { analyzePersonalSignature } from "../src/js/features/laboratory/signature-history/engine.js";
+import { buildProfessionalReport } from "../src/js/features/laboratory/professional-reports/engine.js";
 import { renderAnalyticsDashboard } from "../src/js/features/laboratory/analytics/dashboard.js";
 import { buildArchiveBackup, createArchiveCreation, createArchiveVariant, parseArchiveBackup } from "../src/js/features/archive/model.js";
 
@@ -24,9 +25,10 @@ const requiredFiles = [
   "src/js/features/laboratory/comparison/engine.js", "src/js/features/laboratory/comparison/panel.js",
   "src/js/features/laboratory/signature-history/engine.js", "src/js/features/laboratory/signature-history/panel.js",
   "src/js/features/laboratory/sensory-experiments/model.js", "src/js/features/laboratory/sensory-experiments/panel.js",
+  "src/js/features/laboratory/professional-reports/engine.js", "src/js/features/laboratory/professional-reports/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
-  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs"
+  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs", "tests/professional-reports.test.mjs"
 ];
 
 const failures = [];
@@ -57,9 +59,9 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v33/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v33 and support controlled activation.");
+if (!/shell-v34/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v34 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
-for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
+for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
 }
 if (!app.includes("loadMixDraft() ?? createMixState()") || !app.includes("saveMixDraft(mixingState.items)")) failures.push("Local draft restore/autosave is not wired.");
@@ -85,6 +87,7 @@ if (comparison.similarity !== 25 || comparison.difference !== 75 || !comparison.
 if (!app.includes("renderPersonalSignatureHistory") || !views.includes("renderPersonalSignatureHistory") || !dashboardCss.includes(".personal-signature-history")) failures.push("Personal signature history is not wired into the dashboard with responsive styling.");
 if (!app.includes("saveSensoryExperimentFromForm") || !views.includes("renderSensoryExperiments") || !sw.includes("sensory-experiments/model.js") || !sw.includes("sensory-experiments/panel.js")) failures.push("Sensory experiment creation, project view or offline modules are not wired.");
 if (!app.includes("archiveRepository.listExperiments()") || !app.includes("archiveRepository.putExperiment(experiment)") || !app.includes("archiveRepository.removeExperimentsForCreation(id)")) failures.push("Sensory records are not fully persisted or cleaned with their source creation.");
+if (!app.includes("buildProfessionalReport") || !app.includes("toProfessionalReportCsv") || !views.includes("renderProfessionalReports") || !dashboardCss.includes(".professional-reports")) failures.push("Professional report generation, exports or responsive report styles are not wired.");
 if (!originalityPanel.includes("ÍNDICE DE DIFERENCIACIÓN INTERNA") || !originalityPanel.includes("No consulta catálogos comerciales")) failures.push("Originality panel must explain its local comparison boundary.");
 if (!dashboardCss.includes(".dashboard-kpis") || !dashboardCss.includes(".originality-metrics")) failures.push("Responsive analytics and originality styles are missing.");
 
