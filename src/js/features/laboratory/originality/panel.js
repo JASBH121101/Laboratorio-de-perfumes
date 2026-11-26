@@ -25,7 +25,7 @@ export function renderOriginalityAnalysis(state, creations = []) {
     return `
       <section class="originality-panel" id="originality-analysis">
         <div class="originality-heading"><div><p class="eyebrow">PERSONAL ORIGINALITY ENGINE</p><h2>Originalidad e identidad <em>personal</em></h2><p>La primera medición necesita una línea base de tus propias creaciones.</p></div><span class="originality-state">BASE EN CONSTRUCCIÓN</span></div>
-        <div class="originality-no-baseline"><strong>Sin comparación suficiente</strong><p>${result.observations.map(esc).join(" ")}</p><small>Guardá una fórmula y registrá otra variante o creación. El sistema solo comparará datos de tu propio archivo.</small></div>
+        <div class="originality-no-baseline"><strong>Sin comparación suficiente</strong><p>${result.observations.map(esc).join(" ")}</p><small>Guardá una fórmula y registrá otra variante o creación. El índice personal no consulta catálogos comerciales; el benchmark separado compara notas públicas de referencia.</small></div>
         ${renderCatalogBenchmark(state.items)}
       </section>
     `;
