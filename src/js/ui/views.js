@@ -6,6 +6,7 @@ import { renderAnalyticsDashboard } from "../features/laboratory/analytics/dashb
 import { renderOriginalityAnalysis } from "../features/laboratory/originality/panel.js";
 import { renderArchiveView, renderArchiveQuickSave } from "../features/archive/panel.js";
 import { renderAnalyticalComparison } from "../features/laboratory/comparison/panel.js";
+import { renderPersonalSignatureHistory } from "../features/laboratory/signature-history/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -24,6 +25,7 @@ function navLink(item, activeView, compact = false) {
 function homeView(archiveState = {}, mixingState = { items: [] }) {
   return `
     ${renderAnalyticsDashboard(archiveState, mixingState)}
+    ${renderPersonalSignatureHistory(archiveState)}
     <section class="dashboard-shortcuts" aria-label="Áreas de trabajo">
       <a class="dashboard-shortcut" href="#lab" data-nav="lab"><span>01</span><div><strong>Constructor de fórmulas</strong><small>Combiná referencias y distribuí los puntos creativos.</small></div><b>↗</b></a>
       <a class="dashboard-shortcut" href="#notes" data-nav="notes"><span>02</span><div><strong>Biblioteca olfativa</strong><small>Consultá familias, perfiles y roles orientativos.</small></div><b>↗</b></a>
