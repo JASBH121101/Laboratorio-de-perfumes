@@ -86,7 +86,7 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 17. Benchmark de catálogo comercial | Comparar notas y familias de una fórmula frente a perfumes árabes, nicho e diseñador, con top 3 por categoría, evidencia y fuente | **Completado** — PR #51 fusionado |
 | 18. Estimador conceptual de rendimiento | Estimar rangos amplios de persistencia en horas y proyección en metros en apertura y 1–2 h, con confianza baja y límites explícitos | **Completado** — PR #53 fusionado |
 
-La base funcional vigente pasó **180/180 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 18. Los PR #32 al #53 de funcionalidad están integrados en `main`. La PWA usa `shell-v43` e incluye briefs, posicionamiento, benchmark y estimador en su shell offline. Queda pendiente la aceptación física en Android: revisión visual responsive, actualización PWA en dispositivo, impresión/guardado PDF y verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó **180/180 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 19. Los PR #32 al #55 de funcionalidad y mejoras están integrados en `main`. La PWA usa `shell-v43` e incluye briefs, posicionamiento, benchmark comercial mejorado y estimador por escenarios en su shell offline. Queda pendiente la aceptación física en Android: revisión visual responsive, actualización PWA en dispositivo, impresión/guardado PDF y verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 17 — Benchmark comercial local
 
@@ -157,7 +157,7 @@ El constructor móvil reduce el espacio vertical del encabezado, la búsqueda, l
 
 El asistente funciona sin conexión a modelos externos ni APIs facturables. Interpreta palabras y expresiones relacionadas con familias y facetas olfativas, distingue preferencias positivas de rasgos que el usuario desea evitar, y consulta exclusivamente las referencias incluidas en la biblioteca local. Permite trabajar con una idea personal, un perfil de cliente o una fragancia tomada como inspiración. Explica por qué sugiere cada materia, formula una pregunta de seguimiento cuando falta contexto y solo envía las referencias al constructor cuando el usuario pulsa la acción explícita de transferencia.
 
-Es un motor determinista basado en reglas y coincidencia editorial; no es un modelo generativo conversacional ni entiende cualquier frase libre como una persona. No reconstruye fórmulas de perfumes comerciales ni predice química o seguridad. El benchmark comercial y el estimador de rendimiento son módulos separados, con sus limitaciones documentadas en los bloques 17 y 18.
+Es un motor determinista basado en reglas y coincidencia editorial; no es un modelo generativo conversacional ni entiende cualquier frase libre como una persona. No reconstruye fórmulas de perfumes comerciales ni predice química o seguridad. El benchmark comercial y el estimador de rendimiento son módulos separados, con sus limitaciones documentadas en los bloques 17, 18 y 19.
 
 ## Política de costos y privacidad
 
@@ -170,4 +170,19 @@ El motor A/B/C ofrece tres rutas conceptuales distintas a partir del brief del a
 
 El módulo de inspiración recibe una etiqueta opcional, los rasgos que gustan y lo que se desea evitar. Extrae familias y descriptores, puede usar la frecuencia de familias del archivo local para ordenar caminos complementarios y muestra tres arquitecturas con referencias ilustrativas. Una dirección puede enviarse al asistente para crear otro brief y generar propuestas A/B/C; no se aplica a la composición activa. No consulta la fórmula de perfumes comerciales, no usa Internet ni certifica originalidad mundial.
 
-La PWA usa `shell-v43`. Los bloques 15–18 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
+La PWA usa `shell-v43`. Los bloques 15–19 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
+
+### Cierre del Bloque 19 — Benchmark y rendimiento por escenarios
+
+- Categorías comerciales presentadas como **Árabe / Ninja**, Diseñador y Nicho.
+- El benchmark distingue coincidencias directas de materias disponibles y similitud por familias; incluye evidencia por perfume de referencia y no afirma copia ni equivalencia química.
+- El estimador permite escenarios de concentración asumida (EDT, EDP, Parfum) y ambiente (neutro, cálido, fresco, interior, exterior).
+- Presenta rangos aproximados de persistencia detectable en piel (horas), proyección inicial (metros) y proyección después de 1–2 horas (metros), con **confianza muy baja** y advertencias explícitas. Son estimaciones heurísticas, no mediciones físicas.
+- CI final: **180/180 pruebas**, sintaxis y validador de estructura aprobados.
+
+### Próximas mejoras propuestas (aún no implementadas)
+
+- **Bloque 20 — Asistente creativo UX:** prompts guiados más claros, respuestas compactas y explicaciones de selección, seguimiento de brief y control de contradicciones.
+- **Bloque 21 — Rediseño visual del laboratorio:** jerarquía de tarjetas, gráficos analíticos, estados vacíos, responsive/mobile y navegación más compacta.
+- **Bloque 22 — Historial y comparación de perfiles:** conservar briefs y comparar alternativas, público, benchmark y escenarios de rendimiento.
+- **Bloque 23 — Calibración sensorial:** permitir registrar pruebas reales de horas/proyección y ajustar las estimaciones con datos del usuario, manteniendo la privacidad local.
