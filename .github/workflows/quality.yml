@@ -30,19 +30,18 @@ jobs:
         run: |
           node --check src/js/app.js
           node --check src/js/ui/views.js
-          node --check src/js/features/laboratory/scene.js
-          node --check src/js/features/laboratory/render-profile.js
-          node --check src/js/features/laboratory/architecture.js
-          node --check src/js/features/laboratory/materials.js
-          node --check src/js/features/laboratory/environment.js
-          node --check src/js/features/laboratory/perfume-assets.js
-          node --check src/js/features/laboratory/performance-audit.js
-          node --check src/js/features/laboratory/catalog.js
-          node --check src/js/features/laboratory/inspector.js
+          node --check src/js/core/navigation.js
+          node --check src/js/core/pwa.js
+          node --check src/js/features/perfume-library/data.js
+          node --check src/js/features/perfume-library/library.js
           node --check src/js/features/laboratory/mixing/state.js
+          node --check src/js/features/laboratory/mixing/draft-storage.js
           node --check src/js/features/laboratory/mixing/panel.js
           node --check src/js/features/laboratory/analysis/engine.js
           node --check src/js/features/laboratory/analysis/panel.js
+          node --check src/js/features/laboratory/analytics/dashboard.js
+          node --check src/js/features/laboratory/originality/engine.js
+          node --check src/js/features/laboratory/originality/panel.js
           node --check src/js/features/laboratory/evolution/engine.js
           node --check src/js/features/laboratory/evolution/panel.js
           node --check src/js/features/archive/model.js
