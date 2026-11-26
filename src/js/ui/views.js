@@ -5,6 +5,7 @@ import { renderEvolutionSimulator } from "../features/laboratory/evolution/panel
 import { renderAnalyticsDashboard } from "../features/laboratory/analytics/dashboard.js";
 import { renderOriginalityAnalysis } from "../features/laboratory/originality/panel.js";
 import { renderArchiveView, renderArchiveQuickSave } from "../features/archive/panel.js";
+import { renderAnalyticalComparison } from "../features/laboratory/comparison/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -52,7 +53,7 @@ function notesView(libraryState) {
 }
 
 function projectsView(archiveState = {}) {
-  return renderArchiveView(archiveState);
+  return `${renderArchiveView(archiveState)}${renderAnalyticalComparison(archiveState)}`;
 }
 
 export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}) {
