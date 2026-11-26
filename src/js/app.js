@@ -2,7 +2,7 @@ import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
-import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
+import { renderMixPickerResults, renderMixStudio } from "./features/laboratory/mixing/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -23,6 +23,7 @@ const noticeTitle = document.querySelector("#app-notice-title");
 const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
+const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -159,7 +160,7 @@ function safeFilename(value) {
 
 function render() {
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState());
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -192,10 +193,17 @@ function updateOriginalityAnalysis() {
   if (panel) panel.outerHTML = renderOriginalityAnalysis(mixingState, archiveState.creations);
 }
 
+function updateMixPickerResults() {
+  const results = appRoot.querySelector("#mix-picker-results");
+  if (results) results.innerHTML = renderMixPickerResults(mixingState, mixPickerState);
+  const clear = appRoot.querySelector(".mix-picker-clear");
+  if (clear) clear.disabled = !mixPickerState.query && mixPickerState.family === "all" && mixPickerState.role === "all" && mixPickerState.kind === "all";
+}
+
 function updateMixStudio() {
   saveMixDraft(mixingState.items);
   const panel = appRoot.querySelector("#mix-studio");
-  if (panel) panel.outerHTML = renderMixStudio(mixingState);
+  if (panel) panel.outerHTML = renderMixStudio(mixingState, mixPickerState);
   const quickSave = appRoot.querySelector("#archive-quick-save");
   if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(getArchiveViewState());
   updateCreativeAnalysis();
@@ -269,14 +277,30 @@ async function importBackupFile(file) {
 
 
 appRoot.addEventListener("input", (event) => {
-  if (event.target.id === "library-search") {
+  if (event.target.id === "mix-picker-search") {
+    mixPickerState.query = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "library-search") {
     libraryState.query = event.target.value;
     updateLibrary();
   }
 });
 
 appRoot.addEventListener("change", async (event) => {
-  if (event.target.id === "library-family") {
+  if (event.target.id === "mix-picker-family") {
+    mixPickerState.family = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "mix-picker-kind") {
+    mixPickerState.kind = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "mix-picker-role") {
+    mixPickerState.role = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "library-family") {
     libraryState.family = event.target.value;
     updateLibrary();
   } else if (event.target.id === "library-role") {
@@ -284,8 +308,13 @@ appRoot.addEventListener("change", async (event) => {
     updateLibrary();
   }
   if (event.target.matches("[data-mix-weight]")) {
-    mixingState = setMixNotePoints(mixingState, event.target.dataset.mixWeight, event.target.value);
-    updateMixStudio();
+    const requested = event.target.value.trim();
+    if (!requested || !Number.isFinite(Number(requested))) {
+      updateMixStudio();
+    } else {
+      mixingState = setMixNotePoints(mixingState, event.target.dataset.mixWeight, requested);
+      updateMixStudio();
+    }
   }
   if (event.target.matches("[data-analysis-direction]")) {
     analysisDirection = event.target.value;
@@ -422,8 +451,24 @@ appRoot.addEventListener("click", async (event) => {
     } else if (action === "close-note-detail") {
       libraryState.selectedId = null;
       updateLibrary();
-    } else if (action === "add-picked-note") {
-      addNoteToMix(appRoot.querySelector("#mix-note-picker")?.value);
+    } else if (action === "toggle-mix-picker") {
+      mixPickerState.expanded = !mixPickerState.expanded;
+      updateMixPickerResults();
+    } else if (action === "clear-mix-picker") {
+      mixPickerState.query = "";
+      mixPickerState.family = "all";
+      mixPickerState.role = "all";
+      mixPickerState.kind = "all";
+      mixPickerState.expanded = false;
+      const search = appRoot.querySelector("#mix-picker-search");
+      const family = appRoot.querySelector("#mix-picker-family");
+      const kind = appRoot.querySelector("#mix-picker-kind");
+      const role = appRoot.querySelector("#mix-picker-role");
+      if (search) search.value = "";
+      if (family) family.value = "all";
+      if (kind) kind.value = "all";
+      if (role) role.value = "all";
+      updateMixPickerResults();
     } else if (action === "undo-mix") {
       mixingState = undoMix(mixingState);
       updateMixStudio();

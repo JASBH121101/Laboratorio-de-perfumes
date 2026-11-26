@@ -15,9 +15,13 @@ test("notes can be added from the library and mixing picker", () => {
   assert.match(app, /const addMixTarget = event\.target\.closest\("\[data-add-to-mix\]"\)/);
   assert.match(app, /addNoteToMix\(addMixTarget\.dataset\.addToMix\)/);
   assert.match(app, /const noteTarget = event\.target\.closest\("\[data-open-note\]"\)/);
-  assert.match(mixPanel, /data-action="add-picked-note"/);
-  assert.match(app, /action === "add-picked-note"/);
-  assert.match(app, /addNoteToMix\(appRoot\.querySelector\("#mix-note-picker"\)\?\.value\)/);
+  assert.match(mixPanel, /id="mix-picker-search"/);
+  assert.match(mixPanel, /id="mix-picker-family"/);
+  assert.match(mixPanel, /id="mix-picker-kind"/);
+  assert.match(mixPanel, /id="mix-picker-role"/);
+  assert.match(mixPanel, /data-add-to-mix=/);
+  assert.match(app, /action === "toggle-mix-picker"/);
+  assert.match(app, /action === "clear-mix-picker"/);
   assert.match(app, /appRoot\.addEventListener\("change", async \(event\) => \{[\s\S]*?setMixNotePoints/);
   assert.match(mixPanel, /data-mix-dropzone/);
   assert.doesNotMatch(views, /data-lab-stage|camera-preset|Three\.js/i);

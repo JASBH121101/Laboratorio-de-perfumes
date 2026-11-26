@@ -68,7 +68,7 @@ The draft is autosaved locally. The archive uses IndexedDB with a localStorage f
 | 3 | Analytics dashboard | Local counts, family distribution, recent archive and draft state are data-derived and responsive |
 | 4 | Originality and personal identity | No score without personal baseline; internal differentiation and personal-pattern affinity remain distinct |
 | 5 | Certification and release | All unit tests, syntax checks and foundation validation green; review, merge and Pages deploy verified |
-| 6 | Formulation UX | Faster ingredient search, clearer editing and robust mobile interactions |
+| 6 | Formulation UX | Faster ingredient search, clearer editing and robust mobile interactions | Implemented on branch; certification pending |
 | 7 | Analytical comparison | Compare family, sensory and pyramid profiles between saved variants |
 | 8 | Creative signature history | Track recurring preferences and how the user's creative profile changes over time |
 | 9 | Sensory experiment records | Dated human evaluations, observations and controlled comparisons |

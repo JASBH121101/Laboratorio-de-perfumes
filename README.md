@@ -64,8 +64,13 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 3. Dashboard analítico | Indicadores locales, familias, actividad e interfaz responsive | **Completado** |
 | 4. Originalidad e identidad | Diferenciación interna, afinidad personal y desafíos creativos | **Completado** |
 | 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | **Completado** — PR #32 fusionado, CI verde y Pages desplegado |
+| 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | Implementado en rama; CI pendiente |
 
 La validación automatizada pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. El PR #32 se integró en `main` y el workflow de GitHub Pages terminó correctamente. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
+
+## Bloque 6 — Experiencia del constructor
+
+El constructor incorpora un buscador integrado con filtros por familia, tipo y ubicación orientativa. Los resultados permiten añadir una referencia sin navegar a otra pantalla, muestran cuáles ya pertenecen a la composición y permiten ampliar o reducir el listado. La edición de cada peso combina deslizador y campo numérico; la redistribución conserva el total conceptual de 100 puntos. El borrador local y el archivo existente se mantienen.
 
 ## Protección de datos creativos
 
