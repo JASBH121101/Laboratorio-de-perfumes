@@ -7,6 +7,8 @@ const normalize = (value = "") => String(value)
   .replace(/[^a-z0-9]+/g, " ")
   .trim();
 
+const containsTerm = (text, term) => (` ${normalize(text)} `).includes(` ${normalize(term)} `);
+
 const GROUPS = Object.freeze([
   { id:"citrica", label:"cítrica", keywords:["citrico","citrica","citricos","citricas","bergamota","limon","lima","toronja","pomelo","mandarina","yuzu","naranja"], families:["citrica"], facets:["citrica","acida","amarga","luminosa","jugosa"] },
   { id:"floral", label:"floral", keywords:["floral","flores","florales","rosa","jazmin","azahar","peonia","iris","violeta","nardo"], families:["floral"], facets:["floral","floral blanco","rosada","empolvada","luminosa"] },
@@ -29,7 +31,7 @@ function mentionedGroups(description) {
   const preferred = [];
   const avoided = [];
   for (const group of GROUPS) {
-    const matched = group.keywords.find((keyword) => phrase.includes(normalize(keyword)));
+    const matched = group.keywords.find((keyword) => containsTerm(phrase, keyword));
     if (!matched) continue;
     const normalizedKeyword = normalize(matched);
     const escaped = normalizedKeyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -45,7 +47,7 @@ function itemMatchesGroup(item, group) {
   const name = normalize(item.name);
   return group.families.includes(family)
     || group.facets.some((facet) => facets.includes(normalize(facet)))
-    || group.keywords.some((keyword) => name.includes(normalize(keyword)));
+    || group.keywords.some((keyword) => containsTerm(name, keyword));
 }
 
 function scoreItem(item, preferred, avoided) {
@@ -57,7 +59,7 @@ function scoreItem(item, preferred, avoided) {
       matchingGroups += 1;
     }
     const profile = normalize(`${item.name} ${item.profile} ${(item.facets || []).join(" ")}`);
-    if (group.keywords.some((keyword) => profile.includes(normalize(keyword)))) score += 1;
+    if (group.keywords.some((keyword) => containsTerm(profile, keyword))) score += 1;
   }
   for (const group of avoided) {
     if (itemMatchesGroup(item, group)) score -= 9;
