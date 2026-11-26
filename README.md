@@ -237,3 +237,19 @@ La PWA usa actualmente `shell-v47`. Los bloques 15–23 no agregan API, proveedo
 - Probar impresión/guardado PDF desde Android y verificar el despliegue más reciente de GitHub Pages.
 
 La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplicación; no sustituye estas verificaciones físicas.
+
+
+### Cierre del Bloque 24 — Legibilidad tipográfica global
+
+- Se amplió la tipografía en las cinco hojas de estilo principales: base, sistema de diseño, biblioteca, laboratorio y analítica.
+- Se estableció un tamaño base global de **16px**, interlineado **1.55** y un piso de **12.5px** para tipografía declarada en píxeles; los tamaños superiores se escalaron proporcionalmente.
+- Se conservaron las jerarquías de encabezados, la lógica de formulación, los cálculos, el archivo local y los datos existentes.
+- Se añadió una prueba de regresión de legibilidad y se alinearon las pruebas de integración existentes con la caché actualizada.
+- La PWA avanzó de `shell-v47` a **`shell-v48`** para que los clientes instalados descarguen las hojas de estilo actualizadas.
+- **PR #63 fusionado** mediante Squash Merge. Commit de integración: `4a47d763cd759322f841cb87177f8970bde334c7`.
+- **GitHub Actions run #1095: aprobado**. Resultado: **213/213 pruebas**, sintaxis de módulos y validador estructural aprobados.
+- Sin nuevas dependencias, APIs externas, proveedores de IA ni servicios pagos.
+
+**Aceptación manual pendiente:** revisar en Android el tamaño real de textos, saltos de línea, tarjetas, tablas, controles, gráficos y desbordamientos en pantallas pequeñas. Confirmar que el dispositivo active `shell-v48`. La CI no sustituye esta comprobación visual física.
+
+**Estado al cierre:** Bloques funcionales **1–24 completados y fusionados**; aceptación visual Android pendiente.
