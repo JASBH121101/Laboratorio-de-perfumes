@@ -1,4 +1,4 @@
-import { PERFUME_ITEMS } from "../perfume-library/data.js";
+import { PERFUME_ITEMS } from "../../perfume-library/data.js";
 import { getActiveVariant } from "../../archive/model.js";
 
 const esc = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
