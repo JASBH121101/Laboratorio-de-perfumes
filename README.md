@@ -1,183 +1,70 @@
-# JB Virtual Perfume Lab
+# JB Perfume Lab
 
-Personal, Android-first virtual fragrance concept laboratory. The application is a touch-friendly Progressive Web App (PWA) with a Three.js 3D atelier, an educational note library and a roadmap toward conceptual composition and creative analysis.
+JB Perfume Lab es un espacio personal, Android-first y local-first para desarrollar conceptos olfativos, estudiar composiciones, analizar patrones y construir una identidad creativa propia.
 
-## Product principles
+## Dirección del producto
 
-- Explore fragrance ideas, note families and conceptual accords.
-- Use an Android-first interface with touch gestures and desktop controls.
-- Keep saved creations local-first on the user's device; export JSON backups regularly.
-- Preserve original concepts and make variants instead of silently overwriting work.
-- Produce creative briefs for professional perfumers and manufacturers.
-- **This is a creative concept tool, not a chemistry simulator.** It does not provide formulas, ingredient dosages, manufacturing instructions, safety certification or claims of real-world performance.
+La aplicación prioriza la formulación conceptual y la investigación creativa. No incluye escenas 3D, renderizado de objetos, cámaras, zoom, iluminación virtual ni animaciones tridimensionales. La interfaz se concentra en tablas, gráficos analíticos, historial y herramientas de comparación.
 
-## Official brand asset
+- Constructor de composiciones con materias de referencia de la biblioteca.
+- Distribución normalizada en 100 puntos creativos para comparar ideas.
+- Análisis de familias, facetas sensoriales y estructura orientativa salida/corazón/fondo.
+- Índice de diferenciación interna contra fórmulas guardadas en el archivo personal.
+- Lectura de patrones de identidad creativa y desafíos para explorar familias menos utilizadas.
+- Archivo local de creaciones, variantes, versiones e importación/exportación JSON.
+- Dashboard de indicadores y tendencias con gráficos 2D.
+- PWA instalable, responsive y preparada para funcionamiento local/offline.
 
-The official Perfumería JB logo is maintained in `assets/brand-logo.svg` and used in the application header, loading screen and PWA icon metadata.
+**Límite fundamental:** el sistema es una herramienta de exploración editorial y creativa, no un simulador químico ni una guía de fabricación. Los puntos creativos no son porcentajes de ingredientes, concentraciones, dosificaciones ni relaciones de producción. El índice de diferenciación solo compara el historial local del usuario; no demuestra originalidad mundial, ausencia de similitudes comerciales, patentabilidad ni exclusividad.
 
-## Install on Android
+## Dashboard y analítica
 
-Open the published site over HTTPS in Chrome on Android. Use **Instalar** when the browser offers the prompt. If the prompt is unavailable, open Chrome's menu (⋮) and select **Install app** or **Add to Home screen**. The exact label depends on the browser and device.
+El dashboard agrega las creaciones y variantes guardadas en el dispositivo. Muestra conteos de creaciones, variantes, versiones y referencias distintas, junto con la participación de familias olfativas y actividad reciente. Los gráficos se construyen directamente desde los datos guardados; si el archivo está vacío, la interfaz muestra un estado inicial sin inventar estadísticas.
 
-This creates a home-screen web app; it is not a separately distributed native APK.
+## Motor de originalidad personal
 
-## Updates and offline behavior
+El Originality Engine compara una composición candidata contra variantes y versiones históricas diferentes del propio archivo local. Su índice combina:
+- Frecuencia histórica de uso de referencias.
+- Novedad de parejas de referencias que no aparecen juntas en el archivo.
+- Distancia de distribución frente a la composición histórica más cercana.
 
-The service worker uses a versioned app-shell cache. When a new deployment is available, the app displays an update notice. Selecting **Actualizar** activates the waiting worker and reloads the app with the new files. A network connection is required to fetch a new release.
+La afinidad con patrones previos es una métrica separada: una fórmula puede diferenciarse bastante del archivo y, a la vez, alejarse del estilo predominante del creador. La primera fórmula no recibe una puntuación ficticia; el sistema solicita una línea base suficiente.
 
-Three.js is pinned to `0.187.0` and loaded only when the 3D laboratory is opened. The service worker caches the pinned Three.js module and its core file on the first successful 3D load. This keeps the general PWA installation and updates lighter. The first visit to the 3D scene requires a network connection; after both files are cached, the scene can load offline.
+No se consulta Internet, catálogos comerciales ni bases de datos globales de fórmulas. Por tanto, el resultado debe interpretarse como **diferenciación interna de tu archivo**, nunca como garantía de que una fragancia sea inédita en el mercado.
 
-Increment the shell version in `sw.js` whenever shipping a new app-shell release.
+## PWA, actualizaciones y uso offline
 
-## Perfume Library
+El service worker administra una caché de shell versionada. La aplicación comprueba si existe una actualización al iniciar y al pulsar **Buscar versión**. Un aviso de actualización pendiente se presenta una sola vez; al cerrarlo, la decisión queda guardada mientras esa misma actualización continúe pendiente. Una versión nueva vuelve a generar el aviso. El mensaje «Está todo actualizado» solo aparece después de una comprobación solicitada manualmente.
 
-The editorial library contains 60 references with family, indicative pyramid role, sensory facets, profiles and creative pairing ideas. These are educational descriptions, not fixed technical rules or formulas.
+La instalación PWA puede realizarse desde Chrome en Android usando **Instalar** cuando el navegador ofrece el diálogo, o desde su menú de instalación. El almacenamiento de creaciones es local en el dispositivo, sin sincronización en la nube. Exportá respaldos JSON regularmente: borrar los datos del navegador o cambiar de dispositivo puede eliminar el archivo local.
 
-## 3D Laboratory
+Incrementá CACHE_NAME en sw.js cuando se publique un nuevo shell.
 
-Block 4 adds a lazy-loaded Three.js scene with a workbench, perfume bottle, reference vials, beaker, pipette and tray. On Android, drag one finger to orbit and pinch with two fingers to zoom. Tap an object to open its inspector card. Desktop users can drag with the mouse and zoom with the wheel. Arrow keys rotate the camera; plus/minus adjust zoom; Escape clears selection.
+## Biblioteca olfativa
 
-The scene is deliberately static between interactions, uses a capped device pixel ratio, and does not enable real-time shadow maps. This keeps the renderer lighter on mobile devices. A WebGL-unavailable fallback is shown when the browser cannot create a renderer.
+La biblioteca editorial incluye 60 referencias con familia, roles orientativos en la pirámide, facetas sensoriales, perfiles y asociaciones creativas. Estas descripciones son referencias educativas; no representan reglas técnicas universales ni fórmulas.
 
-Block 4 provides visual inspection. Block 5 adds a conceptual composition panel, abstract point weights, undo/reset and a live beaker color/level display.
+## Desarrollo
 
-## Development
+Requisitos: Node.js 22+ y npm.
 
-Requirements: Node.js 22+ and npm.
-
-```bash
+~~~~bash
 npm test
 npm run validate
-```
+~~~~
 
-JB Expert QA 2.0 is declared as a development dependency. It has not yet been installed or runtime-validated in this repository environment.
+JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime no se instala como parte de la aplicación web ni se usa para prestar el servicio principal.
 
-## Current status
+## Roadmap de rediseño
 
-- Block 1 — Foundation & Architecture: integrated and CI-validated.
-- Block 2 — Design System & PWA Experience: integrated and Pages-published.
-- Block 3 — Perfume Library & Official Branding: integrated and Pages-published.
-- Block 4 — 3D Laboratory Core: integrated and Pages-published.
-- Block 5 — Virtual Mixing Studio: integrated and Pages-published.
-- Block 6 — Creative Analysis Engine: integrated and Pages-published.
-- Block 7 — Conceptual Evolution Simulator: integrated and Pages-published.
+| Bloque | Alcance | Estado |
+|---|---|---|
+| 1. Estabilidad PWA | Un solo aviso por release pendiente; persistir el cierre; chequeo manual separado | Implementado en rama, CI pendiente |
+| 2. Retirada 3D | Eliminar import map, motor, cámara, zoom, renderizado y caché externa | En implementación |
+| 3. Dashboard analítico | Indicadores locales, familias, actividad e interfaz responsive | Módulos implementados, integración y validación en curso |
+| 4. Originalidad e identidad | Diferenciación interna, afinidad personal y desafíos creativos | Motor y panel implementados, validación en curso |
+| 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | Pendiente |
 
+## Protección de datos creativos
 
-## Virtual Mixing Studio — Block 5
-
-The mixing studio accepts references from the library picker, quick-add chips, note detail cards or selected 3D vials. Desktop users can drag a quick reference into the drop zone; Android users can tap the same reference. Each composition is normalized to 100 **creative points**. Changing one reference redistributes the remaining points, and removing a reference rebalances the rest. Undo and reset are available.
-
-These points are internal creative weights only. They are not percentages, ingredient ratios, concentrations, dosages, production instructions or predictions of a real perfume. The beaker's color and displayed level are visual metaphors based on selected note families and reference count.
-
-The live composition remains in memory until explicitly saved. Once saved, a creative record and its variants/version history persist in the browser's local archive. Export JSON backups periodically; browser-data deletion or device loss can remove local records.
-
-
-## Creative Analysis Engine — Block 6
-
-The analysis engine reads the current conceptual composition and summarizes family distribution, reference coverage across the indicative top/heart/base roles, repeated sensory descriptors and editorial sensory signals (sweet/creamy, fresh/luminous, woody/earthy, floral, spicy, clean/close).
-
-It does not generate a single unexplained quality score. Observations describe patterns to review, not automatic verdicts. The Creative Advisor offers up to three references from the existing library for a selected direction: sweeter, less sweet, fresher, woodier, more floral, spicier, cleaner/intimate or more balanced/contrasted. Each suggestion explains its editorial rationale and possible trade-off and can be added to the conceptual composition.
-
-All indicators are derived from the library's editorial text and the composition's abstract creative points. They are not sensory measurements, objective formula compatibility, molecular analysis, longevity, projection, sillage or safety assessments. The user must evaluate real samples with professional support.
-
-
-## Conceptual Evolution Simulator — Block 7
-
-The simulator provides an interactive editorial reading of the composition across three stages: opening (0–15 min), heart (15 min–2 h) and drydown (2 h onward). It lists library references assigned to each selected role and normalizes their creative-point shares within that stage. These time ranges are illustrative UI labels, not fragrance performance predictions. It does not model evaporation, chemistry, longevity, projection or actual scent evolution.
-
-
-## Persistence & Creative Archive — Block 8
-
-The Projects/Creations area stores named concepts in IndexedDB on the current device. Each creation starts with variant A and can contain up to three variants (A/B/C). Each variant keeps a version history; saving changes appends a snapshot, and restoring an older version creates a new version instead of overwriting history. The comparison view shows creative-point differences between two variants.
-
-Use **Exportar todo (.json)** to download a backup containing creations, variants and version history. **Importar respaldo JSON** merges the backup into the local archive; colliding creation IDs are remapped so imported records do not overwrite existing ones. A single creation can also be exported from its detail view.
-
-The archive does not sync to GitHub or a cloud account. IndexedDB is the primary storage; localStorage is a fallback when IndexedDB is unavailable. Browser storage can be cleared by the user or the operating system, and it does not transfer automatically to a new phone. Keep an external JSON backup.
-
-The project data contains only note-library IDs and conceptual creative points. It is not a chemical formula or manufacturing recipe. Saved points remain creative weights, not percentages or ingredient concentrations.
-
-
-## Phase 2 — Premium Realistic 3D Atelier
-
-The visual rebuild is tracked block-by-block in [the Phase 2 visual art-direction specification](./docs/PHASE2_VISUAL_ART_DIRECTION.md). Block 1 documents the current Three.js scene audit, cinematic atelier direction, material/lighting principles, Android quality tiers, cost and asset policy, and the complete twelve-block roadmap. It does not yet claim that the 3D scene has been visually rebuilt.
-
-Phase 2 retains lazy-loaded Three.js, touch orbit/pinch controls, object inspection, the conceptual composition vessel, local-first behavior and a mobile-safe rendering profile. No paid assets, APIs or services are part of the plan.
-
-
-### Adaptive 3D rendering — Phase 2 Block 2
-
-The 3D renderer selects a conservative Mobile Lite, Mobile Standard or Desktop High profile from available device memory, CPU concurrency and WebGL texture capability. Unknown Android capability data falls back to Mobile Lite. Rendering remains on-demand; real-time shadows and post-processing remain disabled until a later block justifies and profiles them. The service worker app-shell cache is now `shell-v10` and includes the profile module.
-
-
-### Atelier architecture — Phase 2 Block 3
-
-The 3D scene now uses a bounded room footprint instead of an infinite floor plane, with two side walls, a rear wall with a door opening, a framed divided window, wall skirting, right-wall inset panels, rear display-wall timber detailing and exposed upper beams/slats. The front remains intentionally open for camera visibility and touch inspection. The geometry is generated locally with Three.js; no external assets or new runtime dependencies are added. The PWA shell cache is now `shell-v11`.
-
-
-### Procedural PBR materials — Phase 2 Block 4
-
-The atelier now builds local CanvasTexture maps for walnut grain, warm stone variation and brushed brass, with bump/roughness maps and shared Three.js material presets. Texture size and anisotropy are capped by the active rendering profile and actual GPU capability. Architecture, workbench, shelves, caps and accents reuse shared materials. No external textures, paid asset packs or new runtime packages are fetched; the PWA cache is now `shell-v12`.
-
-
-### Window-led lighting and contact shadows — Phase 2 Block 5
-
-The atelier now has a warm directional key aligned with its side window, cool fill, a rear rim and restrained warm practicals. All device tiers use inexpensive radial contact-shadow decals under props and table legs; PCF soft shadow maps are enabled only for Desktop High. The bottle, vials, beaker, pipette and tray have been repositioned to meet the workbench. The cache version is `shell-v13`.
-
-
-### Environment reflections and atmosphere — Phase 2 Block 6
-
-The atelier generates a compact equirectangular panorama locally with CanvasTexture, converts it to a PMREM reflection map for glass and metallic surfaces, and uses the same panorama as a restrained background. Mobile uses a 256 px source; desktop uses 512 px. The PMREM target and source texture are disposed when the 3D view closes. No HDRI download or external environment service is used; PWA cache is now `shell-v14`.
-
-
-### Premium perfume assets — Phase 2 Block 7
-
-The main concept flacon now uses a custom beveled ExtrudeGeometry silhouette with rounded shoulders, an integrated neck, internal liquid and dip tube, layered label plates, a dark cap, and brushed-brass collar/rings. Reference vials receive more detailed cylindrical geometry and matching label/cap treatment. Geometry is generated locally and disposed with the scene; the new module is in PWA cache `shell-v15`.
-
-
-### Laboratory equipment and props — Phase 2 Block 8
-
-The exploration beaker now has a hollow glass wall, thick base, rolled lip and local measurement scale. The pipette has a tapered tip, rounded bulb and metallic graduation bands. The reference tray is now a beveled organizer with a burgundy inset, dividers and brass corner details. Equipment uses a dedicated transparent PBR vessel-glass preset; all eight props remain selectable. PWA cache advances to `shell-v16`.
-
-
-### Cinematic camera presets — Phase 2 Block 9
-
-The 3D stage now exposes three accessible camera framings: General, Frasco and Mesa. Presets use short eased transitions, update their selected state for assistive technology, stop when the user begins orbit/zoom/keyboard navigation, and switch immediately when reduced motion is requested. Manual touch orbit, pinch zoom, wheel and arrow-key controls remain available. The PWA shell cache is now `shell-v18`.
-
-
-### Interaction polish — Phase 2 Block 10
-
-Desktop pointer hover now identifies inspectable objects with a restrained cursor/ring response. Selecting an object briefly scales it by 2.8% and returns the previous selection to its original size. The 170 ms selection pulse is canceled when superseded, disabled when reduced motion is requested, and cleaned up when the 3D view closes. Touch selection and inspector events remain unchanged. PWA cache advances to `shell-v19`.
-
-
-### Final visual finish — Phase 2 Block 11
-
-The renderer now applies subtle exposure and environment-reflection intensity settings from the active graphics tier. A lightweight CSS vignette and warm center lift add depth over the 3D canvas; the overlay is pointer-transparent and uses a lighter grade on constrained phones. This avoids a costly bloom/blur post-processing chain and adds no new WebGL pass or external assets. PWA cache advances to `shell-v20`.
-
-
-### Android performance audit — Phase 2 Block 12
-
-The Laboratory includes an opt-in local performance audit. Press **Medir rendimiento** to run a short active-render sample and review average FPS, frame timing, draw-call/triangle averages, resource counters, device capability fields and the active quality tier. The test stops when the view is closed or the tab is hidden and does not upload data.
-
-Its FPS comparison is an indicative browser measurement against the tier target, not a formal hardware certification. Browser APIs do not expose reliable GPU-memory bytes, device temperature or battery drain. Final Android sign-off still requires repeated physical-device testing, visual inspection, thermal/battery observation and an offline reopen test. The service-worker app-shell cache is now `shell-v22`.
-
-### Phase 2 Block 14 — Analytical Chart System
-
-The Creative Analysis panel now includes a family-distribution donut, a sensory-profile radar, and visual pyramid-coverage bars. These graphics are generated locally with SVG and CSS, have no new dependencies, and remain responsive on Android. PWA shell cache advances to `shell-v23`.
-
-### Phase 2 Block 13 — Focused Experiment View
-
-An empty composition opens a focused front-facing experiment view with architectural room elements hidden and a clean dark background. Adding active composition entries restores the atelier environment and overview camera. Clearing the composition returns to experiment mode. No new assets or runtime dependencies are added; PWA shell cache advances to `shell-v22`. Physical Android verification remains pending.
-
-### Phase 2 Block 15 — Vessel & Glass Realism
-
-The flacon and vial fills use rounded profiles; vial and beaker liquids gain visible surfaces and meniscus edges; the beaker gains thicker base and lip cues with visual-only graduation marks; labels receive a paper-like print treatment and the pipette gets a refined bulb collar. Glass transmission and clearcoat are refined for the local environment map. PWA shell cache advances to `shell-v24`. Liquid quantities remain conceptual, not calibrated chemical volumes.
-
-
-### Phase 2 Block 18 — Original Creation Draft Recovery
-
-The active conceptual composition autosaves locally and restores after app reload. Loading an archived variant updates the working draft, and clearing the composition removes the draft. This protects unfinished creative work from accidental reloads; the local archive with variants and version history remains the durable saved-creation system. Draft weights are conceptual points, not a fragrance formula.
-
-
-### Phase 2 Block 19 — Creation Workflow Reliability
-
-Selecting an archive variant loads that exact variant into the working composition and autosaved draft. Restoring a historical version also refreshes the draft. Empty compositions cannot be saved as a creation, version or A/B/C fork. Every composition edit updates the local draft, beaker and analysis. The Laboratory quick-save control tracks the live composition state. Creative points remain conceptual, not ingredient ratios, concentrations or manufacturing instructions.
+El archivo principal vive en IndexedDB, con localStorage como alternativa cuando IndexedDB no está disponible. No se sincroniza con GitHub ni con un servicio remoto. Los datos pueden perderse si se borran los datos del sitio o se pierde el dispositivo; mantené un respaldo JSON externo.
