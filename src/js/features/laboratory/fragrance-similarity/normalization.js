@@ -174,6 +174,23 @@ const NOTE_INDEX = createAliasIndex(NOTE_ALIAS_GROUPS);
 const FAMILY_INDEX = createAliasIndex(FAMILY_ALIAS_GROUPS);
 const CHARACTER_INDEX = createAliasIndex(CHARACTER_ALIAS_GROUPS);
 
+const DATASET_FAMILY_GROUP_TAGS = new Map([
+  ["wood and root", ["woody", "earthy"]],
+  ["white bloom", ["floral"]],
+  ["petal garden", ["floral"]],
+  ["green leaf", ["green"]],
+  ["velvet sweet", ["gourmand", "sweet"]],
+  ["sunlit citrus", ["citrus"]],
+  ["spice route", ["spicy"]],
+  ["orchard fruit", ["fruity"]],
+  ["amber and resin", ["amber", "resinous"]],
+  ["powder veil", ["powdery"]],
+  ["skin musk", ["musky"]],
+  ["smoke and leather", ["smoky", "leathery"]],
+  ["salt and mineral", ["aquatic", "mineral"]],
+  ["oud court", ["woody", "amber", "resinous"]]
+]);
+
 function toEntryList(values, normalizer) {
   const seen = new Set();
   const entries = [];
@@ -204,7 +221,21 @@ export function normalizeOlfactoryTerms(values, domain = "note") {
 }
 
 function familyEntries(values) {
-  return toEntryList(values, (value) => normalizeOlfactoryTerm(value, "family"));
+  const seen = new Set();
+  const entries = [];
+  for (const raw of values) {
+    if (typeof raw !== "string" || !raw.trim()) continue;
+    const label = raw.trim().replace(/\s+/g, " ");
+    const lookup = toLookupKey(label);
+    const groupTags = DATASET_FAMILY_GROUP_TAGS.get(lookup);
+    const keys = groupTags ?? [normalizeOlfactoryTerm(label, "family")];
+    for (const key of keys) {
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      entries.push(Object.freeze({ key, label }));
+    }
+  }
+  return Object.freeze(entries);
 }
 
 export function normalizeFragranceSimilarityProfile(profile) {
