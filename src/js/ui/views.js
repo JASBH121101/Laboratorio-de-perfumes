@@ -49,7 +49,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <p>Desarrollá composiciones conceptuales, estudiá su estructura y documentá cómo evoluciona tu identidad creativa.</p>
     </section>
     ${renderMixStudio(mixingState, mixPickerState)}
-    ${renderAudienceFit(mixingState.items)}
+    <div id="audience-fit-root">${renderAudienceFit(mixingState.items)}</div>
     ${renderClientBriefPanel(clientBriefState)}
     ${renderCreativeAssistant(creativeAssistantState)}
     ${renderFormulationProposals({ result: creativeAssistantState.proposals })}
