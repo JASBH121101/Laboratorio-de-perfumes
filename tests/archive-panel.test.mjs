@@ -70,3 +70,25 @@ test("Laboratory route includes quick-save access for the current composition", 
   assert.match(html, /save-current-as-creation/);
   assert.match(html, /archive-quick-name/);
 });
+
+
+test("empty compositions cannot be saved as new creations or archive versions", () => {
+  const emptyState = { creations: [], hasCurrentComposition: false };
+  const archive = renderArchiveView(emptyState);
+  const quickSave = renderArchiveQuickSave(emptyState);
+  assert.match(archive, /data-action="create-archive" disabled/);
+  assert.match(archive, /Primero añadí una referencia/);
+  assert.match(quickSave, /data-action="save-current-as-creation" disabled/);
+  assert.match(quickSave, /Añadí una referencia en el recipiente/);
+});
+
+test("selecting a variant is clearly labelled as loading it into the active workspace", () => {
+  const withB = createArchiveVariant(original, { items: [{ id: "rose", points: 100 }], id: "ui-project:B" });
+  const html = renderArchiveView({
+    creations: [withB],
+    selectedCreationId: withB.id,
+    selectedVariantId: original.activeVariantId
+  });
+  assert.match(html, /Seleccionar y cargar variante B/);
+  assert.match(html, /Abrir en laboratorio/);
+});

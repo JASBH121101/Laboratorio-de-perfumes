@@ -28,7 +28,7 @@ function renderVariant(variant, selectedVariantId) {
   const latest = variant.versions.at(-1);
   return `
     <article class="archive-variant ${selected ? "is-selected" : ""}">
-      <button class="archive-variant-select" type="button" data-select-variant="${esc(variant.id)}" aria-pressed="${selected}">
+      <button class="archive-variant-select" type="button" data-select-variant="${esc(variant.id)}" aria-label="Seleccionar y cargar variante ${esc(variant.label)}: ${esc(variant.name)}" aria-pressed="${selected}">
         <span class="archive-variant-label">${esc(variant.label)}</span>
         <span class="archive-variant-info"><strong>${esc(variant.name)}</strong><small>v${latest?.number ?? 1} · ${variant.items.length} referencias</small></span>
         <span class="archive-variant-arrow">${selected ? "●" : "○"}</span>
@@ -46,7 +46,7 @@ function renderVersions(variant) {
     <article class="archive-version">
       <div><strong>Versión ${version.number}</strong><small>${esc(version.note)} · ${new Date(version.createdAt).toLocaleString("es-NI")}</small></div>
       <span>${version.items.length} refs.</span>
-      <button type="button" data-restore-version="${esc(variant.id)}" data-version-number="${version.number}" ${version.number === variant.versions.at(-1).number ? "disabled" : ""}>Restaurar</button>
+      <button type="button" data-restore-version="${esc(variant.id)}" data-version-number="${version.number}" aria-label="Restaurar y cargar la versión ${version.number}" ${version.number === variant.versions.at(-1).number ? "disabled" : ""}>Restaurar y cargar</button>
     </article>
   `).join("");
 }
@@ -80,17 +80,18 @@ export function renderArchiveView(state = {}) {
   const selectedVariant = selected
     ? getVariant(selected, state.selectedVariantId) ?? getActiveVariant(selected)
     : null;
+  const hasCurrentComposition = state.hasCurrentComposition !== false;
   const fallback = state.storageMode === "localStorage"
     ? '<span class="archive-storage-warning">Almacenamiento local alternativo: evitá borrar los datos del navegador sin exportar un respaldo.</span>'
     : "";
   const createForm = `
     <section class="archive-create-panel">
-      <div><p class="eyebrow">NEW CREATION · LOCAL ARCHIVE</p><h3>Guardar una idea nueva</h3><p>Se guardará una copia independiente de la composición actual.</p></div>
+      <div><p class="eyebrow">NEW CREATION · LOCAL ARCHIVE</p><h3>Guardar una idea nueva</h3><p>${hasCurrentComposition ? "Se guardará una copia independiente de la composición actual." : "Primero añadí una referencia en el Laboratorio 3D para iniciar una creación."}</p></div>
       <label for="archive-new-name">Nombre de la creación</label>
       <input id="archive-new-name" maxlength="60" placeholder="Ej. Jardín después de la lluvia" value="${esc(state.newName ?? "")}">
       <label for="archive-new-description">Descripción breve (opcional)</label>
       <textarea id="archive-new-description" maxlength="1200" rows="2" placeholder="Intención, atmósfera y carácter buscado…">${esc(state.newDescription ?? "")}</textarea>
-      <button class="archive-primary-button" type="button" data-action="create-archive">＋ Crear desde composición actual</button>
+      <button class="archive-primary-button" type="button" data-action="create-archive" ${hasCurrentComposition ? "" : "disabled"}>＋ Crear desde composición actual</button>
     </section>
   `;
   const archiveList = creations.length
@@ -157,6 +158,7 @@ export function renderArchiveView(state = {}) {
 }
 
 export function renderArchiveQuickSave(state = {}) {
+  const hasCurrentComposition = state.hasCurrentComposition !== false;
   const selected = state.creations?.find((creation) => creation.id === state.selectedCreationId);
   const variant = selected
     ? getVariant(selected, state.selectedVariantId) ?? getActiveVariant(selected)
@@ -164,15 +166,15 @@ export function renderArchiveQuickSave(state = {}) {
   if (selected && variant) {
     return `
       <section class="archive-quick-save" id="archive-quick-save">
-        <div><p class="eyebrow">LOCAL ARCHIVE · ${esc(selected.name)}</p><strong>Guardar cambios de la composición</strong><small>Variante ${esc(variant.label)} · v${variant.versions.at(-1)?.number ?? 1}</small></div>
-        <div class="archive-quick-actions"><button type="button" data-action="save-archive-version">Guardar nueva versión</button><button type="button" data-nav="projects">Administrar archivo ↗</button></div>
+        <div><p class="eyebrow">LOCAL ARCHIVE · ${esc(selected.name)}</p><strong>Guardar cambios de la composición</strong><small>${hasCurrentComposition ? "Variante " + esc(variant.label) + " · v" + (variant.versions.at(-1)?.number ?? 1) : "Añadí al menos una referencia para guardar una versión."}</small></div>
+        <div class="archive-quick-actions"><button type="button" data-action="save-archive-version" ${hasCurrentComposition ? "" : "disabled"}>Guardar nueva versión</button><button type="button" data-nav="projects">Administrar archivo ↗</button></div>
       </section>
     `;
   }
   return `
     <section class="archive-quick-save" id="archive-quick-save">
-      <div><p class="eyebrow">BLOCK 08 · SAVE YOUR IDEA</p><strong>Conservá esta composición</strong><small>Guardala como una creación nueva para recuperarla después.</small></div>
-      <div class="archive-quick-actions"><input id="archive-quick-name" maxlength="60" placeholder="Nombre de la fragancia"><button type="button" data-action="save-current-as-creation">Guardar creación</button><button type="button" data-nav="projects">Abrir archivo ↗</button></div>
+      <div><p class="eyebrow">BLOCK 08 · SAVE YOUR IDEA</p><strong>Conservá esta composición</strong><small>${hasCurrentComposition ? "Guardala como una creación nueva para recuperarla después." : "Añadí una referencia en el recipiente para habilitar el guardado."}</small></div>
+      <div class="archive-quick-actions"><input id="archive-quick-name" maxlength="60" placeholder="Nombre de la fragancia" ${hasCurrentComposition ? "" : "disabled"}><button type="button" data-action="save-current-as-creation" ${hasCurrentComposition ? "" : "disabled"}>Guardar creación</button><button type="button" data-nav="projects">Abrir archivo ↗</button></div>
     </section>
   `;
 }

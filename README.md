@@ -176,3 +176,8 @@ The flacon and vial fills use rounded profiles; vial and beaker liquids gain vis
 ### Phase 2 Block 18 — Original Creation Draft Recovery
 
 The active conceptual composition autosaves locally and restores after app reload. Loading an archived variant updates the working draft, and clearing the composition removes the draft. This protects unfinished creative work from accidental reloads; the local archive with variants and version history remains the durable saved-creation system. Draft weights are conceptual points, not a fragrance formula.
+
+
+### Phase 2 Block 19 — Creation Workflow Reliability
+
+Selecting an archive variant loads that exact variant into the working composition and autosaved draft. Restoring a historical version also refreshes the draft. Empty compositions cannot be saved as a creation, version or A/B/C fork. Every composition edit updates the local draft, beaker and analysis. The Laboratory quick-save control tracks the live composition state. Creative points remain conceptual, not ingredient ratios, concentrations or manufacturing instructions.

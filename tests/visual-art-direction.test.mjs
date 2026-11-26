@@ -4,8 +4,8 @@ import { readFile } from "node:fs/promises";
 
 const specification = await readFile(new URL("../docs/PHASE2_VISUAL_ART_DIRECTION.md", import.meta.url), "utf8");
 
-test("Phase 2 visual specification defines all seventeen implementation blocks", () => {
-  for (let block = 1; block <= 17; block += 1) {
+test("Phase 2 visual specification defines all nineteen implementation blocks", () => {
+  for (let block = 1; block <= 19; block += 1) {
     assert.match(specification, new RegExp(`\\| ${block}\\. `), `Missing Phase 2 block ${block}`);
   }
 });

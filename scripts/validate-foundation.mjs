@@ -89,7 +89,7 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v27/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v27, precache the performance audit module and keep valid JavaScript source line breaks.");
+if (!/shell-v28/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v27, precache the performance audit module and keep valid JavaScript source line breaks.");
 if (!scene.includes("runPerformanceAudit") || !scene.includes("performanceAuditAbort?.abort()")) failures.push("3D performance audit must be on-demand and abort on scene disposal.");
 if (!views.includes('data-action="run-lab-performance-audit"') || !views.includes('id="lab-performance-report"')) failures.push("Local performance audit controls and report output are missing.");
 if (!app.includes("formatLabPerformanceReport") || !app.includes("run-lab-performance-audit")) failures.push("Performance report UI is not wired to the local audit.");
@@ -98,6 +98,8 @@ if (!performanceAudit.includes("summarizeFrameSamples") || !performanceAudit.inc
 if (!views.includes("renderEvolutionSimulator(mixingState, evolutionStage)") || !app.includes("data-evolution-stage") || !app.includes("updateEvolutionSimulator")) failures.push("Evolution simulator is not wired into the Laboratory view and state updates.");
 if (!evolutionPanel.includes("No simula volatilidad") || !evolutionEngine.includes("analyzeEvolutionStage")) failures.push("Evolution simulator disclaimer or engine is missing.");
 if (!app.includes("createArchiveRepository") || !app.includes("saveCurrentAsVersion") || !app.includes("parseArchiveBackup")) failures.push("Local archive repository, version saving or backup import is not wired.");
+if (!app.includes("function requireWorkingComposition()") || !app.includes("saveMixDraft(mixingState.items)") || !app.includes("mixingState = { items: variant.items.map((item) => ({ ...item })), history: [] }")) failures.push("Archive variant selection and restore must synchronize the active working composition and local draft.");
+if (!app.includes("renderArchiveQuickSave(getArchiveViewState())") || !app.includes("hasCurrentComposition: mixingState.items.length > 0")) failures.push("Quick-save controls must track the live working composition and prevent empty saves.");
 if (!views.includes("renderArchiveView(archiveState)") || !views.includes("renderArchiveQuickSave(archiveState)")) failures.push("Archive screen or laboratory quick-save panel is not connected.");
 if (!archiveRepository.includes("indexedDBApi.open") || !archiveRepository.includes("localStorage")) failures.push("Archive needs IndexedDB storage and a localStorage fallback.");
 if (!archivePanel.includes("data-restore-version") || !archivePanel.includes('data-action="compare-archive-variants"') || !archivePanel.includes("Exportar todo")) failures.push("Archive history, comparison or backup controls are missing.");

@@ -527,3 +527,6 @@
 
 
 .mix-draft-status { display: inline-flex; margin-top: 6px; color: var(--muted-2); font-size: 10px; letter-spacing: .03em; }
+
+.archive-primary-button:disabled,.archive-quick-actions button:disabled,.archive-quick-actions input:disabled { opacity:.48; cursor:not-allowed; }
+.archive-quick-actions button:focus-visible,.archive-primary-button:focus-visible,.archive-action-row button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
