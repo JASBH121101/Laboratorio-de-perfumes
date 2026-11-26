@@ -115,9 +115,13 @@ test("composition history is bounded to the most recent forty operations", () =>
   assert.ok(state.history.length <= 40);
 });
 
-test("mixing panel exposes library picker, drag-drop zone and undo", () => {
+test("mixing panel exposes filtered library picker, drop zone and precision weight controls", () => {
   const html = renderMixStudio(addMixNote(createMixState(), "bergamot"));
-  assert.match(html, /id="mix-picker-search"/);\n  assert.match(html, /id="mix-picker-family"/);\n  assert.match(html, /id="mix-picker-kind"/);\n  assert.match(html, /id="mix-picker-role"/);
+  assert.match(html, /id="mix-picker-search"/);
+  assert.match(html, /id="mix-picker-family"/);
+  assert.match(html, /id="mix-picker-kind"/);
+  assert.match(html, /id="mix-picker-role"/);
+  assert.match(html, /data-add-to-mix="bergamot"/);
   assert.match(html, /data-mix-dropzone/);
   assert.match(html, /data-action="undo-mix"/);
   assert.match(html, /data-mix-weight="bergamot"/);
