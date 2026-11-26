@@ -12,7 +12,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 .topbar-action {
   min-height: 38px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--muted); background: var(--surface);
-  cursor: pointer; font-size: 12.5px; font-weight: 600; transition: border-color .18s,color .18s,background .18s;
+  cursor: pointer; font-size: 14px; font-weight: 600; transition: border-color .18s,color .18s,background .18s;
 }
 .topbar-action:hover { color: var(--accent); border-color: rgba(217,178,124,.45); background: var(--accent-soft); }
 .topbar-action > span:first-child { color: var(--accent); font-size: 16.5px; }
@@ -36,22 +36,42 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 }
 .app-notice[hidden] { display: none; }
 .notice-copy { min-width: 0; flex: 1; }
-.notice-copy strong { display: block; color: var(--accent); font-size: 13.2px; font-weight: 700; }
-.notice-copy p { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+.notice-copy strong { display: block; color: var(--accent); font-size: 14px; font-weight: 700; }
+.notice-copy p { margin: 5px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
 .notice-actions { display: flex; align-items: center; gap: 8px; }
-.button--notice { min-height: 36px; padding: 0 12px; border: 0; color: #211a1e; background: var(--accent); cursor: pointer; font-size: 12.5px; white-space: nowrap; }
+.button--notice { min-height: 36px; padding: 0 12px; border: 0; color: #211a1e; background: var(--accent); cursor: pointer; font-size: 14px; white-space: nowrap; }
 .notice-dismiss { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 50%; color: var(--muted); background: transparent; cursor: pointer; font-size: 20.9px; }
 .roadmap-step.is-current { background: linear-gradient(90deg,var(--accent-soft),transparent 78%); }
 .status-pill { letter-spacing: .12em; }
 .disclaimer { max-width: 900px; }
 @media (max-width:700px) {
   .topbar { height: 64px; padding: 0 12px; } .brand { gap: 8px; }
-  .brand-logo { width: 38px; height: 38px; flex-basis: 38px; } .brand-type strong { font-size: 16.5px; } .brand-type small { font-size: 12.5px; }
+  .brand-logo { width: 38px; height: 38px; flex-basis: 38px; } .brand-type strong { font-size: 16.5px; } .brand-type small { font-size: 14px; }
   .topbar-right { gap: 5px; }
   .topbar-action { width: 35px; min-height: 35px; padding: 0; border-radius: 50%; }
   .topbar-action-label { display: none; } .topbar-action > span:first-child { font-size: 17.6px; }
   .icon-button { width: 35px; height: 35px; flex-basis: 35px; }
   .app-notice { right: 10px; bottom: calc(76px + env(safe-area-inset-bottom)); width: calc(100vw - 20px); padding: 13px; }
-  .notice-copy strong { font-size: 12.5px; } .notice-copy p { font-size: 12.5px; } .notice-actions { gap: 5px; }
+  .notice-copy strong { font-size: 14px; } .notice-copy p { font-size: 14px; } .notice-actions { gap: 5px; }
 }
 @media (prefers-reduced-motion:reduce) { .topbar-action,.feature-card,.button { transition: none; } }
+
+
+/* Readable editing controls on narrow screens; also avoids browser auto-zoom on focus. */
+@media (max-width:700px) {
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+
+/* Readable editing controls on narrow screens; also avoids browser auto-zoom on focus. */
+@media (max-width:700px) {
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

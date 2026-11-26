@@ -17,6 +17,8 @@ import { normalizeOlfactoryTerm, normalizeFragranceSimilarityProfile } from "../
 import { compareFragranceProfiles } from "../src/js/features/laboratory/fragrance-similarity/comparison.js";
 import { scoreFragranceSimilarity, FRAGRANCE_SIMILARITY_DEFAULT_WEIGHTS } from "../src/js/features/laboratory/fragrance-similarity/scoring.js";
 import { explainFragranceSimilarity } from "../src/js/features/laboratory/fragrance-similarity/explanation.js";
+import { searchFragranceReferences, getFragranceSimilarityReferenceById } from "../src/js/features/laboratory/fragrance-similarity/search.js";
+import { rankFragranceSimilarityCandidates } from "../src/js/features/laboratory/fragrance-similarity/ranking.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -31,6 +33,10 @@ const requiredFiles = [
   "src/js/features/laboratory/fragrance-similarity/comparison.js",
   "src/js/features/laboratory/fragrance-similarity/scoring.js",
   "src/js/features/laboratory/fragrance-similarity/explanation.js",
+  "src/js/features/laboratory/fragrance-similarity/search.js",
+  "src/js/features/laboratory/fragrance-similarity/ranking.js",
+  "tests/fragrance-similarity-search.test.mjs",
+  "tests/fragrance-similarity-ranking.test.mjs",
   "tests/fragrance-similarity-scoring.test.mjs",
   "tests/fragrance-similarity-explanation.test.mjs",
   "tests/fragrance-similarity-normalization.test.mjs",
@@ -81,7 +87,7 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v48/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v48 and support controlled activation.");
+if (!/shell-v49/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v49 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
 for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "creative-assistant/engine.js", "creative-assistant/panel.js", "formulation-proposals/engine.js", "formulation-proposals/panel.js", "inspiration-differentiation/engine.js", "inspiration-differentiation/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
@@ -202,6 +208,17 @@ if (!referenceProfile || !candidateProfile) {
         profileExplanation.score !== profileScore.score || Math.abs(totalWeights - 1) > 0.000001) {
       failures.push("Fragrance global scoring or evidence explanation did not return a valid independent result.");
     }
+  }
+
+  const referenceSearch = searchFragranceReferences("Oud Wood");
+  const exactReference = getFragranceSimilarityReferenceById("tom-ford-oud-wood");
+  const similarityRanking = rankFragranceSimilarityCandidates(referenceProfile, [candidateProfile]);
+  if (referenceSearch.status !== "exact-match" ||
+      referenceSearch.results[0]?.id !== "tom-ford-oud-wood" ||
+      exactReference?.id !== "tom-ford-oud-wood" ||
+      !["ready", "insufficient-data"].includes(similarityRanking.status) ||
+      similarityRanking.totalCandidates !== 1) {
+    failures.push("Fragrance reference search or candidate ranking failed its local catalog integration check.");
   }
 }
 
