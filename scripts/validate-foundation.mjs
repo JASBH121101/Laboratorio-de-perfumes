@@ -21,7 +21,7 @@ const requiredFiles = [
   "src/js/features/laboratory/originality/engine.js", "src/js/features/laboratory/originality/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
-  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs"
+  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs"
 ];
 
 const failures = [];
@@ -52,7 +52,7 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v29/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v29 and support controlled activation.");
+if (!/shell-v30/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v30 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
 for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
@@ -65,6 +65,10 @@ if (/Three|three|WebGL|lab-stage|lab-canvas|camera-preset|zoom-camera/i.test(vie
 if (pwa.includes('addEventListener("visibilitychange"') || pwa.includes('addEventListener("focus"')) failures.push("Automatic PWA checks must not run on every focus or visibility interaction.");
 if (!pwa.includes("DISMISSED_UPDATE_KEY") || !pwa.includes("dismissUpdateNotice")) failures.push("PWA must persist dismissal of an already-announced waiting update.");
 if (!mixPanel.includes("No son porcentajes") || !mixPanel.includes("data-mix-weight")) failures.push("Composition weights must remain explicitly conceptual and editable.");
+if (!app.includes("mix-picker-search") || !app.includes("updateMixPickerResults") || !app.includes("toggle-mix-picker")) failures.push("The inline formulation finder is not wired to search, filters and expansion.");
+if (!mixPanel.includes("mix-picker-family") || !mixPanel.includes("mix-picker-kind") || !mixPanel.includes("mix-picker-role") || !mixPanel.includes("data-add-to-mix")) failures.push("The formulation picker must expose family, type, role and direct-add controls.");
+if (!mixPanel.includes('type="number"') || !mixPanel.includes('type="range"') || !mixPanel.includes("mix-weight-hint")) failures.push("Formulation weights must expose both slider and precise numeric editing.");
+
 if (!analysisPanel.includes("renderFamilyDonut") || !analysisPanel.includes("renderProfileRadar")) failures.push("Family and sensory charts are missing.");
 if (!originalityPanel.includes("ÍNDICE DE DIFERENCIACIÓN INTERNA") || !originalityPanel.includes("No consulta catálogos comerciales")) failures.push("Originality panel must explain its local comparison boundary.");
 if (!dashboardCss.includes(".dashboard-kpis") || !dashboardCss.includes(".originality-metrics")) failures.push("Responsive analytics and originality styles are missing.");
