@@ -11,6 +11,7 @@ import { renderAnalyticsDashboard } from "../src/js/features/laboratory/analytic
 import { buildArchiveBackup, createArchiveCreation, createArchiveVariant, parseArchiveBackup } from "../src/js/features/archive/model.js";
 import { buildClientBrief } from "../src/js/features/laboratory/client-brief/engine.js";
 import { analyzeAudienceFit } from "../src/js/features/laboratory/audience-fit/engine.js";
+import { FRAGRANCE_SIMILARITY_SCORE, validateFragranceSimilarityProfile } from "../src/js/features/laboratory/fragrance-similarity/contracts.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -19,6 +20,7 @@ const requiredFiles = [
   "src/css/laboratory.css", "src/css/analytics.css",
   "src/js/app.js", "src/js/core/navigation.js", "src/js/core/pwa.js",
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
+  "src/js/features/laboratory/fragrance-similarity/contracts.js",
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/draft-storage.js",
   "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
@@ -116,6 +118,38 @@ if (!originalityPanel.includes("ÍNDICE DE DIFERENCIACIÓN INTERNA") || !origina
 if (!dashboardCss.includes(".dashboard-kpis") || !dashboardCss.includes(".originality-metrics")) failures.push("Responsive analytics and originality styles are missing.");
 
 if (PERFUME_ITEMS.length < 50) failures.push("The educational perfume reference library is unexpectedly incomplete.");
+
+const similarityContractCheck = validateFragranceSimilarityProfile({
+  schemaVersion: 1,
+  id: "validator-profile",
+  identity: { name: "Validator profile", house: null, category: "designer" },
+  olfactory: {
+    family: null,
+    subfamilies: null,
+    accords: null,
+    notes: { all: [], top: [], heart: [], base: [] },
+    character: []
+  },
+  provenance: {
+    dataset: "Validator source",
+    attribution: "Validator attribution",
+    license: "CC BY 4.0",
+    snapshot: "2026-10-29",
+    datasetUrl: "https://example.com",
+    recordUrl: null
+  },
+  quality: {
+    noteCount: 0,
+    characterCount: 0,
+    pyramidCoverage: "unavailable",
+    hasNotes: false,
+    hasCharacter: false
+  }
+});
+if (!similarityContractCheck.valid || FRAGRANCE_SIMILARITY_SCORE.minimum !== 0 || FRAGRANCE_SIMILARITY_SCORE.maximum !== 100) {
+  failures.push("Fragrance similarity contract is invalid or its score bounds changed.");
+}
+
 let mix = addMixNote(createMixState(), "bergamot");
 mix = addMixNote(mix, "rose");
 if (getMixTotal(mix) !== 100) failures.push("Conceptual mixing state must normalize to 100 creative points.");
