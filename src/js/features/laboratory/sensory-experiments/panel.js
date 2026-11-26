@@ -1,5 +1,6 @@
 import {
-  SENSORY_CONTEXTS, SENSORY_RATINGS, SENSORY_TAGS
+  SENSORY_CONTEXTS, SENSORY_RATINGS, SENSORY_TAGS,
+  SENSORY_PERFORMANCE_CONCENTRATIONS, SENSORY_PERFORMANCE_ENVIRONMENTS
 } from "./model.js";
 
 const esc = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
@@ -35,6 +36,7 @@ function renderRecord(record) {
       <p class="sensory-impression">${esc(record.impression)}</p>
       ${tags ? `<div class="sensory-tags">${tags}</div>` : ""}
       ${ratings ? `<div class="sensory-ratings">${ratings}</div>` : ""}
+      ${record.observedPerformance ? `<div class="sensory-observed-performance"><strong>Rendimiento observado por el usuario</strong><small>${esc(SENSORY_PERFORMANCE_CONCENTRATIONS[record.observedPerformance.concentration])} · ${esc(SENSORY_PERFORMANCE_ENVIRONMENTS[record.observedPerformance.environment])}</small><div>${record.observedPerformance.persistenceHours !== null ? `<span>Persistencia: <b>${record.observedPerformance.persistenceHours} h</b></span>` : ""}${record.observedPerformance.projectionInitialMeters !== null ? `<span>Proyección inicial: <b>${record.observedPerformance.projectionInitialMeters} m</b></span>` : ""}${record.observedPerformance.projectionLaterMeters !== null ? `<span>Proyección tras 1–2 h: <b>${record.observedPerformance.projectionLaterMeters} m</b></span>` : ""}</div></div>` : ""}
       <small class="sensory-snapshot-note">Instantánea asociada: ${record.composition.length} referencias guardadas en esa versión. Las valoraciones son subjetivas.</small>
     </article>
   `;
@@ -53,6 +55,19 @@ export function renderSensoryExperiments(state = {}) {
     ? experiments.map(renderRecord).join("")
     : '<div class="sensory-empty"><strong>Sin observaciones todavía.</strong><p>Registrá la primera evaluación y comenzá a documentar cambios percibidos a lo largo del tiempo.</p></div>';
   const disabled = variants.length === 0;
+  const performanceControls = `
+    <fieldset class="sensory-fieldset sensory-fieldset--wide sensory-performance-fieldset">
+      <legend>Observación real de rendimiento (opcional)</legend>
+      <p>Registrá lo que percibiste en esta prueba. No son mediciones instrumentales; cada escenario se calibra por separado.</p>
+      <div class="sensory-performance-grid">
+        <label class="sensory-field"><span>Concentración asumida</span><select name="observed_concentration">${Object.entries(SENSORY_PERFORMANCE_CONCENTRATIONS).map(([key,value]) => `<option value="${key}" ${key === "edp" ? "selected" : ""}>${esc(value)}</option>`).join("")}</select></label>
+        <label class="sensory-field"><span>Ambiente</span><select name="observed_environment">${Object.entries(SENSORY_PERFORMANCE_ENVIRONMENTS).map(([key,value]) => `<option value="${key}" ${key === "neutral" ? "selected" : ""}>${esc(value)}</option>`).join("")}</select></label>
+        <label class="sensory-field"><span>Persistencia observada (h)</span><input name="observed_persistence_hours" type="number" min="0" max="48" step="0.1" placeholder="Ej. 5.5"></label>
+        <label class="sensory-field"><span>Proyección inicial (m)</span><input name="observed_projection_initial_meters" type="number" min="0" max="10" step="0.1" placeholder="Ej. 0.8"></label>
+        <label class="sensory-field"><span>Proyección tras 1–2 h (m)</span><input name="observed_projection_later_meters" type="number" min="0" max="10" step="0.1" placeholder="Ej. 0.3"></label>
+      </div>
+    </fieldset>
+  `;
   const ratingFields = Object.entries(SENSORY_RATINGS).map(([key,label]) => `
     <label class="sensory-field"><span>${esc(label)}</span><select name="rating_${key}">${ratingOptions()}</select></label>
   `).join("");
@@ -75,6 +90,7 @@ export function renderSensoryExperiments(state = {}) {
             <label class="sensory-field"><span>Tiempo transcurrido (min, opcional)</span><input name="elapsedMinutes" type="number" min="0" max="10080" step="1" placeholder="Ej. 30"></label>
             <fieldset class="sensory-fieldset sensory-fieldset--wide"><legend>Facetas percibidas</legend><p>Marcá únicamente lo que observaste durante esta evaluación.</p><div class="sensory-tag-choices">${tagFields}</div></fieldset>
             <fieldset class="sensory-fieldset sensory-fieldset--wide"><legend>Valoraciones subjetivas</legend><p>Escala personal de 1 a 5. “Sin valorar” es válido; no son mediciones instrumentales.</p><div class="sensory-rating-grid">${ratingFields}</div></fieldset>
+            ${performanceControls}
             <label class="sensory-field sensory-field--wide"><span>Observación / evolución percibida</span><textarea name="impression" rows="3" maxlength="1600" required placeholder="Describí qué percibiste, qué cambió y en qué condiciones…"></textarea></label>
             <div class="sensory-form-actions"><button type="button" data-action="save-sensory-experiment">Guardar observación</button></div>
           </form>

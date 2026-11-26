@@ -3,6 +3,7 @@ import { renderMixStudio } from "../features/laboratory/mixing/panel.js";
 import { renderCreativeAnalysis } from "../features/laboratory/analysis/panel.js";
 import { renderEvolutionSimulator } from "../features/laboratory/evolution/panel.js";
 import { renderPerformanceEstimate } from "../features/laboratory/performance-estimator/panel.js";
+import { renderPerformanceCalibration } from "../features/laboratory/performance-estimator/calibration-panel.js";
 import { renderAnalyticsDashboard } from "../features/laboratory/analytics/dashboard.js";
 import { renderOriginalityAnalysis } from "../features/laboratory/originality/panel.js";
 import { renderArchiveView, renderArchiveQuickSave } from "../features/archive/panel.js";
@@ -68,7 +69,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
     ${renderOriginalityAnalysis(mixingState, archiveState.creations || [])}
     ${renderEvolutionSimulator(mixingState, evolutionStage)}
-    ${renderPerformanceEstimate(mixingState.items)}
+    ${renderPerformanceEstimate(mixingState.items, {}, archiveState.experiments || [])}
     <p class="lab-boundary-note">Los puntos son ponderaciones creativas normalizadas para explorar conceptos. No equivalen a porcentajes de ingredientes, concentraciones, dosificaciones ni fórmulas de fabricación.</p>
   `;
 }
@@ -78,7 +79,7 @@ function notesView(libraryState) {
 }
 
 function projectsView(archiveState = {}) {
-  return `${renderArchiveView(archiveState)}${renderAnalyticalComparison(archiveState)}${renderProfileHistory(archiveState)}${renderSensoryExperiments(archiveState)}${renderProfessionalReports(archiveState)}`;
+  return `${renderArchiveView(archiveState)}${renderAnalyticalComparison(archiveState)}${renderProfileHistory(archiveState)}${renderSensoryExperiments(archiveState)}${renderPerformanceCalibration(archiveState.experiments)}${renderProfessionalReports(archiveState)}`;
 }
 
 export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}, clientBriefState = {}) {

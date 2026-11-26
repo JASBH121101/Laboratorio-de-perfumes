@@ -28,10 +28,11 @@ const requiredFiles = [
   "src/js/features/laboratory/signature-history/engine.js", "src/js/features/laboratory/signature-history/panel.js",
   "src/js/features/laboratory/sensory-experiments/model.js", "src/js/features/laboratory/sensory-experiments/panel.js",
   "src/js/features/laboratory/profile-history/engine.js", "src/js/features/laboratory/profile-history/panel.js",
+  "src/js/features/laboratory/performance-estimator/calibration.js", "src/js/features/laboratory/performance-estimator/calibration-panel.js",
   "src/js/features/laboratory/professional-reports/engine.js", "src/js/features/laboratory/professional-reports/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
-  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/profile-history.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs", "tests/professional-reports.test.mjs", "tests/creative-assistant.test.mjs", "tests/formulation-proposals.test.mjs", "tests/inspiration-differentiation.test.mjs"
+  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/profile-history.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs", "tests/performance-calibration.test.mjs", "tests/professional-reports.test.mjs", "tests/creative-assistant.test.mjs", "tests/formulation-proposals.test.mjs", "tests/inspiration-differentiation.test.mjs"
 ];
 
 const failures = [];
@@ -62,7 +63,7 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v46/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v46 and support controlled activation.");
+if (!/shell-v47/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v47 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
 for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "creative-assistant/engine.js", "creative-assistant/panel.js", "formulation-proposals/engine.js", "formulation-proposals/panel.js", "inspiration-differentiation/engine.js", "inspiration-differentiation/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
@@ -90,6 +91,7 @@ if (!app.includes("window.confirm") || !app.includes("proposal.items")) failures
 if (!app.includes("analyzeInspirationDifferentiation") || !app.includes("send-inspiration-direction") || !views.includes("renderInspirationDifferentiation")) failures.push("Inspiration trait analysis and handoff to the creative assistant are not wired.");
 if (!sw.includes("inspiration-differentiation/engine.js") || !sw.includes("inspiration-differentiation/panel.js")) failures.push("Inspiration differentiation modules are missing from the offline shell.");
 if (!app.includes("inspirationDifferentiationState") || !app.includes("briefForAssistant")) failures.push("Inspiration analysis must remain locally stateful and create a brief only on explicit action.");
+if (!sw.includes("performance-estimator/calibration.js") || !sw.includes("performance-estimator/calibration-panel.js") || !app.includes("observedPerformance") || !views.includes("renderPerformanceCalibration") || !app.includes("archiveState.experiments")) failures.push("Sensory observations and local performance calibration are not fully integrated or cached offline.");
 if (!app.includes("createCreativeProfile") || !app.includes("save-client-profile") || !app.includes("compareProfileSnapshots") || !views.includes("renderProfileHistory") || !sw.includes("profile-history/engine.js") || !sw.includes("profile-history/panel.js")) failures.push("Creative profile history and comparison are not wired to local storage and the projects view.");
 if (!app.includes("compareSavedCompositions") || !views.includes("renderAnalyticalComparison")) failures.push("Saved composition comparison is not wired into the archive view.");
 if (!app.includes("buildClientBrief") || !app.includes("send-client-brief-to-assistant") || !views.includes("renderClientBriefPanel") || !sw.includes("client-brief/engine.js")) failures.push("Guided client briefs must be previewed and transferred to the local assistant only by explicit action.");

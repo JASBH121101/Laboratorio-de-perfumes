@@ -192,7 +192,14 @@ async function saveSensoryExperimentFromForm() {
     elapsedMinutes: data.get("elapsedMinutes"),
     impression: data.get("impression"),
     tags: data.getAll("tags"),
-    ratings
+    ratings,
+    observedPerformance: {
+      concentration: data.get("observed_concentration") || "edp",
+      environment: data.get("observed_environment") || "neutral",
+      persistenceHours: data.get("observed_persistence_hours") || null,
+      projectionInitialMeters: data.get("observed_projection_initial_meters") || null,
+      projectionLaterMeters: data.get("observed_projection_later_meters") || null
+    }
   });
   await archiveRepository.putExperiment(experiment);
   archiveState.sensorySelection = String(data.get("variantKey") || "");
@@ -284,7 +291,7 @@ function updateEvolutionSimulator() {
   const panel = appRoot.querySelector("#evolution-simulator");
   if (panel) panel.outerHTML = renderEvolutionSimulator(mixingState, evolutionStage);
   const performancePanel = appRoot.querySelector("#performance-estimate");
-  if (performancePanel) performancePanel.outerHTML = renderPerformanceEstimate(mixingState.items, performanceScenarioState);
+  if (performancePanel) performancePanel.outerHTML = renderPerformanceEstimate(mixingState.items, performanceScenarioState, archiveState.experiments);
 }
 
 function updateCreativeAnalysis() {
