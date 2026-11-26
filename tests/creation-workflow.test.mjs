@@ -56,3 +56,9 @@ test("empty compositions cannot be saved or forked into archive versions", () =>
   assert.match(archivePanel, /hasCurrentComposition = state\.hasCurrentComposition !== false/);
   assert.match(archivePanel, /data-action="create-archive" \\?\$\{hasCurrentComposition/);
 });
+
+test("quick-save status is refreshed after every composition update and each edit is autosaved", () => {
+  assert.match(app, /function updateMixStudio\(\) \{\s*saveMixDraft\(mixingState\.items\)/);
+  assert.match(app, /renderArchiveQuickSave\(getArchiveViewState\(\)\)/);
+  assert.match(app, /function getArchiveViewState\(\) \{[\s\S]*?hasCurrentComposition: mixingState\.items\.length > 0/);
+});
