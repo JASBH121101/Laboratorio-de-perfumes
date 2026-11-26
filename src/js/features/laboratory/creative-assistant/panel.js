@@ -17,7 +17,8 @@ function renderSuggestions(suggestions = []) {
               <strong>${escapeHtml(item.name)}</strong>
               <span>${escapeHtml(item.family)} · ${escapeHtml(item.roles.join(" · "))}</span>
               <small>${escapeHtml(item.facets.join(" · "))}</small>
-              <p>${escapeHtml(item.rationale)}</p>
+              <p class="creative-assistant-profile">${escapeHtml(item.profile)}</p>
+              <p class="creative-assistant-rationale">${escapeHtml(item.rationale)}</p>
             </div>
             <span class="creative-assistant-reference-tag">Biblioteca</span>
           </article>
