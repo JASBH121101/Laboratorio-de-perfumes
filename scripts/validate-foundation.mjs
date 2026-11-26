@@ -59,7 +59,7 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v34/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v34 and support controlled activation.");
+if (!/shell-v35/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v35 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
 for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
@@ -73,6 +73,7 @@ if (pwa.includes('addEventListener("visibilitychange"') || pwa.includes('addEven
 if (!pwa.includes("DISMISSED_UPDATE_KEY") || !pwa.includes("dismissUpdateNotice")) failures.push("PWA must persist dismissal of an already-announced waiting update.");
 if (!mixPanel.includes("No son porcentajes") || !mixPanel.includes("data-mix-weight")) failures.push("Composition weights must remain explicitly conceptual and editable.");
 if (!app.includes("mix-picker-search") || !app.includes("updateMixPickerResults") || !app.includes("toggle-mix-picker")) failures.push("The inline formulation finder is not wired to search, filters and expansion.");
+if (mixPanel.includes("<kbd>60</kbd>") || !mixPanel.includes("MATERIAS DISPONIBLES")) failures.push("Mobile reference counter must be clear and must not overlap the search field.");
 if (!mixPanel.includes("mix-picker-family") || !mixPanel.includes("mix-picker-kind") || !mixPanel.includes("mix-picker-role") || !mixPanel.includes("data-add-to-mix")) failures.push("The formulation picker must expose family, type, role and direct-add controls.");
 if (!mixPanel.includes('type="number"') || !mixPanel.includes('type="range"') || !mixPanel.includes("mix-weight-hint")) failures.push("Formulation weights must expose both slider and precise numeric editing.");
 
