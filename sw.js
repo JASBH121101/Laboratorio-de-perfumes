@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "jb-virtual-perfume-lab-";
-const CACHE_NAME = `${CACHE_PREFIX}shell-v31`;
+const CACHE_NAME = `${CACHE_PREFIX}shell-v32`;
 
 const APP_SHELL = [
   "./",
@@ -29,6 +29,8 @@ const APP_SHELL = [
   "./src/js/features/laboratory/originality/panel.js",
   "./src/js/features/laboratory/comparison/engine.js",
   "./src/js/features/laboratory/comparison/panel.js",
+  "./src/js/features/laboratory/signature-history/engine.js",
+  "./src/js/features/laboratory/signature-history/panel.js",
   "./src/js/features/laboratory/evolution/engine.js",
   "./src/js/features/laboratory/evolution/panel.js",
   "./src/js/features/archive/model.js",
