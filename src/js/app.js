@@ -516,7 +516,10 @@ appRoot.addEventListener("drop", (event) => {
 document.addEventListener("click", (event) => {
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (action === "apply-update") pwa.applyUpdate();
-  if (action === "dismiss-notice") {\n    if (noticeTitle?.textContent === "Nueva versión disponible") pwa.dismissUpdateNotice();\n    hideNotice();\n  }
+  if (action === "dismiss-notice") {
+    if (noticeTitle?.textContent === "Nueva versión disponible") pwa.dismissUpdateNotice();
+    hideNotice();
+  }
 });
 
 window.addEventListener("hashchange", render);
