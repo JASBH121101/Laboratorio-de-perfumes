@@ -116,13 +116,13 @@ El historial recorre las versiones guardadas de cada variante, las ordena cronol
 
 El historial recorre las versiones guardadas de cada variante, las ordena cronológicamente y resume las familias editoriales presentes, las referencias más recurrentes y los cambios entre el primer registro y el más reciente. La vista de evolución usa hasta ocho registros recientes para conservar una lectura compacta en móvil. No añade registros al archivo ni modifica las composiciones. Los patrones representan únicamente decisiones creativas guardadas y etiquetas editoriales; no determinan una identidad olfativa objetiva ni una medición sensorial.
 
-## Checkpoint de desarrollo — Bloques 1 a 21 (2026-11-26)
+## Checkpoint de desarrollo — Bloques 1 a 23 (2026-11-26)
 
-**Completados (1–21):** estabilidad PWA y retirada 3D; dashboard analítico; originalidad personal; constructor y comparación de formulaciones; historial de firma; experimentos sensoriales e informes; UX móvil; asistente creativo local; propuestas A/B/C; diferenciación por inspiración; briefs de clientes y posicionamiento de público; benchmark comercial; estimador conceptual de rendimiento; escenarios de rendimiento; asistente creativo con prompts guiados y detección de contradicciones; rediseño visual responsive del laboratorio, gráficos accesibles y navegación interna.
+**Completados (1–23):** estabilidad PWA y retirada 3D; dashboard analítico; originalidad personal; constructor y comparación de formulaciones; historial de firma; experimentos sensoriales e informes; UX móvil; asistente creativo local; propuestas A/B/C; diferenciación por inspiración; briefs de clientes y posicionamiento de público; benchmark comercial; estimador conceptual de rendimiento por escenarios; asistente creativo con prompts guiados y detección de contradicciones; rediseño visual responsive, gráficos accesibles y navegación interna; historial local de perfiles con comparación de alternativas, público, benchmark y rendimiento; calibración sensorial local basada en observaciones guardadas.
 
 **Pendiente de cierre operativo (fuera de los bloques funcionales):**
 - Aceptación física en Android: revisar las pantallas reales, controles táctiles y distribución responsive.
-- Probar en dispositivo la instalación y actualización PWA, incluyendo caché y activación de `shell-v45`.
+- Probar en dispositivo la instalación y actualización PWA, incluyendo caché y activación de `shell-v47`.
 - Comprobar impresión/guardado PDF desde Android y verificar el último despliegue de GitHub Pages.
 
 La CI cubre pruebas automatizadas, sintaxis y validador estructural; no sustituye estas pruebas físicas.
@@ -170,7 +170,7 @@ El motor A/B/C ofrece tres rutas conceptuales distintas a partir del brief del a
 
 El módulo de inspiración recibe una etiqueta opcional, los rasgos que gustan y lo que se desea evitar. Extrae familias y descriptores, puede usar la frecuencia de familias del archivo local para ordenar caminos complementarios y muestra tres arquitecturas con referencias ilustrativas. Una dirección puede enviarse al asistente para crear otro brief y generar propuestas A/B/C; no se aplica a la composición activa. No consulta la fórmula de perfumes comerciales, no usa Internet ni certifica originalidad mundial.
 
-La PWA usa `shell-v45`. Los bloques 15–19 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
+La PWA usa actualmente `shell-v47`. Los bloques 15–23 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
 
 ### Cierre del Bloque 19 — Benchmark y rendimiento por escenarios
 
@@ -196,9 +196,44 @@ La PWA usa `shell-v45`. Los bloques 15–19 no agregan API, proveedor IA externo
 - Se mantiene la lógica analítica existente: los gráficos se calculan a partir de datos guardados y no inventan métricas.
 - PWA: shell-v45. CI aprobada en PR #58: **189/189 pruebas**, sintaxis y validador de estructura aprobados.
 
-### Próximos bloques
+### Cierre del Bloque 22 — Historial y comparación de perfiles
 
-- **Bloque 22 — Historial y comparación de perfiles:** conservar briefs y comparar alternativas, público, benchmark y escenarios de rendimiento.
-- **Bloque 23 — Calibración sensorial:** registrar observaciones reales de persistencia/proyección y contrastarlas con las estimaciones, manteniendo los datos en el dispositivo.
+- Los briefs guiados pueden guardarse como perfiles independientes del archivo de fórmulas. Se conserva un nombre corto opcional, los campos creativos, el brief y las alternativas A/B/C generadas.
+- Cada alternativa guarda sus referencias reales de la biblioteca y conserva exactamente 100 puntos creativos; el historial no cambia la composición activa.
+- El comparador permite elegir dos perfiles y revisar sus alternativas frente al público orientativo, las mejores coincidencias del benchmark por categoría (Árabe / Ninja, Nicho y Diseñador) y los rangos heurísticos de persistencia/proyección.
+- La comparación permite seleccionar el mismo supuesto de concentración (EDT, EDP o Parfum) y ambiente (neutro, cálido, fresco, exterior o interior) para ambos perfiles.
+- Los perfiles se almacenan localmente en un object store nuevo de IndexedDB (`creative-profiles`), con respaldo `localStorage`; pueden eliminarse individualmente. El esquema de IndexedDB quedó en versión 3.
+- No se solicita nombre real, teléfono ni identificadores personales de clientes. Los perfiles no se sincronizan ni se envían a Internet.
+- PR #60 fusionado. CI aprobada: **198/198 pruebas**, sintaxis y validador estructural.
 
-**Pendiente de aceptación manual:** comprobar en Android el diseño real en distintos tamaños, interacción táctil y desplazamiento de la navegación interna; verificar actualización PWA a shell-v45; probar impresión/guardado PDF y comprobar el último despliegue de GitHub Pages. La aprobación de CI no sustituye estas pruebas físicas.
+### Cierre del Bloque 23 — Calibración sensorial local
+
+- El formulario de experimento sensorial permite registrar de forma opcional persistencia percibida en horas, proyección inicial en metros y proyección tras 1–2 horas.
+- Cada observación queda vinculada a la instantánea exacta de composición y versión que se evaluó, junto con el escenario indicado (EDT/EDP/Parfum y ambiente).
+- El motor contrasta cada indicador con el rango base del estimador para la misma composición y escenario. Calcula factores mediante la mediana de las razones observado/estimado.
+- Se requieren **al menos tres observaciones válidas por indicador y escenario** antes de aplicar su ajuste. Los factores se limitan a 0.5–1.5 para reducir el impacto de valores atípicos. Los indicadores sin muestra suficiente mantienen el rango base.
+- El panel muestra cuántas observaciones faltan, la mediana observada, el error frente al valor base y los ajustes activos por escenario.
+- Los registros anteriores siguen siendo válidos; los respaldos JSON conservan el nuevo campo opcional. La PWA incorpora el motor y panel de calibración en `shell-v47`.
+- La calibración es una heurística basada en observaciones del usuario, no una medición instrumental ni una validación científica. Los datos permanecen en el dispositivo.
+- PR #61 fusionado. CI aprobada: **210/210 pruebas**, sintaxis y validador estructural.
+
+### Estado técnico del proyecto
+
+- Rama principal: `main`.
+- PWA actual: `shell-v47`.
+- IndexedDB: versión 3; stores para creaciones, experimentos sensoriales y perfiles creativos.
+- Sin nuevas API externas, servicios de IA, suscripciones, dependencias ni costos añadidos por los bloques 22 y 23.
+- PR #57 — Bloque 20: fusionado.
+- PR #58 — Bloque 21: fusionado.
+- PR #59 — Checkpoint 1–21: fusionado.
+- PR #60 — Bloque 22: fusionado.
+- PR #61 — Bloque 23: fusionado.
+
+### Pendiente de aceptación manual
+
+- Revisar físicamente en Android la navegación interna, los gráficos y los formularios en distintos tamaños de pantalla.
+- Comprobar en Android la actualización PWA a `shell-v47` y que el shell nuevo se activa sin dejar recursos antiguos en caché.
+- Crear varias observaciones reales en el dispositivo y verificar que solo se active la calibración al alcanzar tres muestras por indicador y escenario.
+- Probar impresión/guardado PDF desde Android y verificar el despliegue más reciente de GitHub Pages.
+
+La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplicación; no sustituye estas verificaciones físicas.
