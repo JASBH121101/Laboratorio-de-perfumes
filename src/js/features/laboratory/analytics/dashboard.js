@@ -31,13 +31,37 @@ function summarizeFamilies(entries) {
 }
 
 function renderFamilyBars(families) {
-  if (!families.length) return '<p class="dashboard-empty-inline">Guardá tu primera creación para iniciar las tendencias.</p>';
+  if (!families.length) {
+    return `
+      <div class="dashboard-chart-empty">
+        <span class="dashboard-chart-empty-mark" aria-hidden="true">◯</span>
+        <div><strong>Sin datos para comparar</strong><p>Cuando archivés tu primera variante, aparecerá aquí la distribución por familias.</p>
+          <a href="#lab" data-nav="lab">Crear primera composición ↗</a>
+        </div>
+      </div>
+    `;
+  }
   return families.slice(0, 6).map((family, index) => `
     <div class="dashboard-bar-row">
       <div><span>${esc(family.family)}</span><strong>${family.share}%</strong></div>
-      <div class="dashboard-bar-track"><span style="width:${family.share}%;--bar-color:${PALETTE[index % PALETTE.length]}"></span></div>
+      <div class="dashboard-bar-track" role="progressbar" aria-label="Participación de ${esc(family.family)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${family.share}">
+        <span style="width:${family.share}%;--bar-color:${PALETTE[index % PALETTE.length]}"></span>
+      </div>
     </div>
   `).join("");
+}
+
+function renderFamilyDonut(families) {
+  if (!families.length) return "";
+  const total = families.reduce((sum, family) => sum + family.points, 0);
+  let offset = 0;
+  const segments = families.map((family, index) => {
+    const share = total ? family.points / total * 100 : 0;
+    const start = offset;
+    offset += share;
+    return `${PALETTE[index % PALETTE.length]} ${start.toFixed(2)}% ${offset.toFixed(2)}%`;
+  });
+  return `<div class="dashboard-family-donut" role="img" aria-label="Distribución de ${families.length} familias olfativas en el archivo" style="--dashboard-family-gradient:conic-gradient(${segments.join(",")})"><span>${families.length}<small>familias</small></span></div>`;
 }
 
 function renderRecent(entries) {
@@ -79,9 +103,12 @@ export function renderAnalyticsDashboard(archiveState = {}, mixingState = { item
       <article class="dashboard-card dashboard-card--wide">
         <div class="dashboard-card-heading"><div><p class="eyebrow">PORTAFOLIO CREATIVO</p><h2>Uso de familias olfativas</h2></div><span class="dashboard-card-meta">${families.length} familias presentes</span></div>
         <p class="dashboard-help">Distribución agregada de los puntos creativos en las variantes guardadas. No representa cantidades físicas.</p>
-        <div class="dashboard-family-layout">
+        <div class="dashboard-family-layout ${families.length ? "has-family-data" : "is-empty"}">
           <div class="dashboard-family-bars">${renderFamilyBars(families)}</div>
-          <div class="dashboard-family-summary"><strong>${esc(dominant)}</strong><small>Familia con mayor participación en el archivo</small><span>${families[0]?.share ?? 0}%</span></div>
+          ${families.length ? `<div class="dashboard-family-summary">
+            ${renderFamilyDonut(families)}
+            <div class="dashboard-family-summary-copy"><strong>${esc(dominant)}</strong><small>Familia con mayor participación en el archivo</small><span>${families[0]?.share ?? 0}%</span></div>
+          </div>` : ""}
         </div>
       </article>
       <article class="dashboard-card">
