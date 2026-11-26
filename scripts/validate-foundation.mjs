@@ -28,7 +28,7 @@ const requiredFiles = [
   "src/js/features/laboratory/professional-reports/engine.js", "src/js/features/laboratory/professional-reports/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
-  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs", "tests/professional-reports.test.mjs", "tests/creative-assistant.test.mjs"
+  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs", "tests/professional-reports.test.mjs", "tests/creative-assistant.test.mjs", "tests/formulation-proposals.test.mjs"
 ];
 
 const failures = [];
@@ -59,9 +59,9 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v36/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v36 and support controlled activation.");
+if (!/shell-v37/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v37 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
-for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "creative-assistant/engine.js", "creative-assistant/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
+for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "creative-assistant/engine.js", "creative-assistant/panel.js", "formulation-proposals/engine.js", "formulation-proposals/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
 }
 if (!app.includes("loadMixDraft() ?? createMixState()") || !app.includes("saveMixDraft(mixingState.items)")) failures.push("Local draft restore/autosave is not wired.");
@@ -81,6 +81,9 @@ if (!analysisPanel.includes("renderFamilyDonut") || !analysisPanel.includes("ren
 if (!app.includes("buildCreativeRecommendations") || !app.includes("renderCreativeAssistant") || !views.includes("renderCreativeAssistant")) failures.push("The local creative assistant is not wired into the lab workspace.");
 if (!sw.includes("creative-assistant/engine.js") || !sw.includes("creative-assistant/panel.js")) failures.push("The local creative assistant is not available in the offline shell.");
 if (!app.includes("apply-creative-assistant-suggestions") || !app.includes("addMixNote(mixingState, suggestion.id)")) failures.push("Creative assistant recommendations must be transferred to the formulation only after explicit user action.");
+if (!app.includes("generateFormulationProposals") || !app.includes("replaceMixItems") || !app.includes("load-formulation-proposal") || !views.includes("renderFormulationProposals")) failures.push("Formulation proposals must be generated, rendered and loaded only through explicit action.");
+if (!sw.includes("formulation-proposals/engine.js") || !sw.includes("formulation-proposals/panel.js")) failures.push("Formulation proposal modules are missing from the offline shell.");
+if (!app.includes("window.confirm") || !app.includes("proposal.items")) failures.push("Loading an alternative must confirm replacement of an existing composition.");
 if (!app.includes("compareSavedCompositions") || !views.includes("renderAnalyticalComparison")) failures.push("Saved composition comparison is not wired into the archive view.");
 const comparison = compareCompositions(
   { name: "Validator A", items: [{ id: "bergamot", points: 50 }, { id: "rose", points: 50 }] },

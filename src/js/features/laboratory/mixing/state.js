@@ -1,3 +1,5 @@
+import { PERFUME_ITEMS } from "../../perfume-library/data.js";
+
 const MAX_HISTORY = 40;
 
 function clampPoints(value) {
@@ -94,4 +96,31 @@ export function hasMixNote(state, noteId) {
 
 export function createMixSnapshot(state) {
   return snapshot(state.items);
+}
+
+
+export function replaceMixItems(state, items) {
+  if (!Array.isArray(items) || items.length < 1 || items.length > PERFUME_ITEMS.length) {
+    throw new TypeError("La propuesta debe contener referencias válidas.");
+  }
+  const allowedIds = new Set(PERFUME_ITEMS.map((item) => item.id));
+  const seen = new Set();
+  const nextItems = items.map((entry) => {
+    const id = typeof entry?.id === "string" ? entry.id : "";
+    const points = Number(entry?.points);
+    if (!allowedIds.has(id) || seen.has(id)) {
+      throw new TypeError("La propuesta contiene una referencia desconocida o repetida.");
+    }
+    if (!Number.isInteger(points) || points < 0 || points > 100) {
+      throw new TypeError("Cada referencia debe tener puntos creativos enteros entre 0 y 100.");
+    }
+    seen.add(id);
+    return { id, points };
+  });
+  if (nextItems.reduce((total, item) => total + item.points, 0) !== 100) {
+    throw new RangeError("La propuesta debe sumar exactamente 100 puntos creativos.");
+  }
+  const unchanged = nextItems.length === state.items.length
+    && nextItems.every((item, index) => item.id === state.items[index].id && item.points === state.items[index].points);
+  return unchanged ? state : commit(state, nextItems);
 }

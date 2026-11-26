@@ -537,3 +537,46 @@
   .creative-assistant-suggestion-main .creative-assistant-profile { font-size:8px; }
   .creative-assistant-suggestion-main .creative-assistant-rationale { font-size:7px; }
 }
+
+/* Block 13 — alternative formulation proposals */
+.formulation-proposals { margin:14px 0 18px; }
+.formulation-proposals-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.formulation-proposals-heading .eyebrow { margin:0 0 5px; }
+.formulation-proposals-heading h2 { margin:0; color:var(--text); font:500 23px "Playfair Display",Georgia,serif; }
+.formulation-proposals-heading h2 em { color:var(--accent); font-weight:400; }
+.formulation-proposals-heading p:last-child { margin:5px 0 0; color:var(--muted); font-size:9px; line-height:1.6; }
+.formulation-proposals-status { flex:none; padding:7px 9px; border:1px solid var(--line); border-radius:18px; color:var(--muted-2); font-size:7px; }
+.formulation-proposals-summary { margin:0 0 9px; color:var(--muted-2); font-size:8px; line-height:1.65; }
+.formulation-proposal { margin-top:8px; padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+.formulation-proposal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.formulation-proposal-kicker { color:var(--accent); font-size:7px; font-weight:800; letter-spacing:.13em; }
+.formulation-proposal-head h3 { margin:4px 0; color:var(--text); font:500 17px "Playfair Display",Georgia,serif; }
+.formulation-proposal-head p { margin:0; color:var(--muted); font-size:8px; line-height:1.55; }
+.formulation-proposal-total { flex:none; color:var(--accent); font:500 20px "Playfair Display",Georgia,serif; white-space:nowrap; }
+.formulation-proposal-total small { color:var(--muted-2); font:700 7px "DM Sans",sans-serif; }
+.formulation-proposal-items { margin-top:10px; display:grid; gap:5px; }
+.formulation-proposal-item { min-width:0; padding:8px 9px; display:flex; align-items:center; justify-content:space-between; gap:10px; border:1px solid var(--line); border-radius:6px; background:var(--bg); }
+.formulation-proposal-item>div { min-width:0; }
+.formulation-proposal-item strong,.formulation-proposal-item span,.formulation-proposal-item small { display:block; }
+.formulation-proposal-item strong { color:var(--text); font:500 13px "Playfair Display",Georgia,serif; }
+.formulation-proposal-item span { margin-top:2px; color:var(--accent); font-size:7px; }
+.formulation-proposal-item small { margin-top:3px; color:var(--muted-2); font-size:7px; line-height:1.45; }
+.formulation-proposal-item>b { flex:none; color:var(--accent); font:500 15px "Playfair Display",Georgia,serif; white-space:nowrap; }
+.formulation-proposal-item>b small { display:inline; margin:0; font:700 7px "DM Sans",sans-serif; }
+.formulation-proposal-description { margin:8px 0; color:var(--muted-2); font-size:8px; line-height:1.55; }
+.formulation-proposal-load { width:100%; min-height:39px; border:1px solid rgba(217,178,124,.45); border-radius:6px; color:#211a1e; background:var(--accent); font:700 9px "DM Sans",sans-serif; cursor:pointer; }
+.formulation-proposals-empty { padding:18px 13px; display:grid; gap:6px; border:1px dashed var(--line); border-radius:7px; background:var(--surface); }
+.formulation-proposals-empty strong { color:var(--text); font:500 15px "Playfair Display",Georgia,serif; }
+.formulation-proposals-empty small,.formulation-proposals-empty p { margin:0; color:var(--muted-2); font-size:8px; line-height:1.6; }
+.formulation-proposals-boundary { margin:9px 0 0; padding-top:8px; border-top:1px solid var(--line); color:var(--muted-2); font-size:7px; line-height:1.6; }
+@media(max-width:700px) {
+  .formulation-proposals { margin:10px 0 14px; }
+  .formulation-proposals-heading h2 { font-size:20px; }
+  .formulation-proposals-heading p:last-child { max-width:34ch; font-size:8px; }
+  .formulation-proposal { padding:9px; }
+  .formulation-proposal-head h3 { font-size:16px; }
+  .formulation-proposal-total { font-size:17px; }
+  .formulation-proposal-item { padding:7px; }
+  .formulation-proposal-item strong { font-size:12px; }
+  .formulation-proposal-load { min-height:42px; }
+}
