@@ -6,6 +6,8 @@ import { createMixState, addMixNote } from "../src/js/features/laboratory/mixing
 test("empty creative analysis remains clean and does not render charts", () => {
   const html = renderCreativeAnalysis(createMixState());
   assert.match(html, /Primero construí una composición/);
+  assert.match(html, /analysis-empty-link/);
+  assert.match(html, /href="#mix-studio"/);
   assert.doesNotMatch(html, /analysis-family-donut|analysis-profile-radar|<svg/);
 });
 
@@ -32,4 +34,18 @@ test("chart system is SVG/CSS-only, keeps signal overlap explicit and has mobile
   assert.match(css, /analysis-family-visual/);
   assert.match(css, /analysis-radar-area/);
   assert.match(css, /analysis-profile-radar/);
+});
+
+
+test("family chart legend exposes accessible share tracks and mobile chart layout", async () => {
+  let state = createMixState();
+  state = addMixNote(state, "bergamot");
+  state = addMixNote(state, "vanilla");
+  const html = renderCreativeAnalysis(state);
+  assert.match(html, /analysis-family-legend-track/);
+  assert.match(html, /role="progressbar"/);
+  const css = await readFile(new URL("../src/css/laboratory.css", import.meta.url), "utf8");
+  assert.match(css, /\.analysis-family-legend-track/);
+  assert.match(css, /@media\(max-width:700px\)/);
+  assert.match(css, /\.analysis-family-visual \{ grid-template-columns:minmax\(0,1fr\)/);
 });
