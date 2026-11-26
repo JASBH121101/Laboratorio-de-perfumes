@@ -426,3 +426,43 @@
   position:absolute !important; width:1px; height:1px; padding:0; margin:-1px;
   overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
 }
+
+
+/* Block 11 — compact Android formulation workspace */
+.mix-studio-header > div { min-width:0; }
+.mix-draft-status { display:block; margin-top:8px; color:var(--muted-2); font-size:8px; line-height:1.45; }
+.mix-picker-library-count { max-width:132px; text-align:center; line-height:1.35; }
+.mix-picker-search input { flex:1 1 auto; }
+.mix-picker-search input:focus { outline:0; }
+.mix-picker-results-head { align-items:center; }
+@media (max-width:700px) {
+  .mix-studio { margin-top:10px; padding:11px; }
+  .mix-studio-header { margin-bottom:10px; align-items:center; gap:8px; }
+  .mix-studio-header .eyebrow { margin-bottom:4px; font-size:7px; letter-spacing:.12em; }
+  .mix-studio-header h2 { margin-bottom:4px; font-size:19px; line-height:1.15; }
+  .mix-studio-header p:last-child { max-width:34ch; font-size:8px; line-height:1.45; }
+  .mix-draft-status { margin-top:5px; font-size:7px; }
+  .mix-total-badge { min-width:59px; padding:7px 6px; font-size:18px; }
+  .mix-total-badge small { font-size:6px; }
+  .mix-note-picker { margin-bottom:9px; padding:9px; }
+  .mix-picker-title-row { margin-bottom:8px; gap:7px; }
+  .mix-picker-title-row h3 { font-size:16px; }
+  .mix-picker-title-row small { font-size:8px; }
+  .mix-picker-library-count { max-width:112px; padding:6px 7px; font-size:6px; }
+  .mix-picker-search { min-height:43px; gap:8px; padding:0 9px; }
+  .mix-picker-search input { min-height:41px; font-size:11px; }
+  .mix-picker-search>span { font-size:18px; }
+  .mix-picker-filters { margin-top:7px; gap:6px; }
+  .mix-picker-filters select { min-height:37px; padding:0 7px; font-size:8px; }
+  .mix-picker-clear { min-height:35px; }
+  .mix-picker-results-head { margin:9px 0 6px; font-size:7px; }
+  .mix-picker-results-list { gap:5px; }
+  .mix-picker-result { min-height:49px; padding:7px; }
+  .mix-picker-result-copy strong { font-size:12px; }
+  .mix-picker-result-copy span,.mix-picker-result-copy small { font-size:6px; }
+  .mix-picker-add { min-height:36px; min-width:76px; padding:0 7px; font-size:8px; }
+  .mix-picker-expand { min-height:34px; }
+  .mix-quick-block { margin-top:8px; padding-top:7px; }
+  .mix-quick-notes { gap:5px; margin-top:6px; }
+  .mix-quick-notes button { min-height:30px; padding:0 8px; font-size:7px; }
+}

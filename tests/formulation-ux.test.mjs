@@ -36,8 +36,9 @@ test("picker displays a useful empty state and clear-filters action", () => {
 test("picker limits the initial results and supports expanding the list", () => {
   const html = renderMixPickerResults(createMixState(), {});
   assert.match(html, /Mostrar .* más referencias/);
+  assert.equal((html.split('class="mix-picker-result ').length - 1), 4);
   const expanded = renderMixPickerResults(createMixState(), { expanded: true });
-  assert.ok((expanded.match(/class="mix-picker-result/g) || []).length > 6);
+  assert.ok((expanded.split('class="mix-picker-result ').length - 1) > 4);
 });
 
 test("composition rows expose slider and precise numeric weight controls", () => {
@@ -58,4 +59,10 @@ test("application keeps finder filters, result expansion and manual clear action
   assert.match(app, /action === "toggle-mix-picker"/);
   assert.match(app, /action === "clear-mix-picker"/);
   assert.match(app, /renderMixStudio\(mixingState, mixPickerState\)/);
+});
+
+test("mobile picker removes the ambiguous floating library number", () => {
+  const html = renderMixStudio(createMixState());
+  assert.equal(html.includes("<kbd>60</kbd>"), false);
+  assert.match(html, /60 MATERIAS DISPONIBLES/);
 });
