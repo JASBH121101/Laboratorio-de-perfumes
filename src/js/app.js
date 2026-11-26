@@ -9,6 +9,8 @@ import { generateFormulationProposals } from "./features/laboratory/formulation-
 import { renderFormulationProposals } from "./features/laboratory/formulation-proposals/panel.js";
 import { analyzeInspirationDifferentiation } from "./features/laboratory/inspiration-differentiation/engine.js";
 import { renderInspirationDifferentiation } from "./features/laboratory/inspiration-differentiation/panel.js";
+import { buildClientBrief } from "./features/laboratory/client-brief/engine.js";
+import { renderClientBriefPanel } from "./features/laboratory/client-brief/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -41,6 +43,7 @@ const libraryState = { query: "", family: "all", role: "all", selectedId: null }
 const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
 const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
 const inspirationDifferentiationState = { referenceLabel: "", liked: "", avoid: "", result: null };
+const clientBriefState = { fields: {}, result: null };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -247,7 +250,7 @@ function safeFilename(value) {
 
 function render() {
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState, creativeAssistantState, inspirationDifferentiationState);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState, creativeAssistantState, inspirationDifferentiationState, clientBriefState);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -297,6 +300,11 @@ function updateCreativeAssistant() {
 function updateInspirationDifferentiation() {
   const panel = appRoot.querySelector("#inspiration-differentiation");
   if (panel) panel.outerHTML = renderInspirationDifferentiation(inspirationDifferentiationState);
+}
+
+function updateClientBrief() {
+  const panel = appRoot.querySelector("#client-brief-panel");
+  if (panel) panel.outerHTML = renderClientBriefPanel(clientBriefState);
 }
 
 function updateMixStudio() {
@@ -388,6 +396,9 @@ appRoot.addEventListener("input", (event) => {
     inspirationDifferentiationState.avoid = event.target.value;
   } else if (event.target.id === "creative-assistant-brief") {
     creativeAssistantState.description = event.target.value;
+  } else if (["client-brief-liked", "client-brief-avoid", "client-brief-additional"].includes(event.target.id)) {
+    const field = event.target.id.replace("client-brief-", "");
+    clientBriefState.fields[field] = event.target.value;
   } else if (event.target.id === "library-search") {
     libraryState.query = event.target.value;
     updateLibrary();
@@ -409,6 +420,9 @@ appRoot.addEventListener("change", async (event) => {
     updateMixPickerResults();
   } else if (event.target.id === "creative-assistant-mode") {
     creativeAssistantState.mode = event.target.value;
+  } else if (["client-brief-occasion", "client-brief-style", "client-brief-presence"].includes(event.target.id)) {
+    const field = event.target.id.replace("client-brief-", "");
+    clientBriefState.fields[field] = event.target.value;
   } else if (event.target.id === "library-family") {
     libraryState.family = event.target.value;
     updateLibrary();
@@ -593,6 +607,30 @@ appRoot.addEventListener("click", async (event) => {
       if (kind) kind.value = "all";
       if (role) role.value = "all";
       updateMixPickerResults();
+    } else if (action === "prepare-client-brief") {
+      clientBriefState.fields = {
+        occasion: appRoot.querySelector("#client-brief-occasion")?.value || "sin definir",
+        style: appRoot.querySelector("#client-brief-style")?.value || "sin preferencia",
+        presence: appRoot.querySelector("#client-brief-presence")?.value || "sin definir",
+        liked: appRoot.querySelector("#client-brief-liked")?.value || "",
+        avoid: appRoot.querySelector("#client-brief-avoid")?.value || "",
+        additional: appRoot.querySelector("#client-brief-additional")?.value || ""
+      };
+      clientBriefState.result = buildClientBrief(clientBriefState.fields);
+      updateClientBrief();
+    } else if (action === "clear-client-brief") {
+      clientBriefState.fields = {};
+      clientBriefState.result = null;
+      updateClientBrief();
+    } else if (action === "send-client-brief-to-assistant") {
+      if (clientBriefState.result?.status !== "ready") throw new Error("Primero prepará un brief con suficiente dirección creativa.");
+      creativeAssistantState.mode = "client";
+      creativeAssistantState.description = clientBriefState.result.description;
+      creativeAssistantState.result = buildCreativeRecommendations({ description: creativeAssistantState.description, mode: "client" });
+      creativeAssistantState.proposals = generateFormulationProposals({ description: creativeAssistantState.description, mode: "client" });
+      updateCreativeAssistant();
+      window.location.hash = "#lab";
+      showNotice({ title: "Brief enviado al asistente", message: "El perfil se analizó con la biblioteca local. Revisá las recomendaciones y propuestas antes de transferir materias." });
     } else if (action === "run-creative-assistant") {
       creativeAssistantState.description = appRoot.querySelector("#creative-assistant-brief")?.value || "";
       creativeAssistantState.mode = appRoot.querySelector("#creative-assistant-mode")?.value || "personal";
