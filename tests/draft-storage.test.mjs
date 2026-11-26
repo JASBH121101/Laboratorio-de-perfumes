@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { addMixNote, createMixState } from "../src/js/features/laboratory/mixing/state.js";
-import { loadMixDraft, saveMixDraft from "../src/js/features/laboratory/mixing/draft-storage.js";
+import { loadMixDraft, saveMixDraft } from "../src/js/features/laboratory/mixing/draft-storage.js";
 
 function withStorage(run) {
   const store = new Map();
