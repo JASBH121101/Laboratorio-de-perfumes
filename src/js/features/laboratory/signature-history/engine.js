@@ -43,7 +43,7 @@ function summarizeSnapshot(creation, variant, version, ordinal) {
     creationName: String(creation.name || "Creación sin nombre"),
     variantLabel: String(variant.label || "—"),
     variantName: String(variant.name || "Variante"),
-    versionNumber: Number.isInteger(Number(version?.number)) ? Number(version.number) : null,
+    versionNumber: version?.number !== null && version?.number !== undefined && Number.isInteger(Number(version.number)) ? Number(version.number) : null,
     note: String(version?.note || ""),
     referenceCount: items.length,
     items,
