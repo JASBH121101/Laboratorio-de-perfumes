@@ -48,7 +48,7 @@ export function renderOriginalityAnalysis(state, creations = []) {
         <div class="originality-challenge"><div><p class="eyebrow">DESAFÍO CREATIVO</p><strong>Explorá ${esc(challenge.name)}</strong><small>${esc(challenge.family)} · ${esc(challenge.reason)}</small></div><button type="button" data-add-to-mix="${esc(challenge.id)}">＋ Explorar referencia</button></div>
       ` : ""}
       ${renderCatalogBenchmark(state.items)}
-      <p class="originality-disclaimer">El índice personal mide diferenciación frente a tu archivo local. El benchmark comercial compara notas y perfiles públicos de referencia; no verifica fórmulas químicas, exclusividad, originalidad legal ni similitud olfativa real.</p>
+      <p class="originality-disclaimer">El índice personal mide diferenciación frente a tu archivo local. No consulta catálogos comerciales; el benchmark separado compara notas y perfiles públicos de referencia; no verifica fórmulas químicas, exclusividad, originalidad legal ni similitud olfativa real.</p>
     </section>
   `;
 }
