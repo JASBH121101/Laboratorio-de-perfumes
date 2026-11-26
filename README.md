@@ -68,9 +68,9 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 7. Comparación analítica | Comparar variantes guardadas, coincidencia estructural y diferencias por familia/faceta/rol | **Completado** — PR #34 fusionado |
 | 8. Historial de firma personal | Evolución por versiones, familias recurrentes, referencias frecuentes y cambios entre el primer y último registro | **Completado** — PR #36 fusionado |
 | 9. Experimentos sensoriales | Observaciones subjetivas por variante y versión, contexto, tiempo, facetas, valoraciones y respaldo independiente | **Completado** — PR #38 fusionado |
-| 10. Informes profesionales | Dossier por variante con composición, análisis editorial e historial sensorial; impresión PDF y exportaciones CSV/JSON | En implementación — rama feature/block10-professional-reports |
+| 10. Informes profesionales | Dossier por variante con composición, análisis editorial e historial sensorial; impresión PDF y exportaciones CSV/JSON | **Completado** — PR #39 fusionado |
 
-La base funcional vigente pasó **117/117 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 8. Los PR #32, #33, #34, #35 y #36 están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA y la aceptación visual en Android.
+La base funcional vigente pasó **134/134 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 10. Los PR #32 al #39 de funcionalidad y cierre documental están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 6 — Experiencia del constructor
 
