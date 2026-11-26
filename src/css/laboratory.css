@@ -743,3 +743,11 @@
 .performance-estimate-empty { margin:10px 0 0; color:var(--muted); font-size:9px; line-height:1.6; }
 .performance-estimate-disclaimer { margin:11px 0 0; padding-top:8px; border-top:1px solid var(--line); color:var(--muted-2); font-size:7px; line-height:1.65; }
 @media(max-width:700px) { .performance-estimate{padding:10px}.performance-estimate-heading h2{font-size:18px}.performance-estimate-grid{grid-template-columns:1fr}.performance-estimate-card--wide{grid-column:auto}.performance-estimate-card>strong{font-size:20px} }
+
+/* Block 19 — performance scenario controls and clearer benchmark matching */
+.performance-estimate-controls { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+.performance-estimate-controls label { display:flex; flex-direction:column; gap:5px; color:var(--muted-2); font-size:8px; }
+.performance-estimate-controls select { width:100%; min-width:0; padding:8px 9px; border:1px solid var(--line); border-radius:7px; background:var(--bg); color:var(--text); font:inherit; font-size:9px; }
+.reference-benchmark-match { margin:6px 0; color:var(--accent); font-size:8px; line-height:1.5; }
+.reference-benchmark-match--none { color:var(--muted-2); }
+@media(max-width:700px){.performance-estimate-controls{grid-template-columns:1fr}.performance-estimate-controls select{font-size:10px}}

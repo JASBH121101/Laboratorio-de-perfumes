@@ -19,7 +19,7 @@ test("empty or invalid formula is rejected and UI clarifies editorial similarity
  assert.equal(benchmarkFormulaAgainstCatalog([{id:"invalid",points:100}]).status,"invalid");
  const html=renderCatalogBenchmark([{id:"bergamot",points:100}]);
  assert.match(html,/COMMERCIAL REFERENCE BENCHMARK/);
- assert.match(html,/No afirma que sea una copia/i);
+ assert.match(html,/perfil parecido/i);assert.match(html,/Árabe \/ Ninja/i);assert.match(html,/No afirma que sea una copia/i);
  assert.match(html,/CC BY 4.0/);
 });
 test("benchmark panel is safe and offline catalog is included in shell",async()=>{
@@ -28,5 +28,5 @@ test("benchmark panel is safe and offline catalog is included in shell",async()=
  const {readFile}=await import("node:fs/promises");
  const sw=await readFile(new URL("../sw.js",import.meta.url),"utf8");
  assert.match(sw,/reference-benchmark\/data\.js/);
- assert.match(sw,/shell-v42/);
+ assert.match(sw,/shell-v43/);
 });

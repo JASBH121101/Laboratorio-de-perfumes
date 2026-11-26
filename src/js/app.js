@@ -46,6 +46,7 @@ const mixPickerState = { query: "", family: "all", role: "all", kind: "all", exp
 const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
 const inspirationDifferentiationState = { referenceLabel: "", liked: "", avoid: "", result: null };
 const clientBriefState = { fields: {}, result: null };
+const performanceScenarioState = { concentration: "edp", environment: "neutral" };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -273,7 +274,7 @@ function updateEvolutionSimulator() {
   const panel = appRoot.querySelector("#evolution-simulator");
   if (panel) panel.outerHTML = renderEvolutionSimulator(mixingState, evolutionStage);
   const performancePanel = appRoot.querySelector("#performance-estimate");
-  if (performancePanel) performancePanel.outerHTML = renderPerformanceEstimate(mixingState.items);
+  if (performancePanel) performancePanel.outerHTML = renderPerformanceEstimate(mixingState.items, performanceScenarioState);
 }
 
 function updateCreativeAnalysis() {
@@ -428,6 +429,12 @@ appRoot.addEventListener("change", async (event) => {
     mixPickerState.role = event.target.value;
     mixPickerState.expanded = false;
     updateMixPickerResults();
+  } else if (event.target.id === "performance-concentration") {
+    performanceScenarioState.concentration = event.target.value;
+    updateEvolutionSimulator();
+  } else if (event.target.id === "performance-environment") {
+    performanceScenarioState.environment = event.target.value;
+    updateEvolutionSimulator();
   } else if (event.target.id === "creative-assistant-mode") {
     creativeAssistantState.mode = event.target.value;
   } else if (["client-brief-occasion", "client-brief-style", "client-brief-presence"].includes(event.target.id)) {
