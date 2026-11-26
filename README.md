@@ -439,4 +439,17 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 - El modo `own-inventory` continúa pendiente de conexión a un inventario comercial real. No hay fallback al catálogo global.
 - La aceptación visual física en Android y la conexión al inventario comercial son tareas independientes pendientes.
 
-**Alcance global:** bloques 1–36 completados y fusionados en `main`.
+### Resultado — Bloques 37 y 38
+- **Bloque 37:** navegación accesible de sugerencias con ↑/↓, Enter y Esc; combobox/listbox con \`aria-expanded\`, \`aria-activedescendant\` y estado activo; estados explícitos de consulta corta, sin coincidencias y sugerencias cerradas.
+- **Bloque 38:** las tarjetas ahora separan la similitud editorial del índice de confianza, dimensiones comparables y peso de datos disponible; muestran razones de confianza del motor y ofrecen restablecer filtros cuando no hay resultados.
+- Se incorporó \`interaction.js\` con reglas de teclado puras y pruebas unitarias; la búsqueda con ratón conserva selección por ID estable.
+- **PR #77:** fusionado mediante Squash Merge; commit \`31698d6b4c187ab80bdc74cc4b4f36cb74caf568\`.
+- **GitHub Actions #45884499151 y #45884507526:** SUCCESS; **295/295 pruebas**, 0 fallidas. Sintaxis de módulos y validador de estructura aprobados.
+- El shell PWA avanzó a \`shell-v52\`; incluye **71 rutas únicas, sin duplicados**.
+- Sin cambios al algoritmo de scoring, dependencias nuevas, APIs externas, servicios pagos ni modificaciones a Supabase.
+- La aceptación visual en dispositivo Android sigue pendiente de una comprobación manual; el CI no la sustituye.
+
+**Alcance global:** bloques 1–38 completados y fusionados en \`main\`.
+
+### Siguiente par
+- **Bloques 39–40:** pruebas integrales de ciclo completo, consistencia de filtros y alcance, reinicio/reselección, rendimiento con catálogo amplio y verificación de caché. La conexión comercial del inventario requerirá identificar y mapear una fuente real de productos y existencias; no se reutilizarán fórmulas ni experimentos como stock.
