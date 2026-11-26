@@ -3,6 +3,8 @@ import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixPickerResults, renderMixStudio } from "./features/laboratory/mixing/panel.js";
+import { buildCreativeRecommendations } from "./features/laboratory/creative-assistant/engine.js";
+import { renderCreativeAssistant } from "./features/laboratory/creative-assistant/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -33,6 +35,7 @@ const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
+const creativeAssistantState = { mode: "personal", description: "", result: null };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -239,7 +242,7 @@ function safeFilename(value) {
 
 function render() {
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState, creativeAssistantState);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -277,6 +280,11 @@ function updateMixPickerResults() {
   if (results) results.innerHTML = renderMixPickerResults(mixingState, mixPickerState);
   const clear = appRoot.querySelector(".mix-picker-clear");
   if (clear) clear.disabled = !mixPickerState.query && mixPickerState.family === "all" && mixPickerState.role === "all" && mixPickerState.kind === "all";
+}
+
+function updateCreativeAssistant() {
+  const panel = appRoot.querySelector("#creative-assistant");
+  if (panel) panel.outerHTML = renderCreativeAssistant(creativeAssistantState);
 }
 
 function updateMixStudio() {
@@ -360,6 +368,8 @@ appRoot.addEventListener("input", (event) => {
     mixPickerState.query = event.target.value;
     mixPickerState.expanded = false;
     updateMixPickerResults();
+  } else if (event.target.id === "creative-assistant-brief") {
+    creativeAssistantState.description = event.target.value;
   } else if (event.target.id === "library-search") {
     libraryState.query = event.target.value;
     updateLibrary();
@@ -379,6 +389,8 @@ appRoot.addEventListener("change", async (event) => {
     mixPickerState.role = event.target.value;
     mixPickerState.expanded = false;
     updateMixPickerResults();
+  } else if (event.target.id === "creative-assistant-mode") {
+    creativeAssistantState.mode = event.target.value;
   } else if (event.target.id === "library-family") {
     libraryState.family = event.target.value;
     updateLibrary();
@@ -563,6 +575,32 @@ appRoot.addEventListener("click", async (event) => {
       if (kind) kind.value = "all";
       if (role) role.value = "all";
       updateMixPickerResults();
+    } else if (action === "run-creative-assistant") {
+      creativeAssistantState.description = appRoot.querySelector("#creative-assistant-brief")?.value || "";
+      creativeAssistantState.mode = appRoot.querySelector("#creative-assistant-mode")?.value || "personal";
+      creativeAssistantState.result = buildCreativeRecommendations({
+        description: creativeAssistantState.description,
+        mode: creativeAssistantState.mode
+      });
+      updateCreativeAssistant();
+    } else if (action === "clear-creative-assistant") {
+      creativeAssistantState.description = "";
+      creativeAssistantState.result = null;
+      updateCreativeAssistant();
+    } else if (action === "apply-creative-assistant-suggestions") {
+      const suggestions = creativeAssistantState.result?.suggestions || [];
+      if (!suggestions.length) throw new Error("Primero generá una propuesta con referencias disponibles.");
+      let added = 0;
+      for (const suggestion of suggestions) {
+        const previous = mixingState;
+        mixingState = addMixNote(mixingState, suggestion.id);
+        if (mixingState !== previous) added += 1;
+      }
+      if (added) updateMixStudio();
+      showNotice({
+        title: added ? "Materias enviadas al formulador" : "Materias ya presentes",
+        message: added ? `${added} referencias se agregaron a tu composición. Revisá y ajustá manualmente sus puntos creativos.` : "Las referencias sugeridas ya forman parte de tu composición."
+      });
     } else if (action === "undo-mix") {
       mixingState = undoMix(mixingState);
       updateMixStudio();
