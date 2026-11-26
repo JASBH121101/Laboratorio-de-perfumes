@@ -7,6 +7,7 @@ import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-s
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
 import { compareSavedCompositions } from "./features/laboratory/comparison/engine.js";
+import { renderAnalyticalComparison } from "./features/laboratory/comparison/panel.js";
 import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { createArchiveRepository } from "./features/archive/repository.js";
 import {
