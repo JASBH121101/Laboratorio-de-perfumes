@@ -13,6 +13,8 @@ import { buildClientBrief } from "../src/js/features/laboratory/client-brief/eng
 import { analyzeAudienceFit } from "../src/js/features/laboratory/audience-fit/engine.js";
 import { FRAGRANCE_SIMILARITY_SCORE, validateFragranceSimilarityProfile } from "../src/js/features/laboratory/fragrance-similarity/contracts.js";
 import { buildFragranceSimilarityCatalog } from "../src/js/features/laboratory/fragrance-similarity/model.js";
+import { normalizeOlfactoryTerm, normalizeFragranceSimilarityProfile } from "../src/js/features/laboratory/fragrance-similarity/normalization.js";
+import { compareFragranceProfiles } from "../src/js/features/laboratory/fragrance-similarity/comparison.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -23,6 +25,10 @@ const requiredFiles = [
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
   "src/js/features/laboratory/fragrance-similarity/contracts.js",
   "src/js/features/laboratory/fragrance-similarity/model.js",
+  "src/js/features/laboratory/fragrance-similarity/normalization.js",
+  "src/js/features/laboratory/fragrance-similarity/comparison.js",
+  "tests/fragrance-similarity-normalization.test.mjs",
+  "tests/fragrance-similarity-comparison.test.mjs",
   "tests/fragrance-similarity-contracts.test.mjs",
   "tests/fragrance-similarity-model.test.mjs",
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/draft-storage.js",
@@ -161,6 +167,24 @@ if (
   fragranceSimilarityCatalog.rejectedRecords !== 0
 ) {
   failures.push("The fragrance similarity model must normalize all 1,479 licensed reference records without loss.");
+}
+
+const normalizedBergamot = normalizeOlfactoryTerm("Bergamota");
+const normalizedBlackcurrant = normalizeOlfactoryTerm("Cassis");
+if (normalizedBergamot !== "bergamot" || normalizedBlackcurrant !== "blackcurrant") {
+  failures.push("Fragrance semantic normalization did not resolve its required bilingual aliases.");
+}
+const referenceProfile = fragranceSimilarityCatalog.profiles.find((item) => item.identity.name && item.olfactory.notes.all.length >= 2);
+const candidateProfile = fragranceSimilarityCatalog.profiles.find((item) => item.id !== referenceProfile?.id && item.olfactory.notes.all.length >= 2);
+if (!referenceProfile || !candidateProfile) {
+  failures.push("Fragrance similarity comparator lacks two usable catalog profiles.");
+} else {
+  const normalizedProfile = normalizeFragranceSimilarityProfile(referenceProfile);
+  const profileComparison = compareFragranceProfiles(referenceProfile, candidateProfile);
+  if (!normalizedProfile.notes.all.length || !["ready", "insufficient-data"].includes(profileComparison.status) ||
+      profileComparison.interpretation.globalSimilarityScore !== false) {
+    failures.push("Fragrance olfactory comparison did not return normalized, evidence-only dimensions.");
+  }
 }
 
 let mix = addMixNote(createMixState(), "bergamot");
