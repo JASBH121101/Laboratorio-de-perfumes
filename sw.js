@@ -1,8 +1,5 @@
 const CACHE_PREFIX = "jb-virtual-perfume-lab-";
-const CACHE_NAME = `${CACHE_PREFIX}shell-v28`;
-const THREE_MODULE_URL = "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js";
-const THREE_CORE_URL = "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.core.js";
-const THREE_ASSETS = new Set([THREE_MODULE_URL, THREE_CORE_URL]);
+const CACHE_NAME = `${CACHE_PREFIX}shell-v29`;
 
 const APP_SHELL = [
   "./",
@@ -16,25 +13,20 @@ const APP_SHELL = [
   "./src/css/design-system.css",
   "./src/css/perfume-library.css",
   "./src/css/laboratory.css",
+  "./src/css/analytics.css",
   "./src/js/app.js",
   "./src/js/core/navigation.js",
   "./src/js/core/pwa.js",
   "./src/js/features/perfume-library/data.js",
   "./src/js/features/perfume-library/library.js",
-  "./src/js/features/laboratory/catalog.js",
-  "./src/js/features/laboratory/inspector.js",
-  "./src/js/features/laboratory/scene.js",
-  "./src/js/features/laboratory/render-profile.js",
-  "./src/js/features/laboratory/architecture.js",
-  "./src/js/features/laboratory/materials.js",
-  "./src/js/features/laboratory/environment.js",
-  "./src/js/features/laboratory/perfume-assets.js",
-  "./src/js/features/laboratory/performance-audit.js",
   "./src/js/features/laboratory/mixing/state.js",
   "./src/js/features/laboratory/mixing/draft-storage.js",
   "./src/js/features/laboratory/mixing/panel.js",
   "./src/js/features/laboratory/analysis/engine.js",
   "./src/js/features/laboratory/analysis/panel.js",
+  "./src/js/features/laboratory/analytics/dashboard.js",
+  "./src/js/features/laboratory/originality/engine.js",
+  "./src/js/features/laboratory/originality/panel.js",
   "./src/js/features/laboratory/evolution/engine.js",
   "./src/js/features/laboratory/evolution/panel.js",
   "./src/js/features/archive/model.js",
@@ -64,21 +56,7 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
-  const requestUrl = new URL(request.url);
-  if (request.method !== "GET") return;
-
-  if (requestUrl.origin !== self.location.origin) {
-    if (!THREE_ASSETS.has(request.url)) return;
-    event.respondWith((async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const cached = await cache.match(request);
-      if (cached) return cached;
-      const response = await fetch(request);
-      if (response.ok) await cache.put(request, response.clone());
-      return response;
-    })());
-    return;
-  }
+  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
 
   if (request.mode === "navigate") {
     event.respondWith((async () => {
