@@ -4,6 +4,7 @@ import { PERFUME_ITEMS } from "../src/js/features/perfume-library/data.js";
 import { addMixNote, createMixState, getMixTotal } from "../src/js/features/laboratory/mixing/state.js";
 import { analyzeComposition } from "../src/js/features/laboratory/analysis/engine.js";
 import { analyzeOriginality } from "../src/js/features/laboratory/originality/engine.js";
+import { compareCompositions } from "../src/js/features/laboratory/comparison/engine.js";
 import { renderAnalyticsDashboard } from "../src/js/features/laboratory/analytics/dashboard.js";
 import { buildArchiveBackup, createArchiveCreation, createArchiveVariant, parseArchiveBackup } from "../src/js/features/archive/model.js";
 
@@ -19,9 +20,10 @@ const requiredFiles = [
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
   "src/js/features/laboratory/analytics/dashboard.js",
   "src/js/features/laboratory/originality/engine.js", "src/js/features/laboratory/originality/panel.js",
+  "src/js/features/laboratory/comparison/engine.js", "src/js/features/laboratory/comparison/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
-  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs"
+  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs"
 ];
 
 const failures = [];
@@ -52,9 +54,9 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v30/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v30 and support controlled activation.");
+if (!/shell-v31/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v31 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
-for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
+for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
 }
 if (!app.includes("loadMixDraft() ?? createMixState()") || !app.includes("saveMixDraft(mixingState.items)")) failures.push("Local draft restore/autosave is not wired.");
@@ -70,6 +72,12 @@ if (!mixPanel.includes("mix-picker-family") || !mixPanel.includes("mix-picker-ki
 if (!mixPanel.includes('type="number"') || !mixPanel.includes('type="range"') || !mixPanel.includes("mix-weight-hint")) failures.push("Formulation weights must expose both slider and precise numeric editing.");
 
 if (!analysisPanel.includes("renderFamilyDonut") || !analysisPanel.includes("renderProfileRadar")) failures.push("Family and sensory charts are missing.");
+if (!app.includes("compareSavedCompositions") || !views.includes("renderAnalyticalComparison")) failures.push("Saved composition comparison is not wired into the archive view.");
+const comparison = compareCompositions(
+  { name: "Validator A", items: [{ id: "bergamot", points: 50 }, { id: "rose", points: 50 }] },
+  { name: "Validator B", items: [{ id: "bergamot", points: 25 }, { id: "vanilla", points: 75 }] }
+);
+if (comparison.similarity !== 25 || comparison.difference !== 75 || !comparison.familyRows.length) failures.push("Analytical comparison did not calculate structural overlap and family differences.");
 if (!originalityPanel.includes("ÍNDICE DE DIFERENCIACIÓN INTERNA") || !originalityPanel.includes("No consulta catálogos comerciales")) failures.push("Originality panel must explain its local comparison boundary.");
 if (!dashboardCss.includes(".dashboard-kpis") || !dashboardCss.includes(".originality-metrics")) failures.push("Responsive analytics and originality styles are missing.");
 
