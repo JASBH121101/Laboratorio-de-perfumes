@@ -38,7 +38,7 @@ test("picker limits the initial results and supports expanding the list", () => 
   assert.match(html, /Mostrar .* más referencias/);
   assert.equal((html.split('class="mix-picker-result ').length - 1), 4);
   const expanded = renderMixPickerResults(createMixState(), { expanded: true });
-  assert.ok((expanded.match(/class="mix-picker-result ) || []).length > 4);
+  assert.ok((expanded.split('class="mix-picker-result ').length - 1) > 4);
 });
 
 test("composition rows expose slider and precise numeric weight controls", () => {
