@@ -66,6 +66,7 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | **Completado** — PR #32 fusionado, CI verde y Pages desplegado |
 | 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | **Completado** — PR #33 fusionado |
 | 7. Comparación analítica | Comparar variantes guardadas, coincidencia estructural y diferencias por familia/faceta/rol | **Completado** — PR #34 fusionado |
+| 8. Historial de firma personal | Evolución por versiones, familias recurrentes, referencias frecuentes y cambios entre el primer y último registro | En implementación — rama feature/block8-personal-signature-history |
 
 La validación de la base original pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. Los PR #32 y #33 se integraron en `main`; el Bloque 6 quedó incluido en el merge de #33. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
 
@@ -76,6 +77,10 @@ El constructor incorpora un buscador integrado con filtros por familia, tipo y u
 ## Bloque 7 — Comparación analítica
 
 El módulo permite comparar dos variantes guardadas, incluso cuando pertenecen a creaciones distintas. Calcula coincidencia estructural por puntos creativos compartidos, referencias añadidas o retiradas y cambios por referencia. También presenta distribuciones comparativas por familia olfativa, facetas editoriales y roles orientativos de salida/corazón/fondo. Los gráficos y porcentajes describen exclusivamente los datos conceptuales del archivo local: no predicen olor real, compatibilidad química ni similitud comercial. La comparación es de solo lectura y no modifica las composiciones guardadas.
+
+## Bloque 8 — Historial de firma personal
+
+El historial recorre las versiones guardadas de cada variante, las ordena cronológicamente y resume las familias editoriales presentes, las referencias más recurrentes y los cambios entre el primer registro y el más reciente. La vista de evolución usa hasta ocho registros recientes para conservar una lectura compacta en móvil. No añade registros al archivo ni modifica las composiciones. Los patrones representan únicamente decisiones creativas guardadas y etiquetas editoriales; no determinan una identidad olfativa objetiva ni una medición sensorial.
 
 ## Protección de datos creativos
 
