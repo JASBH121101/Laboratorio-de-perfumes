@@ -20,6 +20,11 @@ export const SENSORY_CONTEXTS = Object.freeze({
   air: "Ambiente",
   other: "Otro"
 });
+export const SENSORY_PERFORMANCE_CONCENTRATIONS = Object.freeze({ edt: "EDT", edp: "EDP", parfum: "Parfum" });
+export const SENSORY_PERFORMANCE_ENVIRONMENTS = Object.freeze({
+  neutral: "Ambiente neutro", warm: "Clima cálido", cool: "Clima fresco",
+  outdoor: "Exterior / ventilado", indoor: "Interior"
+});
 
 const LIBRARY_IDS = new Set(PERFUME_ITEMS.map((item) => item.id));
 const nowIso = () => new Date().toISOString();
@@ -65,6 +70,37 @@ function normalizeRatings(input = {}) {
   }));
 }
 
+function normalizeObservedPerformance(input = null) {
+  if (input === null || input === undefined) return null;
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    throw new Error("La observación de rendimiento tiene un formato inválido.");
+  }
+  const concentration = String(input.concentration || "edp");
+  const environment = String(input.environment || "neutral");
+  if (!Object.hasOwn(SENSORY_PERFORMANCE_CONCENTRATIONS, concentration)) {
+    throw new Error("La concentración observada no es válida.");
+  }
+  if (!Object.hasOwn(SENSORY_PERFORMANCE_ENVIRONMENTS, environment)) {
+    throw new Error("El ambiente observado no es válido.");
+  }
+  const readMetric = (key, label, maximum) => {
+    const raw = input[key];
+    if (raw === "" || raw === null || raw === undefined) return null;
+    const value = Number(raw);
+    if (!Number.isFinite(value) || value < 0 || value > maximum) {
+      throw new Error(`${label} debe estar entre 0 y ${maximum}.`);
+    }
+    return Math.round(value * 10) / 10;
+  };
+  const metrics = {
+    persistenceHours: readMetric("persistenceHours", "La persistencia observada", 48),
+    projectionInitialMeters: readMetric("projectionInitialMeters", "La proyección inicial observada", 10),
+    projectionLaterMeters: readMetric("projectionLaterMeters", "La proyección observada tras 1–2 horas", 10)
+  };
+  if (Object.values(metrics).every((value) => value === null)) return null;
+  return { concentration, environment, ...metrics };
+}
+
 function normalizeTags(input = []) {
   if (!Array.isArray(input)) throw new Error("Las facetas observadas no tienen un formato válido.");
   const tags = [...new Set(input.map((tag) => String(tag)))];
@@ -85,6 +121,7 @@ export function createSensoryExperiment({
   impression,
   tags = [],
   ratings = {},
+  observedPerformance = null,
   now = nowIso(),
   id = makeId()
 } = {}) {
@@ -121,6 +158,7 @@ export function createSensoryExperiment({
     impression: cleanText(impression, 1600, "Observación", true),
     tags: normalizeTags(tags),
     ratings: normalizeRatings(ratings),
+    observedPerformance: normalizeObservedPerformance(observedPerformance),
     createdAt: now,
     updatedAt: now
   };
@@ -159,6 +197,7 @@ export function validateSensoryExperiment(input) {
     impression: cleanText(input.impression, 1600, "Observación", true),
     tags: normalizeTags(input.tags),
     ratings: normalizeRatings(input.ratings),
+    observedPerformance: normalizeObservedPerformance(input.observedPerformance),
     createdAt: created.toISOString(),
     updatedAt: updated.toISOString()
   };
