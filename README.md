@@ -69,8 +69,9 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 8. Historial de firma personal | Evolución por versiones, familias recurrentes, referencias frecuentes y cambios entre el primer y último registro | **Completado** — PR #36 fusionado |
 | 9. Experimentos sensoriales | Observaciones subjetivas por variante y versión, contexto, tiempo, facetas, valoraciones y respaldo independiente | **Completado** — PR #38 fusionado |
 | 10. Informes profesionales | Dossier por variante con composición, análisis editorial e historial sensorial; impresión PDF y exportaciones CSV/JSON | **Completado** — PR #39 fusionado |
+| 11. UX móvil del formulador | Compactar el Bloque 06, aclarar el contador de materias y optimizar búsqueda, filtros y resultados en Android | **Completado** — PR de Bloque 11 |
 
-La base funcional vigente pasó **134/134 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 10. Los PR #32 al #39 de funcionalidad y cierre documental están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó la suite de pruebas, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 11. Los PR #32 al #39 de funcionalidad y cierre documental están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 6 — Experiencia del constructor
 
@@ -100,3 +101,7 @@ Los registros sensoriales se guardan en una colección local separada del archiv
 ## Bloque 10 — Informes profesionales
 
 El generador prepara un dossier por creación y variante archivada. Incluye versión fuente, referencias con perfiles editoriales, distribución por familias, facetas y roles, además de observaciones sensoriales asociadas a esa misma variante. La vista está preparada para imprimir o guardar como PDF desde el diálogo nativo del navegador y ofrece exportación CSV y JSON. Los informes son instantáneas generadas desde el archivo local; después de cambiar fórmulas u observaciones, generá un nuevo informe para reflejar los datos actualizados.
+
+## Bloque 11 — UX móvil del formulador
+
+El constructor móvil reduce el espacio vertical del encabezado, la búsqueda, los filtros y los resultados. El contador del buscador ahora se expresa como materias disponibles y no aparece duplicado dentro del campo. La lista inicial muestra cuatro resultados y permite ampliar el resto. El ajuste está orientado a Android y conserva el acceso completo a las 60 referencias.
