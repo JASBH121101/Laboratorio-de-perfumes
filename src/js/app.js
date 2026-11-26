@@ -308,8 +308,13 @@ appRoot.addEventListener("change", async (event) => {
     updateLibrary();
   }
   if (event.target.matches("[data-mix-weight]")) {
-    mixingState = setMixNotePoints(mixingState, event.target.dataset.mixWeight, event.target.value);
-    updateMixStudio();
+    const requested = event.target.value.trim();
+    if (!requested || !Number.isFinite(Number(requested))) {
+      updateMixStudio();
+    } else {
+      mixingState = setMixNotePoints(mixingState, event.target.dataset.mixWeight, requested);
+      updateMixStudio();
+    }
   }
   if (event.target.matches("[data-analysis-direction]")) {
     analysisDirection = event.target.value;
