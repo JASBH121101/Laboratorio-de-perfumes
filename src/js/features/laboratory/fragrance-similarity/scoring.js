@@ -215,7 +215,7 @@ export function scoreFragranceSimilarity(comparison, referenceProfile, candidate
       configuredWeight: round(configuredWeight * 1000) / 1000,
       effectiveWeight: round(effectiveWeight * 1000) / 1000,
       coverage: round(metric.coverage * 100),
-      included: metric.score !== null && metric.coverage > 0
+      included: metric.score !== null && metric.coverage > 0 && configuredWeight > 0
     })];
   })));
 
