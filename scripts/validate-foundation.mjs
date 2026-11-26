@@ -191,7 +191,6 @@ if (!referenceProfile || !candidateProfile) {
       profileComparison.interpretation.globalSimilarityScore !== false) {
     failures.push("Fragrance olfactory comparison did not return normalized, evidence-only dimensions.");
   }
-}
 
   if (profileComparison.status === "ready") {
     const profileScore = scoreFragranceSimilarity(profileComparison, referenceProfile, candidateProfile);
