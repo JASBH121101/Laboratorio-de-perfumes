@@ -453,3 +453,12 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 
 ### Siguiente par
 - **Bloques 39–40:** pruebas integrales de ciclo completo, consistencia de filtros y alcance, reinicio/reselección, rendimiento con catálogo amplio y verificación de caché. La conexión comercial del inventario requerirá identificar y mapear una fuente real de productos y existencias; no se reutilizarán fórmulas ni experimentos como stock.
+
+
+## Checkpoint — Blocks 39–40
+
+- Search lifecycle and ranking hardening: **completed and merged (PR #79)**.
+- CI: **299/299 tests passed**, browser syntax and application structure validation passed.
+- Global/own-inventory transitions verified without fallback leakage; ranking/filter reset stability tested.
+- Physical Android acceptance and real inventory integration remain pending.
+- Next: Blocks 41–42, integral certification and Android acceptance readiness.
