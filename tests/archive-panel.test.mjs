@@ -92,3 +92,16 @@ test("selecting a variant is clearly labelled as loading it into the active work
   assert.match(html, /Seleccionar y cargar variante B/);
   assert.match(html, /Abrir en laboratorio/);
 });
+
+
+test("Projects route exposes sensory experiment records alongside local archive and comparisons", () => {
+  const html = renderPage("projects", {}, createMixState(), "balanced", "opening", {
+    creations: [original],
+    experiments: [],
+    selectedCreationId: original.id,
+    selectedVariantId: original.activeVariantId
+  });
+  assert.match(html, /BLOCK 09 · SENSORY EXPERIMENT RECORDS/);
+  assert.match(html, /sensory-experiment-form/);
+  assert.match(html, /Respaldo independiente/);
+});
