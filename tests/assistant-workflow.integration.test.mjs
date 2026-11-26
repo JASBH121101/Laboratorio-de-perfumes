@@ -43,4 +43,21 @@ test("assistant UX supports guided prompts and blocks proposals for contradictor
   assert.match(panel, /creative-assistant-prompt-guide/);
   assert.match(engine, /needs-clarification/);
 });
-\n\ntest("saved client profiles remain local, persistent, comparable and available offline", async () => {\n  const [app, views, sw, repository] = await Promise.all([\n    readFile(new URL("../src/js/app.js", import.meta.url), "utf8"),\n    readFile(new URL("../src/js/ui/views.js", import.meta.url), "utf8"),\n    readFile(new URL("../sw.js", import.meta.url), "utf8"),\n    readFile(new URL("../src/js/features/archive/repository.js", import.meta.url), "utf8")\n  ]);\n  assert.match(app, /save-client-profile/);\n  assert.match(app, /compareProfileSnapshots/);\n  assert.match(views, /renderProfileHistory/);\n  assert.match(repository, /PROFILE_STORE/);\n  assert.match(repository, /listProfiles/);\n  assert.match(sw, /profile-history\\/engine\\.js/);\n  assert.match(sw, /profile-history\\/panel\\.js/);\n  assert.match(sw, /shell-v46/);\n});\n
+
+ 
+test("saved client profiles remain local, persistent, comparable and available offline", async () => {
+  const [app, views, sw, repository] = await Promise.all([
+    readFile(new URL("../src/js/app.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/js/ui/views.js", import.meta.url), "utf8"),
+    readFile(new URL("../sw.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/js/features/archive/repository.js", import.meta.url), "utf8")
+  ]);
+  assert.match(app, /save-client-profile/);
+  assert.match(app, /compareProfileSnapshots/);
+  assert.match(views, /renderProfileHistory/);
+  assert.match(repository, /PROFILE_STORE/);
+  assert.match(repository, /listProfiles/);
+  assert.match(sw, /profile-history\/engine\.js/);
+  assert.match(sw, /profile-history\/panel\.js/);
+  assert.match(sw, /shell-v46/);
+});
