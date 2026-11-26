@@ -316,3 +316,39 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 - **Bloque 30:** explicación de similitudes y diferencias, evidencia y calidad de datos.
 
 **Alcance global:** bloques 1–28 completados y fusionados en `main`. La aceptación visual física Android de los cambios anteriores continúa siendo una verificación manual independiente.
+
+
+## Checkpoint — Bloques 29 y 30: puntuación y explicación de similitud
+
+**Estado:** COMPLETADOS / CI APROBADA / PR DE FUNCIONALIDAD FUSIONADO
+
+### Bloque 29 — Puntuación global y confianza independiente
+- Se incorporó un modelo editorial provisional con pesos configurables: notas agregadas 32%, pirámide 22%, familias 14%, subfamilias 6%, acordes 10% y carácter 16%.
+- Las etapas disponibles de salida, corazón y fondo se promedian dentro de la dimensión de pirámide.
+- Solo participan dimensiones con datos comparables y peso positivo. Los pesos disponibles se renormalizan; las dimensiones ausentes no se califican como desacuerdos.
+- Se exige evidencia en al menos dos dimensiones ponderadas para devolver un porcentaje global. De lo contrario, el estado es `insufficient-data` y la puntuación es `null`.
+- La cobertura y las dimensiones excluidas quedan visibles en el resultado.
+- La confianza se calcula aparte como indicador de calidad de evidencia: cobertura de dimensiones 50%, riqueza de descriptores 30% y completitud de la pirámide 20%.
+- Los niveles son alta (≥80), media (≥65), baja (≥45) y muy baja (<45). El índice no es una probabilidad.
+- El modelo queda marcado como **provisional** hasta disponer de validación sensorial humana. Las ponderaciones no se consideran científicamente calibradas.
+
+### Bloque 30 — Explicación de coincidencias y diferencias
+- Se genera una explicación estructurada con notas, familias, subfamilias, acordes, carácter y coincidencias específicas de salida/corazón/fondo.
+- Se identifican descriptores compartidos y descriptores listados solo en cada ficha.
+- Se declaran las dimensiones omitidas por falta de información.
+- Se advierte que una nota ausente de una ficha pública no demuestra que esté ausente del olor real del perfume.
+- La explicación conserva etiquetas originales y límites de las fuentes; no infiere fórmulas propietarias ni equivalencia sensorial.
+
+### Certificación
+- **PR #69:** fusionado mediante Squash Merge.
+- **Commit de integración:** `8c95adbd3ca5bb9feb109320ee6744bb79b27f7a`.
+- **GitHub Actions run #1129:** aprobado.
+- **Resultado:** **251/251 pruebas**, 0 fallidas; sintaxis de módulos y validador estructural aprobados.
+- Sin nuevas dependencias, APIs externas, servicios IA, sincronización en nube ni costos. Sin cambios en Supabase.
+- Estos bloques implementan el motor de puntuación y explicación; todavía no incluyen UI ni búsqueda de perfumes por nombre.
+
+### Siguiente par
+- **Bloque 31:** búsqueda por nombre/casa, tolerancia a errores de escritura, sugerencias y resolución de resultados ambiguos.
+- **Bloque 32:** clasificación y ranking de equivalentes, bandas de similitud y ordenamiento por score/calidad de evidencia.
+
+**Alcance global:** bloques 1–30 completados y fusionados en `main`. La aceptación visual física Android de los cambios anteriores continúa siendo una verificación manual independiente.
