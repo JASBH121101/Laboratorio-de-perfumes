@@ -467,3 +467,12 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 
 ### Siguiente par
 - **Bloques 41–42:** certificación integral de aceptación, regresiones, checklist Android manual y documentación de estado final, limitaciones y preparación.
+
+
+## Checkpoint — Blocks 39–40
+
+- Search lifecycle and ranking hardening: **completed and merged (PR #79)**.
+- CI: **299/299 tests passed**, browser syntax and application structure validation passed.
+- Global/own-inventory transitions verified without fallback leakage; ranking/filter reset stability tested.
+- Physical Android acceptance and real inventory integration remain pending.
+- Next: Blocks 41–42, integral certification and Android acceptance readiness.
