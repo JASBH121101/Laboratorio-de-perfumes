@@ -579,6 +579,16 @@ appRoot.addEventListener("click", async (event) => {
     return;
   }
 
+  const promptTarget = event.target.closest("[data-creative-prompt]");
+  if (promptTarget) {
+    creativeAssistantState.description = promptTarget.dataset.creativePrompt || "";
+    creativeAssistantState.result = null;
+    creativeAssistantState.proposals = null;
+    creativeAssistantState.open = true;
+    updateCreativeAssistant();
+    return;
+  }
+
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (!action) return;
 
@@ -644,7 +654,10 @@ appRoot.addEventListener("click", async (event) => {
       creativeAssistantState.mode = "client";
       creativeAssistantState.description = clientBriefState.result.description;
       creativeAssistantState.result = buildCreativeRecommendations({ description: creativeAssistantState.description, mode: "client" });
-      creativeAssistantState.proposals = generateFormulationProposals({ description: creativeAssistantState.description, mode: "client" });
+      creativeAssistantState.proposals = creativeAssistantState.result.status === "ready"
+        ? generateFormulationProposals({ description: creativeAssistantState.description, mode: "client" })
+        : null;
+      creativeAssistantState.open = true;
       updateCreativeAssistant();
       window.location.hash = "#lab";
       showNotice({ title: "Brief enviado al asistente", message: "El perfil se analizó con la biblioteca local. Revisá las recomendaciones y propuestas antes de transferir materias." });
@@ -655,15 +668,19 @@ appRoot.addEventListener("click", async (event) => {
         description: creativeAssistantState.description,
         mode: creativeAssistantState.mode
       });
-      creativeAssistantState.proposals = generateFormulationProposals({
-        description: creativeAssistantState.description,
-        mode: creativeAssistantState.mode
-      });
+      creativeAssistantState.proposals = creativeAssistantState.result.status === "ready"
+        ? generateFormulationProposals({
+          description: creativeAssistantState.description,
+          mode: creativeAssistantState.mode
+        })
+        : null;
+      creativeAssistantState.open = true;
       updateCreativeAssistant();
     } else if (action === "clear-creative-assistant") {
       creativeAssistantState.description = "";
       creativeAssistantState.result = null;
       creativeAssistantState.proposals = null;
+      creativeAssistantState.open = true;
       updateCreativeAssistant();
     } else if (action === "apply-creative-assistant-suggestions") {
       const suggestions = creativeAssistantState.result?.suggestions || [];
