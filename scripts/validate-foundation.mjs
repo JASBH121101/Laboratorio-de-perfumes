@@ -15,6 +15,8 @@ import { FRAGRANCE_SIMILARITY_SCORE, validateFragranceSimilarityProfile } from "
 import { buildFragranceSimilarityCatalog } from "../src/js/features/laboratory/fragrance-similarity/model.js";
 import { normalizeOlfactoryTerm, normalizeFragranceSimilarityProfile } from "../src/js/features/laboratory/fragrance-similarity/normalization.js";
 import { compareFragranceProfiles } from "../src/js/features/laboratory/fragrance-similarity/comparison.js";
+import { scoreFragranceSimilarity, FRAGRANCE_SIMILARITY_DEFAULT_WEIGHTS } from "../src/js/features/laboratory/fragrance-similarity/scoring.js";
+import { explainFragranceSimilarity } from "../src/js/features/laboratory/fragrance-similarity/explanation.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -27,6 +29,10 @@ const requiredFiles = [
   "src/js/features/laboratory/fragrance-similarity/model.js",
   "src/js/features/laboratory/fragrance-similarity/normalization.js",
   "src/js/features/laboratory/fragrance-similarity/comparison.js",
+  "src/js/features/laboratory/fragrance-similarity/scoring.js",
+  "src/js/features/laboratory/fragrance-similarity/explanation.js",
+  "tests/fragrance-similarity-scoring.test.mjs",
+  "tests/fragrance-similarity-explanation.test.mjs",
   "tests/fragrance-similarity-normalization.test.mjs",
   "tests/fragrance-similarity-comparison.test.mjs",
   "tests/fragrance-similarity-contracts.test.mjs",
@@ -184,6 +190,18 @@ if (!referenceProfile || !candidateProfile) {
   if (!normalizedProfile.notes.all.length || !["ready", "insufficient-data"].includes(profileComparison.status) ||
       profileComparison.interpretation.globalSimilarityScore !== false) {
     failures.push("Fragrance olfactory comparison did not return normalized, evidence-only dimensions.");
+  }
+
+  if (profileComparison.status === "ready") {
+    const profileScore = scoreFragranceSimilarity(profileComparison, referenceProfile, candidateProfile);
+    const profileExplanation = explainFragranceSimilarity(profileComparison, profileScore);
+    const totalWeights = Object.values(FRAGRANCE_SIMILARITY_DEFAULT_WEIGHTS).reduce((sum, value) => sum + value, 0);
+    if (profileScore.status !== "ready" || !Number.isInteger(profileScore.score) ||
+        profileScore.score < 0 || profileScore.score > 100 ||
+        !profileScore.confidence || profileExplanation.status !== "ready" ||
+        profileExplanation.score !== profileScore.score || Math.abs(totalWeights - 1) > 0.000001) {
+      failures.push("Fragrance global scoring or evidence explanation did not return a valid independent result.");
+    }
   }
 }
 
