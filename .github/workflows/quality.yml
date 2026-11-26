@@ -37,6 +37,8 @@ jobs:
           node --check src/js/features/laboratory/mixing/state.js
           node --check src/js/features/laboratory/mixing/draft-storage.js
           node --check src/js/features/laboratory/mixing/panel.js
+          node --check src/js/features/laboratory/creative-assistant/engine.js
+          node --check src/js/features/laboratory/creative-assistant/panel.js
           node --check src/js/features/laboratory/analysis/engine.js
           node --check src/js/features/laboratory/analysis/panel.js
           node --check src/js/features/laboratory/analytics/dashboard.js

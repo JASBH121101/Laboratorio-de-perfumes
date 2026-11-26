@@ -69,9 +69,10 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 8. Historial de firma personal | Evolución por versiones, familias recurrentes, referencias frecuentes y cambios entre el primer y último registro | **Completado** — PR #36 fusionado |
 | 9. Experimentos sensoriales | Observaciones subjetivas por variante y versión, contexto, tiempo, facetas, valoraciones y respaldo independiente | **Completado** — PR #38 fusionado |
 | 10. Informes profesionales | Dossier por variante con composición, análisis editorial e historial sensorial; impresión PDF y exportaciones CSV/JSON | **Completado** — PR #39 fusionado |
-| 11. UX móvil del formulador | Compactar el Bloque 06, aclarar el contador de materias y optimizar búsqueda, filtros y resultados en Android | **Completado** — PR de Bloque 11 |
+| 11. UX móvil del formulador | Compactar el Bloque 06, aclarar el contador de materias y optimizar búsqueda, filtros y resultados en Android | **Completado** — PR #41 fusionado |
+| 12. Asistente creativo local | Interpretar briefs personales, perfiles de clientes e inspiraciones; recomendar referencias existentes con explicación y transferencia voluntaria al formulador | **Completado** — PR #42 fusionado |
 
-La base funcional vigente pasó la suite de pruebas, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 11. Los PR #32 al #39 de funcionalidad y cierre documental están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó la suite de pruebas, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 12. Los PR #32 al #42 de funcionalidad y cierre documental están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 6 — Experiencia del constructor
 
@@ -105,3 +106,14 @@ El generador prepara un dossier por creación y variante archivada. Incluye vers
 ## Bloque 11 — UX móvil del formulador
 
 El constructor móvil reduce el espacio vertical del encabezado, la búsqueda, los filtros y los resultados. El contador del buscador ahora se expresa como materias disponibles y no aparece duplicado dentro del campo. La lista inicial muestra cuatro resultados y permite ampliar el resto. El ajuste está orientado a Android y conserva el acceso completo a las 60 referencias.
+
+
+## Bloque 12 — Asistente creativo local
+
+El asistente funciona sin conexión a modelos externos ni APIs facturables. Interpreta palabras y expresiones relacionadas con familias y facetas olfativas, distingue preferencias positivas de rasgos que el usuario desea evitar, y consulta exclusivamente las referencias incluidas en la biblioteca local. Permite trabajar con una idea personal, un perfil de cliente o una fragancia tomada como inspiración. Explica por qué sugiere cada materia, formula una pregunta de seguimiento cuando falta contexto y solo envía las referencias al constructor cuando el usuario pulsa la acción explícita de transferencia.
+
+Es un motor determinista basado en reglas y coincidencia editorial; no es un modelo generativo conversacional ni entiende cualquier frase libre como una persona. No reconstruye fórmulas de perfumes comerciales, no consulta catálogos externos y no predice química, seguridad, duración, rendimiento ni similitud comercial. Las propuestas son direcciones creativas iniciales que deben revisarse y probarse por el usuario.
+
+## Política de costos y privacidad
+
+Los bloques 11 y 12 no incorporan servicios de IA externos, API keys, suscripciones, telemetría ni llamadas de red para generar recomendaciones. El asistente procesa el brief en el dispositivo usando el código y la biblioteca local. Las fórmulas y briefs no se envían a un proveedor de IA.
