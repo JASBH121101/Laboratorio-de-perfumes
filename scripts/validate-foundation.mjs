@@ -100,7 +100,7 @@ if (analysis.isEmpty || analysis.totalPoints !== 100 || !analysis.families.lengt
 
 const first = createArchiveCreation({ name: "Validator baseline", items: mix.items });
 const alternate = createArchiveVariant(first, { items: addMixNote(createMixState(), "yuzu").items });
-const dossier = buildProfessionalReport({ creation: alternate, variant: alternate.variants[0] });
+const dossier = buildProfessionalReport({ creation: alternate, variant: alternate.variants[1] });
 if (dossier.summary.totalCreativePoints !== 100 || dossier.summary.referenceCount !== 1 || dossier.summary.experimentCount !== 0) failures.push("Professional report did not generate a complete variant dossier.");
 const signature = analyzePersonalSignature([alternate]);
 if (signature.status !== "ready" || signature.snapshotCount < 1 || signature.distinctReferenceCount < 1) failures.push("Personal signature history did not analyze saved version snapshots.");
