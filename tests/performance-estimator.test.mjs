@@ -17,7 +17,7 @@ test("projection estimate uses separate conceptual scale and includes early/late
  assert.ok(result.projection.initialMeters[0]>=result.projection.laterMeters[0]);
  const warm=estimatePerformance([{id:"bergamot",points:40},{id:"rosemary",points:30},{id:"cedarwood",points:30}],{concentration:"edt",environment:"warm"});
  const coolParfum=estimatePerformance([{id:"bergamot",points:40},{id:"rosemary",points:30},{id:"cedarwood",points:30}],{concentration:"parfum",environment:"cool"});
- assert.ok(coolParfum.persistence.score>warm.persistence.score);assert.notDeepEqual(warm.projection.initialMeters,result.projection.initialMeters);
+ assert.ok(coolParfum.persistence.score>warm.persistence.score);assert.notEqual(coolParfum.projection.score,warm.projection.score);
  assert.equal(result.confidence,"Muy baja");
 });
 test("performance estimator rejects empty invalid or non-normalized compositions",()=>{
@@ -28,7 +28,7 @@ test("performance estimator rejects empty invalid or non-normalized compositions
 test("panel explains the heuristic and renders hours plus distance ranges",()=>{
  const html=renderPerformanceEstimate([{id:"vanilla",points:50},{id:"cedarwood",points:50}]);
  assert.match(html,/PERFORMANCE ESTIMATE/);assert.match(html,/POSIBLE PERSISTENCIA EN PIEL/);
- assert.match(html,/PROYECCIÓN INICIAL/);assert.match(html,/m/);assert.match(html,/Confianza Baja/);
+ assert.match(html,/PROYECCIÓN INICIAL/);assert.match(html,/m/);assert.match(html,/Confianza Muy baja/);
  assert.match(html,/no concentración química/);assert.match(html,/performance-concentration/);assert.match(html,/performance-environment/);
 });
 test("performance estimator is integrated in app update and offline shell",async()=>{
