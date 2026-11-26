@@ -348,3 +348,93 @@
  .sensory-backup-row>div:last-child { width:100%; }
  .sensory-backup-row button,.sensory-import-label { flex:1; }
 }
+
+
+/* Block 10 — Professional formulation reports */
+.professional-reports { margin:22px 0 34px; padding:22px; border:1px solid var(--line); border-radius:11px; background:linear-gradient(145deg,var(--surface-raised),var(--surface)); box-shadow:0 10px 28px var(--shadow); }
+.professional-report-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:16px; }
+.professional-report-heading h2 { margin:4px 0 6px; font-size:22px; font-weight:600; letter-spacing:-.025em; }
+.professional-report-heading h2 em { color:var(--accent); font-family:"Playfair Display",Georgia,serif; font-weight:500; }
+.professional-report-heading p:not(.eyebrow) { max-width:650px; margin:0; color:var(--muted); font-size:11px; line-height:1.65; }
+.professional-report-state { flex:none; padding:7px 9px; border:1px solid var(--line); border-radius:99px; color:var(--muted); font-size:8px; font-weight:700; letter-spacing:.1em; }
+.professional-report-controls { display:grid; grid-template-columns:150px minmax(0,1fr) auto; gap:10px; align-items:center; padding:14px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.professional-report-controls label { color:var(--muted); font-size:9px; }
+.professional-report-controls select { min-width:0; min-height:40px; padding:0 10px; border:1px solid var(--line); border-radius:7px; color:var(--text); background:var(--surface); font:inherit; font-size:10px; }
+.professional-report-controls button,.professional-report-actions button { min-height:39px; padding:0 12px; border:1px solid rgba(217,178,124,.4); border-radius:7px; color:var(--accent); background:var(--accent-soft); font-size:9px; font-weight:700; cursor:pointer; }
+.professional-report-empty { margin-top:14px; padding:17px; border:1px dashed var(--line); border-radius:8px; color:var(--muted); font-size:10px; line-height:1.6; }
+.professional-report-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; margin:15px 0; }
+.professional-report-preview { margin-top:15px; padding:24px; border:1px solid var(--line); border-radius:8px; background:#fff; color:#252126; box-shadow:0 8px 28px rgba(0,0,0,.08); }
+.professional-report-cover { padding:8px 0 22px; border-bottom:2px solid #b28b5a; }
+.professional-report-brand { display:flex; align-items:center; gap:10px; margin-bottom:25px; }
+.professional-report-brand>span { width:36px; height:36px; display:grid; place-items:center; border:1px solid #b28b5a; border-radius:50%; color:#8b6a43; font-family:Georgia,serif; font-size:17px; }
+.professional-report-brand>div { display:grid; gap:2px; }
+.professional-report-brand strong { color:#312b30; font-size:10px; letter-spacing:.15em; }
+.professional-report-brand small { color:#867a80; font-size:7px; letter-spacing:.13em; }
+.professional-report-cover .eyebrow { color:#8b6a43; font-size:8px; letter-spacing:.15em; }
+.professional-report-cover h2 { margin:8px 0 12px; color:#312b30; font-family:Georgia,serif; font-size:32px; font-weight:500; }
+.professional-report-cover h2 em { color:#9d7b52; }
+.professional-report-cover h3 { margin:0 0 6px; color:#302831; font-size:19px; }
+.professional-report-cover>p:not(.eyebrow) { margin:0; color:#746b70; font-size:10px; line-height:1.6; }
+.professional-report-meta { display:flex; flex-wrap:wrap; gap:7px 18px; margin-top:16px; color:#72676e; font-size:8px; }
+.professional-report-section { margin-top:22px; }
+.professional-report-section h3 { margin:0 0 6px; color:#342d32; font-size:13px; }
+.professional-report-hint { margin:0 0 11px; color:#7d7379; font-size:8px; line-height:1.55; }
+.professional-report-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin-top:12px; }
+.professional-report-kpis>div { display:grid; gap:5px; padding:11px; border:1px solid #e7e0e4; border-radius:5px; background:#faf8f9; }
+.professional-report-kpis strong { color:#473c44; font-size:22px; line-height:1; font-variant-numeric:tabular-nums; }
+.professional-report-kpis small { color:#877d83; font-size:7px; font-weight:700; letter-spacing:.07em; }
+.professional-report-lead { margin:12px 0 0; color:#756970; font-size:9px; }
+.professional-report-lead strong { color:#40363d; }
+.professional-report-table { width:100%; border-collapse:collapse; font-size:8px; }
+.professional-report-table th { padding:8px 7px; border-bottom:1px solid #dcd3d8; color:#796f75; font-size:7px; letter-spacing:.06em; text-align:left; }
+.professional-report-table td { padding:9px 7px; border-bottom:1px solid #eee9ec; color:#50464d; vertical-align:top; }
+.professional-report-table td strong { display:block; color:#342d32; font-size:9px; }
+.professional-report-table td small { display:block; max-width:380px; margin-top:3px; color:#837981; font-size:7px; line-height:1.45; }
+.professional-report-table .number { text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
+.professional-report-breakdown-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+.professional-report-bars { display:grid; gap:8px; }
+.professional-report-bar-row { display:grid; grid-template-columns:minmax(70px,1fr) 30px; gap:5px 8px; align-items:center; }
+.professional-report-bar-row>span { overflow:hidden; color:#554a52; font-size:8px; text-overflow:ellipsis; white-space:nowrap; }
+.professional-report-bar-row>strong { color:#6f636b; font-size:8px; text-align:right; }
+.professional-report-bar-row>div { grid-column:1 / -1; height:5px; overflow:hidden; border-radius:99px; background:#eee9ec; }
+.professional-report-bar-row>div>i { display:block; height:100%; border-radius:inherit; background:#b28b5a; }
+.professional-report-experiments { display:grid; gap:9px; }
+.professional-report-observation { padding:11px 12px; border:1px solid #e7e0e4; border-radius:5px; }
+.professional-report-observation>div { display:flex; justify-content:space-between; gap:10px; }
+.professional-report-observation strong { color:#342d32; font-size:9px; }
+.professional-report-observation time,.professional-report-observation small { color:#847981; font-size:7px; }
+.professional-report-observation p { margin:7px 0; color:#5f555c; font-size:8px; line-height:1.6; white-space:pre-wrap; }
+.professional-report-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.professional-report-tags span { padding:4px 6px; border:1px solid #e7e0e4; border-radius:99px; color:#786d74; font-size:7px; }
+.professional-report-rating-summary { margin-top:12px; padding:10px; background:#faf8f9; }
+.professional-report-rating-summary>strong { color:#51464e; font-size:8px; }
+.professional-report-rating-summary>div { display:flex; flex-wrap:wrap; gap:7px 14px; margin-top:6px; color:#766b72; font-size:7px; }
+.professional-report-footer { margin-top:24px; padding-top:13px; border-top:1px solid #dcd3d8; }
+.professional-report-footer>strong { color:#6d5944; font-size:8px; letter-spacing:.13em; }
+.professional-report-footer p { margin:6px 0; color:#827880; font-size:7px; line-height:1.6; }
+.professional-report-footer small { color:#998e95; font-size:7px; }
+@media (max-width:900px) { .professional-report-breakdown-grid { grid-template-columns:1fr; } }
+@media (max-width:600px) {
+ .professional-reports { padding:15px; }
+ .professional-report-heading { flex-direction:column; gap:9px; }
+ .professional-report-controls { grid-template-columns:1fr; }
+ .professional-report-controls button { width:100%; }
+ .professional-report-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .professional-report-preview { padding:14px; overflow-x:auto; }
+ .professional-report-table { min-width:550px; }
+ .professional-report-meta { flex-direction:column; gap:5px; }
+}
+@media print {
+ body.printing-professional-report * { visibility:hidden !important; }
+ body.printing-professional-report #professional-report-preview,
+ body.printing-professional-report #professional-report-preview * { visibility:visible !important; }
+ body.printing-professional-report #professional-report-preview {
+   position:absolute !important; inset:0 auto auto 0 !important; width:100% !important; margin:0 !important;
+   padding:10mm !important; border:0 !important; border-radius:0 !important; box-shadow:none !important;
+   color:#252126 !important; background:#fff !important; overflow:visible !important;
+ }
+ body.printing-professional-report .professional-report-actions,
+ body.printing-professional-report .professional-report-controls { display:none !important; }
+ body.printing-professional-report .professional-report-section { break-inside:avoid; }
+ body.printing-professional-report .professional-report-observation { break-inside:avoid; }
+}
