@@ -141,6 +141,7 @@ function findSelectedCreation() {
 async function saveSensoryExperimentFromForm() {
   const form = appRoot.querySelector("#sensory-experiment-form");
   if (!form) throw new Error("No hay un formulario de experimento disponible.");
+  if (!form.reportValidity()) return;
   const data = new FormData(form);
   let selection;
   try { selection = JSON.parse(String(data.get("variantKey") || "")); }
