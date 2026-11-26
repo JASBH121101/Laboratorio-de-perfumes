@@ -67,7 +67,8 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | **Completado** — PR #33 fusionado |
 | 7. Comparación analítica | Comparar variantes guardadas, coincidencia estructural y diferencias por familia/faceta/rol | **Completado** — PR #34 fusionado |
 | 8. Historial de firma personal | Evolución por versiones, familias recurrentes, referencias frecuentes y cambios entre el primer y último registro | **Completado** — PR #36 fusionado |
-| 9. Experimentos sensoriales | Observaciones subjetivas por variante y versión, contexto, tiempo, facetas, valoraciones y respaldo independiente | En implementación — rama feature/block9-sensory-experiment-records |
+| 9. Experimentos sensoriales | Observaciones subjetivas por variante y versión, contexto, tiempo, facetas, valoraciones y respaldo independiente | **Completado** — PR #38 fusionado |
+| 10. Informes profesionales | Dossier por variante con composición, análisis editorial e historial sensorial; impresión PDF y exportaciones CSV/JSON | En implementación — rama feature/block10-professional-reports |
 
 La base funcional vigente pasó **117/117 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 8. Los PR #32, #33, #34, #35 y #36 están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA y la aceptación visual en Android.
 
@@ -95,3 +96,7 @@ El archivo principal vive en IndexedDB, con localStorage como alternativa cuando
 ## Bloque 9 — Experimentos sensoriales
 
 Los registros sensoriales se guardan en una colección local separada del archivo de fórmulas. Cada observación conserva una instantánea de la variante y versión evaluada, fecha/hora, contexto, tiempo transcurrido opcional, evaluador, impresión libre, facetas seleccionadas y valoraciones subjetivas de 1 a 5. Las observaciones pueden exportarse e importarse como un respaldo JSON independiente. Al eliminar una creación también se eliminan sus registros asociados. Estas valoraciones no son mediciones instrumentales.
+
+## Bloque 10 — Informes profesionales
+
+El generador prepara un dossier por creación y variante archivada. Incluye versión fuente, referencias con perfiles editoriales, distribución por familias, facetas y roles, además de observaciones sensoriales asociadas a esa misma variante. La vista está preparada para imprimir o guardar como PDF desde el diálogo nativo del navegador y ofrece exportación CSV y JSON. Los informes son instantáneas generadas desde el archivo local; después de cambiar fórmulas u observaciones, generá un nuevo informe para reflejar los datos actualizados.
