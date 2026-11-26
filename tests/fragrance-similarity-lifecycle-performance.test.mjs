@@ -10,7 +10,7 @@ test("lifecycle: query can change after selection without retaining the previous
   const changedQuery = buildFragranceSimilarityExperience({ query: "Sauvage", selectedReferenceId: "" });
   assert.equal(changedQuery.status, "reference-required");
   assert.equal(changedQuery.reference, null);
-  assert.ok(changedQuery.search.results.some((item) => item.name.toLowerCase().includes("sauvage"));
+  assert.ok(changedQuery.search.results.some((item) => item.name.toLowerCase().includes("sauvage")));
 });
 
 test("lifecycle: filter changes and reset restore the same stable ranking", () => {
