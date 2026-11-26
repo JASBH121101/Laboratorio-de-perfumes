@@ -36,7 +36,6 @@ test("picker displays a useful empty state and clear-filters action", () => {
 test("picker limits the initial results and supports expanding the list", () => {
   const html = renderMixPickerResults(createMixState(), {});
   assert.match(html, /Mostrar .* más referencias/);
-  assert.doesNotMatch(html, /<kbd>60<\\/kbd>/);
   assert.equal((html.match(/class="mix-picker-result/g) || []).length, 4);
   const expanded = renderMixPickerResults(createMixState(), { expanded: true });
   assert.ok((expanded.match(/class="mix-picker-result/g) || []).length > 4);
@@ -60,4 +59,10 @@ test("application keeps finder filters, result expansion and manual clear action
   assert.match(app, /action === "toggle-mix-picker"/);
   assert.match(app, /action === "clear-mix-picker"/);
   assert.match(app, /renderMixStudio\(mixingState, mixPickerState\)/);
+});
+
+test("mobile picker removes the ambiguous floating library number", () => {
+  const html = renderMixStudio(createMixState());
+  assert.equal(html.includes("<kbd>60</kbd>"), false);
+  assert.match(html, /60 MATERIAS DISPONIBLES/);
 });
