@@ -8,6 +8,7 @@ import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js"
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
 import { compareSavedCompositions } from "./features/laboratory/comparison/engine.js";
 import { renderAnalyticalComparison } from "./features/laboratory/comparison/panel.js";
+import { renderPersonalSignatureHistory } from "./features/laboratory/signature-history/panel.js";
 import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { createArchiveRepository } from "./features/archive/repository.js";
 import {
@@ -87,6 +88,8 @@ function updateArchiveUI() {
   if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(viewState);
   const comparisonPanel = appRoot.querySelector("#archive-comparison-root");
   if (comparisonPanel) comparisonPanel.outerHTML = renderAnalyticalComparison(archiveState);
+  const signatureHistory = appRoot.querySelector("#signature-history-root");
+  if (signatureHistory) signatureHistory.outerHTML = renderPersonalSignatureHistory(archiveState);
   updateOriginalityAnalysis();
 }
 

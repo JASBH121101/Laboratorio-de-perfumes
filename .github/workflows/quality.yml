@@ -44,6 +44,8 @@ jobs:
           node --check src/js/features/laboratory/originality/panel.js
           node --check src/js/features/laboratory/comparison/engine.js
           node --check src/js/features/laboratory/comparison/panel.js
+          node --check src/js/features/laboratory/signature-history/engine.js
+          node --check src/js/features/laboratory/signature-history/panel.js
           node --check src/js/features/laboratory/evolution/engine.js
           node --check src/js/features/laboratory/evolution/panel.js
           node --check src/js/features/archive/model.js

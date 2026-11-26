@@ -196,3 +196,92 @@
   .comparison-section-head small { text-align:left; }
   .comparison-reference-header,.comparison-reference-row { grid-template-columns:minmax(0,1fr) 45px 58px 30px; gap:5px; }
 }
+
+
+/* Block 8 — Personal signature history */
+.personal-signature-history { margin:24px 0 28px; padding:22px; border:1px solid var(--line); border-radius:11px; background:linear-gradient(145deg,var(--surface-raised),var(--surface)); box-shadow:0 10px 28px var(--shadow); }
+.signature-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:17px; }
+.signature-heading h2 { margin:4px 0 6px; font-size:22px; font-weight:600; letter-spacing:-.025em; }
+.signature-heading h2 em { color:var(--accent); font-family:"Playfair Display",Georgia,serif; font-weight:500; }
+.signature-heading p:not(.eyebrow) { max-width:650px; margin:0; color:var(--muted); font-size:11px; line-height:1.65; }
+.signature-state { flex:none; padding:7px 9px; border:1px solid var(--line); border-radius:99px; color:var(--muted); font-size:8px; font-weight:700; letter-spacing:.1em; }
+.signature-kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.signature-kpis article { min-height:92px; display:grid; align-content:center; gap:6px; min-width:0; padding:13px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+.signature-kpis article>span { color:var(--muted-2); font-size:8px; font-weight:700; letter-spacing:.08em; line-height:1.4; }
+.signature-kpis article>strong { color:var(--text); font-size:25px; line-height:1.1; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+.signature-kpis article>small { color:var(--muted); font-size:9px; line-height:1.45; }
+.signature-insight { display:grid; grid-template-columns:180px minmax(0,1fr); gap:5px 14px; align-items:center; margin-top:12px; padding:13px 15px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+.signature-insight>span { grid-row:1 / span 2; color:var(--muted); font-size:10px; }
+.signature-insight>strong { font-size:14px; }
+.signature-insight>small { color:var(--muted-2); font-size:9px; }
+.signature-analysis-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; margin-top:13px; }
+.signature-card { min-width:0; margin-top:13px; padding:16px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+.signature-analysis-grid .signature-card { margin-top:0; }
+.signature-section-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:13px; }
+.signature-section-heading h3 { margin:0 0 5px; font-size:13px; }
+.signature-section-heading p { margin:0; color:var(--muted); font-size:9px; line-height:1.55; }
+.signature-average-list,.signature-evolution-list,.signature-reference-list { display:grid; gap:12px; }
+.signature-average-row { display:grid; grid-template-columns:minmax(0,1fr) 38px; gap:6px 10px; align-items:center; }
+.signature-average-row>span { overflow:hidden; color:var(--text); font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+.signature-average-row>strong { color:var(--muted); font-size:10px; text-align:right; font-variant-numeric:tabular-nums; }
+.signature-average-row>div { grid-column:1 / -1; height:6px; overflow:hidden; border-radius:99px; background:var(--surface-raised); }
+.signature-average-row>div>i { display:block; height:100%; border-radius:inherit; background:var(--signature-color,var(--accent)); }
+.signature-reference-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:5px 12px; align-items:center; }
+.signature-reference-row>span:first-child { display:grid; gap:3px; min-width:0; }
+.signature-reference-row>span:first-child strong { overflow:hidden; color:var(--text); font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+.signature-reference-row>span:first-child small,.signature-reference-frequency small { color:var(--muted-2); font-size:8px; }
+.signature-reference-frequency { display:grid; justify-items:end; gap:2px; }
+.signature-reference-frequency strong { color:var(--muted); font-size:10px; font-variant-numeric:tabular-nums; }
+.signature-reference-track { grid-column:1 / -1; height:5px; overflow:hidden; border-radius:99px; background:var(--surface-raised); }
+.signature-reference-track i { display:block; height:100%; border-radius:inherit; background:var(--accent); }
+.signature-legend { display:flex; flex-wrap:wrap; gap:8px 16px; margin-bottom:11px; color:var(--muted); font-size:8px; }
+.signature-legend span { display:inline-flex; align-items:center; gap:6px; }
+.signature-legend i,.signature-family-key i { width:8px; height:8px; display:inline-block; border-radius:2px; }
+.signature-legend-first { background:var(--accent); }
+.signature-legend-latest { background:var(--text); opacity:.65; }
+.signature-evolution-row { display:grid; grid-template-columns:minmax(90px,1fr) minmax(95px,1.2fr) 65px 34px; gap:8px; align-items:center; }
+.signature-evolution-row>strong { overflow:hidden; color:var(--text); font-size:9px; text-overflow:ellipsis; white-space:nowrap; }
+.signature-evolution-bars { display:grid; gap:3px; }
+.signature-evolution-bar { display:block; height:5px; min-width:2px; border-radius:99px; }
+.signature-evolution-bar--first { background:var(--accent); }
+.signature-evolution-bar--latest { background:var(--text); opacity:.65; }
+.signature-evolution-values { color:var(--muted-2); font-size:8px; text-align:right; font-variant-numeric:tabular-nums; }
+.signature-evolution-row>b { font-size:9px; text-align:right; font-variant-numeric:tabular-nums; }
+.signature-evolution-row>b.is-positive { color:#63a789; }
+.signature-evolution-row>b.is-negative { color:#d58b80; }
+.signature-timeline { display:grid; gap:0; }
+.signature-timeline-item { position:relative; display:grid; grid-template-columns:12px minmax(0,1fr); gap:11px; padding:0 0 17px; }
+.signature-timeline-item:not(:last-child) .signature-timeline-marker:after { position:absolute; top:10px; bottom:-7px; left:5px; width:1px; background:var(--line); content:""; }
+.signature-timeline-marker { position:relative; z-index:1; width:9px; height:9px; margin-top:4px; border:2px solid var(--accent); border-radius:50%; background:var(--surface); }
+.signature-timeline-content { min-width:0; }
+.signature-timeline-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
+.signature-timeline-top strong { overflow:hidden; color:var(--text); font-size:10px; text-overflow:ellipsis; white-space:nowrap; }
+.signature-timeline-top time { flex:none; color:var(--muted-2); font-size:8px; }
+.signature-timeline-content p { margin:4px 0 7px; color:var(--muted); font-size:9px; }
+.signature-timeline-bar { display:flex; width:100%; height:8px; overflow:hidden; border-radius:99px; background:var(--surface-raised); }
+.signature-timeline-segment { display:block; min-width:1px; height:100%; background:var(--signature-color); }
+.signature-timeline-content>small { display:block; margin-top:6px; color:var(--muted-2); font-size:8px; line-height:1.5; }
+.signature-timeline-content>small strong { color:var(--muted); }
+.signature-family-keys { display:flex; flex-wrap:wrap; gap:7px 13px; padding-top:11px; border-top:1px solid var(--line); }
+.signature-family-key { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:8px; }
+.signature-empty { padding:18px; border:1px dashed var(--line); border-radius:8px; color:var(--muted); font-size:11px; line-height:1.6; }
+.signature-empty strong { color:var(--text); }
+.signature-empty p { margin:6px 0 0; }
+.signature-empty small,.signature-data-note,.signature-empty-inline { color:var(--muted-2); font-size:9px; line-height:1.55; }
+.signature-disclaimer { margin:13px 0 0; color:var(--muted-2); font-size:8px; line-height:1.6; }
+@media (max-width:900px) {
+  .signature-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .signature-analysis-grid { grid-template-columns:1fr; }
+}
+@media (max-width:600px) {
+  .personal-signature-history { padding:15px; }
+  .signature-heading { flex-direction:column; gap:9px; }
+  .signature-kpis article { min-height:82px; padding:10px; }
+  .signature-kpis article>strong { font-size:21px; }
+  .signature-insight { grid-template-columns:1fr; gap:5px; }
+  .signature-insight>span { grid-row:auto; }
+  .signature-evolution-row { grid-template-columns:minmax(75px,1fr) minmax(60px,1fr) 55px 28px; gap:5px; }
+  .signature-timeline-top { align-items:flex-start; flex-direction:column; gap:3px; }
+  .signature-timeline-top time { font-size:8px; }
+  .signature-card { padding:13px; }
+}
