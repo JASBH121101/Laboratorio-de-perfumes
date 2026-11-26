@@ -91,7 +91,7 @@ test("keeps similarity score separate from evidence confidence", () => {
   assert.equal(score.score, 100);
   assert.equal(score.confidence.level, "very-low");
   assert.ok(score.confidence.index < 45);
-  assert.match(score.confidence.meaning, /not a probability/i);
+  assert.match(score.confidence.meaning, /no es una probabilidad/i);
 });
 
 test("excludes unavailable dimensions rather than scoring them as zero", () => {
@@ -126,10 +126,10 @@ test("uses custom weights and normalizes their scale", () => {
   const candidate = profile("candidate", { notes: ["Bergamota", "Musk"], family: "floral" });
   const comparison = compareFragranceProfiles(reference, candidate);
   const score = scoreFragranceSimilarity(comparison, reference, candidate, {
-    weights: { notes: 10, families: 0, pyramid: 0, subfamilies: 0, accords: 0, character: 0 }
+    weights: { notes: 10, families: 1, pyramid: 0, subfamilies: 0, accords: 0, character: 0 }
   });
   assert.equal(score.status, "ready");
-  assert.equal(score.score, 33);
+  assert.equal(score.score, 30);
   assert.equal(score.coverage.availableWeight, 100);
 });
 
