@@ -1,4 +1,5 @@
 import { analyzeOriginality, suggestPersonalChallenge } from "./engine.js";
+import { renderCatalogBenchmark } from "../reference-benchmark/panel.js";
 
 const esc = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -25,6 +26,7 @@ export function renderOriginalityAnalysis(state, creations = []) {
       <section class="originality-panel" id="originality-analysis">
         <div class="originality-heading"><div><p class="eyebrow">PERSONAL ORIGINALITY ENGINE</p><h2>Originalidad e identidad <em>personal</em></h2><p>La primera medición necesita una línea base de tus propias creaciones.</p></div><span class="originality-state">BASE EN CONSTRUCCIÓN</span></div>
         <div class="originality-no-baseline"><strong>Sin comparación suficiente</strong><p>${result.observations.map(esc).join(" ")}</p><small>Guardá una fórmula y registrá otra variante o creación. El sistema solo comparará datos de tu propio archivo.</small></div>
+        ${renderCatalogBenchmark(state.items)}
       </section>
     `;
   }
@@ -45,7 +47,8 @@ export function renderOriginalityAnalysis(state, creations = []) {
       ${challenge ? `
         <div class="originality-challenge"><div><p class="eyebrow">DESAFÍO CREATIVO</p><strong>Explorá ${esc(challenge.name)}</strong><small>${esc(challenge.family)} · ${esc(challenge.reason)}</small></div><button type="button" data-add-to-mix="${esc(challenge.id)}">＋ Explorar referencia</button></div>
       ` : ""}
-      <p class="originality-disclaimer">Este índice mide diferenciación únicamente frente a tu historial local. No consulta catálogos comerciales ni bases mundiales de fórmulas; no demuestra que una fragancia sea inédita, protegible o única en el mercado. Las familias y perfiles proceden de la biblioteca editorial y no de mediciones químicas.</p>
+      ${renderCatalogBenchmark(state.items)}
+      <p class="originality-disclaimer">El índice personal mide diferenciación frente a tu archivo local. El benchmark comercial compara notas y perfiles públicos de referencia; no verifica fórmulas químicas, exclusividad, originalidad legal ni similitud olfativa real.</p>
     </section>
   `;
 }
