@@ -12,7 +12,7 @@ test("formulation finder filters by family, item type and olfactory role", () =>
 
 test("formulation search is accent-insensitive and matches multiple terms", () => {
   assert.deepEqual(
-    filterPerfumeLibrary({ query: "citrica fresca" }).map((item) => item.id),
+    filterPerfumeLibrary({ query: "citrica brillante" }).map((item) => item.id),
     ["bergamot"]
   );
   assert.ok(filterPerfumeLibrary({ query: "amaderada seca" }).some((item) => item.id === "vetiver"));
