@@ -36,7 +36,9 @@ export function analyzePerformanceCalibration(experiments = [], options = {}) {
   const metrics = Object.fromEntries(METRICS.map((metric) => {
     const samples = [];
     for (const record of records) {
-      const observed = Number(record.observedPerformance?.[metric.key]);
+      const rawObserved = record.observedPerformance?.[metric.key];
+      if (rawObserved === null || rawObserved === undefined || rawObserved === "") continue;
+      const observed = Number(rawObserved);
       if (!Number.isFinite(observed) || observed < 0 || !Array.isArray(record.composition)) continue;
       const prediction = estimatePerformance(record.composition, scenario);
       if (prediction.status !== "ready") continue;
