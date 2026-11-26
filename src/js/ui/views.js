@@ -17,6 +17,7 @@ import { renderInspirationDifferentiation } from "../features/laboratory/inspira
 import { renderClientBriefPanel } from "../features/laboratory/client-brief/panel.js";
 import { renderAudienceFit } from "../features/laboratory/audience-fit/panel.js";
 import { renderProfileHistory } from "../features/laboratory/profile-history/panel.js";
+import { renderFragranceSimilarityPanel } from "../features/laboratory/fragrance-similarity/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -44,7 +45,7 @@ function homeView(archiveState = {}, mixingState = { items: [] }) {
   `;
 }
 
-function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}, clientBriefState = {}) {
+function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}, clientBriefState = {}, fragranceSimilarityState = {}) {
   return `
     <section class="page-intro lab-page-intro">
       <p class="eyebrow">FORMULATION WORKSPACE · JB PERFUME LAB</p>
@@ -52,6 +53,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <p>Desarrollá composiciones conceptuales, estudiá su estructura y documentá cómo evoluciona tu identidad creativa.</p>
     </section>
     <nav class="lab-section-nav" aria-label="Secciones del laboratorio">
+      <a href="#fragrance-similarity">Buscar equivalentes</a>
       <a href="#mix-studio">Composición</a>
       <a href="#creative-assistant">Asistente</a>
       <a href="#creative-analysis">Análisis</a>
@@ -59,6 +61,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <a href="#evolution-simulator">Evolución</a>
       <a href="#performance-estimate">Rendimiento</a>
     </nav>
+    ${renderFragranceSimilarityPanel(fragranceSimilarityState)}
     ${renderMixStudio(mixingState, mixPickerState)}
     <div id="audience-fit-root">${renderAudienceFit(mixingState.items)}</div>
     ${renderClientBriefPanel(clientBriefState)}
@@ -82,12 +85,12 @@ function projectsView(archiveState = {}) {
   return `${renderArchiveView(archiveState)}${renderAnalyticalComparison(archiveState)}${renderProfileHistory(archiveState)}${renderSensoryExperiments(archiveState)}${renderPerformanceCalibration(archiveState.experiments)}${renderProfessionalReports(archiveState)}`;
 }
 
-export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}, clientBriefState = {}) {
+export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}, clientBriefState = {}, fragranceSimilarityState = {}) {
   const current = ["home", "lab", "notes", "projects"].includes(activeView) ? activeView : "home";
   const content = current === "home"
     ? homeView(archiveState, mixingState)
     : current === "lab"
-      ? labView(mixingState, analysisDirection, evolutionStage, archiveState, mixPickerState, creativeAssistantState, inspirationDifferentiationState, clientBriefState)
+      ? labView(mixingState, analysisDirection, evolutionStage, archiveState, mixPickerState, creativeAssistantState, inspirationDifferentiationState, clientBriefState, fragranceSimilarityState)
       : current === "notes"
         ? notesView(libraryState)
         : projectsView(archiveState);

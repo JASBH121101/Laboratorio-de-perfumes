@@ -21,6 +21,8 @@ import { searchFragranceReferences, getFragranceSimilarityReferenceById } from "
 import { rankFragranceSimilarityCandidates } from "../src/js/features/laboratory/fragrance-similarity/ranking.js";
 import { filterFragranceSimilarityResults } from "../src/js/features/laboratory/fragrance-similarity/filters.js";
 import { resolveFragranceSimilarityScope, rankFragranceSimilarityInScope } from "../src/js/features/laboratory/fragrance-similarity/scope.js";
+import { buildFragranceSimilarityExperience } from "../src/js/features/laboratory/fragrance-similarity/experience.js";
+import { renderFragranceSimilarityPanel } from "../src/js/features/laboratory/fragrance-similarity/panel.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -39,6 +41,10 @@ const requiredFiles = [
   "src/js/features/laboratory/fragrance-similarity/ranking.js",
   "src/js/features/laboratory/fragrance-similarity/filters.js",
   "src/js/features/laboratory/fragrance-similarity/scope.js",
+  "src/js/features/laboratory/fragrance-similarity/experience.js",
+  "src/js/features/laboratory/fragrance-similarity/panel.js",
+  "tests/fragrance-similarity-experience.test.mjs",
+  "tests/fragrance-similarity-panel.test.mjs",
   "tests/fragrance-similarity-filters.test.mjs",
   "tests/fragrance-similarity-scope.test.mjs",
   "tests/fragrance-similarity-search.test.mjs",
@@ -93,7 +99,7 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v50/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v50 and support controlled activation.");
+if (!/shell-v51/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v51 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
 for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "creative-assistant/engine.js", "creative-assistant/panel.js", "formulation-proposals/engine.js", "formulation-proposals/panel.js", "inspiration-differentiation/engine.js", "inspiration-differentiation/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
@@ -128,6 +134,22 @@ if (!app.includes("buildClientBrief") || !app.includes("send-client-brief-to-ass
 if (!app.includes("updateAudienceFit") || !views.includes("renderAudienceFit") || !sw.includes("audience-fit/engine.js") || !sw.includes("audience-fit/panel.js")) failures.push("Live audience positioning must update with the active composition and remain available offline.");
 if (!sw.includes("reference-benchmark/data.js") || !sw.includes("reference-benchmark/engine.js") || !sw.includes("reference-benchmark/panel.js") || !originalityPanel.includes("renderCatalogBenchmark") || !views.includes("renderOriginalityAnalysis")) failures.push("Commercial reference benchmark must be integrated and cached offline.");
 if (!sw.includes("performance-estimator/engine.js") || !sw.includes("performance-estimator/panel.js") || !app.includes("renderPerformanceEstimate") || !views.includes("renderPerformanceEstimate") || !app.includes("performance-concentration") || !app.includes("performance-environment")) failures.push("Performance estimator scenarios must be adjustable and wired into the composition workflow and offline shell.");
+if (!app.includes("buildFragranceSimilarityExperience") || !app.includes("data-similarity-select") ||
+    !views.includes("renderFragranceSimilarityPanel") ||
+    !sw.includes("fragrance-similarity/experience.js") || !sw.includes("fragrance-similarity/panel.js")) {
+  failures.push("Fragrance reverse-search interface is not fully wired into the lab view and offline shell.");
+}
+const reverseSession = buildFragranceSimilarityExperience({ query: "Oud Wod", selectedReferenceId: "tom-ford-oud-wood" });
+const emptyInventorySession = buildFragranceSimilarityExperience({ selectedReferenceId: "tom-ford-oud-wood", scope: "own-inventory" });
+const reverseMarkup = renderFragranceSimilarityPanel({});
+if (!["suggestions", "exact-match"].includes(reverseSession.search.status) ||
+    reverseSession.reference?.id !== "tom-ford-oud-wood" || !reverseSession.filtered?.results?.length ||
+    emptyInventorySession.filtered?.status !== "inventory-empty" ||
+    !reverseMarkup.includes('id="fragrance-similarity-search"') ||
+    !reverseMarkup.includes('id="similarity-filter-band"')) {
+  failures.push("Fragrance reverse-search integration or explicit inventory-empty rendering failed.");
+}
+
 const audienceFit = analyzeAudienceFit([{ id: "bergamot", points: 50 }, { id: "rose", points: 50 }]);
 if (audienceFit.status !== "ready" || !audienceFit.positioning || !audienceFit.agePosition) failures.push("Audience positioning did not analyze a normalized local composition.");
 const brief = buildClientBrief({ style: "fresco", occasion: "diario", presence: "discreta", liked: "cítrico y limpio" });
