@@ -14,14 +14,21 @@ export function getPerfumeLibraryStats() {
   };
 }
 
-export function filterPerfumeLibrary({ query = "", family = "all", role = "all" } = {}) {
-  const normalizedQuery = query.trim().toLocaleLowerCase("es");
+function normalizeSearch(value = "") {
+  return String(value).normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLocaleLowerCase("es");
+}
+
+export function filterPerfumeLibrary({ query = "", family = "all", role = "all", kind = "all" } = {}) {
+  const terms = normalizeSearch(query).trim().split(/\\s+/).filter(Boolean);
   return PERFUME_ITEMS.filter((item) => {
     const familyMatch = family === "all" || item.family === family;
     const roleMatch = role === "all" || item.roles.includes(role);
-    const searchable = [item.name, item.family, item.kind, item.profile, ...item.facets, ...item.pairings]
-      .join(" ").toLocaleLowerCase("es");
-    return familyMatch && roleMatch && (!normalizedQuery || searchable.includes(normalizedQuery));
+    const kindMatch = kind === "all" || item.kind === kind;
+    const searchable = normalizeSearch([
+      item.name, item.family, item.kind, item.profile, ...item.facets, ...item.pairings, ...item.roles
+    ].join(" "));
+    const queryMatch = terms.every((term) => searchable.includes(term));
+    return familyMatch && roleMatch && kindMatch && queryMatch;
   });
 }
 
