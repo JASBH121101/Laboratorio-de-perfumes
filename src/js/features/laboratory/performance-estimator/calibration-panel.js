@@ -13,13 +13,13 @@ const METRICS = [
   ["projectionLaterMeters", "Proyección tras 1–2 h", "m"]
 ];
 
-function metricCard(metric) {
+function metricCard(metric, unit) {
   const ready = metric.factor !== null;
   const missing = Math.max(0, metric.requiredSamples - metric.sampleCount);
   return `
     <article class="performance-calibration-metric ${ready ? "is-calibrated" : ""}">
       <div><strong>${esc(metric.label)}</strong><span>${metric.sampleCount}/${metric.requiredSamples} observaciones</span></div>
-      <p>${metric.medianObserved === null ? "Aún sin observaciones" : `Mediana observada: ${metric.medianObserved} ${metric.key === "persistenceHours" ? "h" : "m"}`}</p>
+      <p>${metric.medianObserved === null ? "Aún sin observaciones" : `Mediana observada: ${metric.medianObserved} ${unit}`}</p>
       ${ready
         ? `<strong class="performance-calibration-factor">Ajuste local ×${metric.factor.toFixed(1)}</strong><small>Error mediano frente al cálculo base: ${metric.medianErrorPercent}%</small>`
         : `<small>Faltan ${missing} observaciones para habilitar este ajuste.</small>`}
@@ -47,7 +47,7 @@ export function renderPerformanceCalibration(experiments = []) {
     return `
       <article class="performance-calibration-scenario">
         <header><strong>${esc(CONCENTRATION_LABELS[scenario.concentration] || scenario.concentration)} · ${esc(ENVIRONMENT_LABELS[scenario.environment] || scenario.environment)}</strong><span>${result.sampleRecords} registros</span></header>
-        <div class="performance-calibration-grid">${METRICS.map(([metricKey]) => metricCard(result.metrics[metricKey])).join("")}</div>
+        <div class="performance-calibration-grid">${METRICS.map(([metricKey, , unit]) => metricCard(result.metrics[metricKey], unit)).join("")}</div>
       </article>
     `;
   }).join("");
