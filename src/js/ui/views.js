@@ -84,6 +84,10 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
           <button type="button" data-camera-preset="bottle" aria-label="Vista del frasco" aria-pressed="false">Frasco</button>
           <button type="button" data-camera-preset="workbench" aria-label="Vista de la mesa" aria-pressed="false">Mesa</button>
         </div>
+        <div class="lab-zoom-controls" role="group" aria-label="Zoom de la escena">
+          <button type="button" data-action="zoom-camera-in" aria-label="Acercar cámara">＋</button>
+          <button type="button" data-action="zoom-camera-out" aria-label="Alejar cámara">－</button>
+        </div>
         <div class="lab-stage-bottom">
           <span>ARRASTRÁ PARA GIRAR · PELLIZCÁ PARA ZOOM</span>
           <button type="button" class="lab-reset-button" data-action="reset-lab-camera">Recentrar ↺</button>

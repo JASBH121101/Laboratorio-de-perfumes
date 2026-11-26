@@ -73,3 +73,13 @@ test("recenter follows the currently selected scene mode and exposes the active 
   assert.match(scene, /stage\.dataset\.cameraPreset = preset/);
   assert.match(app, /function syncLabCameraPreset\(/);
 });
+
+test("zoom controls are wired and camera distance remains bounded", () => {
+  assert.match(scene, /function zoomCamera\(direction\)/);
+  assert.match(scene, /radius = THREE\.MathUtils\.clamp\(radius \+ amount, LAB_RENDER_CONFIG\.minCameraRadius, LAB_RENDER_CONFIG\.maxCameraRadius\)/);
+  assert.match(scene, /zoomCamera,\s*setCameraPreset:/);
+  assert.match(view, /data-action="zoom-camera-in"/);
+  assert.match(view, /data-action="zoom-camera-out"/);
+  assert.match(app, /labController\.zoomCamera\(action === "zoom-camera-in" \? "in" : "out"\)/);
+  assert.match(styles, /\.lab-zoom-controls button/);
+});

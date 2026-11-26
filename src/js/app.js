@@ -457,7 +457,13 @@ appRoot.addEventListener("click", async (event) => {
   if (!action) return;
 
   try {
-    if (action === "theme") {
+    if (action === "zoom-camera-in" || action === "zoom-camera-out") {
+      if (typeof labController?.zoomCamera !== "function") {
+        showNotice({ title: "Cámara 3D", message: "La escena todavía se está preparando. Probá nuevamente en un instante." });
+        return;
+      }
+      labController.zoomCamera(action === "zoom-camera-in" ? "in" : "out");
+    } else if (action === "theme") {
       const nextTheme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
       document.documentElement.dataset.theme = nextTheme;
       try { localStorage.setItem("jb-vpl-theme", nextTheme); } catch { /* Use session theme only. */ }
