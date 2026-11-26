@@ -840,3 +840,60 @@
   .analysis-heading { flex-direction:column; }
   .analysis-state { align-self:flex-start; }
 }
+
+/* Blocks 35–36 — reverse fragrance similarity search */
+.fragrance-similarity-panel{margin:26px 0 30px;padding:clamp(15px,2.2vw,24px);border:1px solid var(--line);border-radius:12px;background:var(--surface);box-shadow:0 12px 34px rgba(0,0,0,.08)}
+.similarity-panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.similarity-panel-heading h2{margin:5px 0 8px;color:var(--text);font:500 clamp(23px,3vw,31px) "Playfair Display",Georgia,serif}
+.similarity-panel-heading h2 em{color:var(--accent);font-weight:500}
+.similarity-panel-heading>div>p:last-child{max-width:720px;margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+.similarity-local-tag{flex:0 0 auto;padding:7px 10px;border:1px solid var(--line);border-radius:30px;color:var(--muted);font-size:14px}
+.similarity-search-block{margin-top:20px}
+.similarity-search-block>label,.similarity-scope-control>label,.similarity-filter>label{display:block;margin-bottom:7px;color:var(--text);font-size:14px;font-weight:700}
+.similarity-search-block>input,.similarity-filter>input,.similarity-filter>select,.similarity-scope-control>select{width:100%;min-width:0;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:7px;color:var(--text);background:var(--bg);font:inherit;font-size:16px}
+.similarity-search-block>input:focus,.similarity-filter>input:focus,.similarity-filter>select:focus,.similarity-scope-control>select:focus,.similarity-suggestion:focus-visible,.similarity-reset:focus-visible,.similarity-reset-filters:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.similarity-search-block>small,.similarity-scope-control>small{display:block;margin-top:6px;color:var(--muted-2);font-size:14px;line-height:1.5}
+#fragrance-similarity-suggestions{margin-top:10px}
+.similarity-helper{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+.similarity-suggestion-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:9px}
+.similarity-suggestion{min-width:0;min-height:55px;padding:9px 11px;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:7px;color:var(--text);background:var(--bg);text-align:left;cursor:pointer;font:inherit}
+.similarity-suggestion:hover,.similarity-suggestion[aria-selected="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.similarity-suggestion>span:first-child{min-width:0}
+.similarity-suggestion strong,.similarity-suggestion small{display:block;overflow:hidden;text-overflow:ellipsis}
+.similarity-suggestion strong,.similarity-suggestion small,.similarity-suggestion-score{font-size:14px}
+.similarity-suggestion small{margin-top:3px;color:var(--muted)}
+.similarity-suggestion-score{color:var(--accent);font-weight:700}
+.similarity-controls{margin-top:17px;padding:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.similarity-scope-control{grid-column:1/-1}
+.similarity-reset-filters,.similarity-reset{min-height:42px;padding:8px 12px;border:1px solid var(--line);border-radius:7px;color:var(--accent);background:transparent;cursor:pointer;font:inherit;font-size:14px}
+.similarity-reset-filters:hover,.similarity-reset:hover{border-color:var(--accent)}
+.similarity-output{margin-top:18px}
+.similarity-empty{min-height:124px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border:1px dashed var(--line);border-radius:8px;color:var(--muted);text-align:center}
+.similarity-empty>span{color:var(--accent);font-size:26px}
+.similarity-empty>strong{color:var(--text);font:500 19px "Playfair Display",Georgia,serif}
+.similarity-empty>p{max-width:660px;margin:0;font-size:14px;line-height:1.6}
+.similarity-reference-card{margin-bottom:16px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid rgba(217,178,124,.32);border-radius:8px;background:var(--accent-soft)}
+.similarity-reference-card h3{margin:3px 0;color:var(--text);font:500 19px "Playfair Display",Georgia,serif}
+.similarity-reference-card p:last-child{margin:0;color:var(--muted);font-size:14px}
+.similarity-kicker{margin:0;color:var(--muted-2);font-size:14px;letter-spacing:.11em}
+.similarity-results-heading{margin:18px 0 12px;display:flex;align-items:end;justify-content:space-between;gap:10px}
+.similarity-results-heading h3{margin:4px 0 0;color:var(--text);font:500 21px "Playfair Display",Georgia,serif}
+.similarity-results-heading>span{color:var(--muted);font-size:14px;text-align:right}
+.similarity-result-card{margin-top:10px;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.similarity-result-main{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.similarity-result-title{min-width:0;display:flex;align-items:center;gap:10px}
+.similarity-rank{width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;color:var(--accent);font-size:14px}
+.similarity-result-title h4{margin:0;overflow-wrap:anywhere;color:var(--text);font:500 18px "Playfair Display",Georgia,serif}
+.similarity-result-title p{margin:3px 0 0;color:var(--muted);font-size:14px}
+.similarity-score{flex:0 0 auto;display:flex;align-items:center;gap:7px;color:var(--accent)}
+.similarity-score strong{font:500 27px "Playfair Display",Georgia,serif}
+.similarity-score span{color:var(--muted);font-size:14px;line-height:1.2}
+.similarity-result-meta{margin:10px 0;display:flex;flex-wrap:wrap;gap:6px}
+.similarity-chip{padding:5px 8px;border:1px solid var(--line);border-radius:30px;color:var(--muted);font-size:14px}
+.similarity-evidence{margin:9px 0 0;padding:0;list-style:none;display:grid;gap:5px}
+.similarity-evidence li{display:grid;grid-template-columns:minmax(105px,.35fr) minmax(0,1fr);gap:8px;color:var(--muted);font-size:14px;line-height:1.5}
+.similarity-evidence li strong{color:var(--text);font-size:14px}
+.similarity-source-note{margin:10px 0 0;color:var(--muted-2);font-size:14px}
+.similarity-disclaimer{margin:15px 0 0;padding-top:12px;border-top:1px solid var(--line);color:var(--muted-2);font-size:14px;line-height:1.6}
+@media(max-width:760px){.fragrance-similarity-panel{margin:18px 0 22px;padding:13px}.similarity-panel-heading{flex-direction:column;gap:8px}.similarity-local-tag{align-self:flex-start}.similarity-controls{grid-template-columns:repeat(2,minmax(0,1fr));padding:10px;gap:10px}.similarity-scope-control,.similarity-filter--house{grid-column:1/-1}.similarity-suggestion-list{grid-template-columns:minmax(0,1fr)}.similarity-results-heading{align-items:flex-start;flex-direction:column}.similarity-results-heading>span{text-align:left}}
+@media(max-width:420px){.similarity-controls{grid-template-columns:minmax(0,1fr)}.similarity-scope-control,.similarity-filter--house{grid-column:auto}.similarity-reference-card{align-items:flex-start;flex-direction:column}.similarity-reset{width:100%}.similarity-result-card{padding:11px}.similarity-result-title{gap:7px}.similarity-result-title h4{font-size:16px}.similarity-score strong{font-size:23px}.similarity-evidence li{grid-template-columns:minmax(0,1fr);gap:1px}}
