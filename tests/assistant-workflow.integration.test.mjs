@@ -27,7 +27,7 @@ test("integration keeps user-initiated transfer actions and local offline module
   readFile(new URL("../src/js/features/laboratory/audience-fit/engine.js",import.meta.url),"utf8")
  ]);
  assert.match(app,/send-client-brief-to-assistant/);assert.match(app,/load-formulation-proposal/);assert.match(app,/replaceMixItems/);assert.match(app,/updateAudienceFit/);
- assert.match(views,/renderAudienceFit/);assert.match(views,/id="audience-fit-root"/);assert.match(app,/root\.innerHTML = renderAudienceFit\(mixingState\.items\)/);assert.match(sw,/shell-v43/);assert.ok(sw.includes("client-brief/engine.js"));assert.ok(sw.includes("audience-fit/engine.js"));
+ assert.match(views,/renderAudienceFit/);assert.match(views,/id="audience-fit-root"/);assert.match(app,/root\.innerHTML = renderAudienceFit\(mixingState\.items\)/);assert.match(sw,/shell-v44/);assert.ok(sw.includes("client-brief/engine.js"));assert.ok(sw.includes("audience-fit/engine.js"));
  assert.equal(briefEngine.includes("fetch("),false);assert.equal(audienceEngine.includes("fetch("),false);
 });
 
