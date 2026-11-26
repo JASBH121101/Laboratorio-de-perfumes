@@ -53,8 +53,9 @@ test("professional dossier rejects missing, unrelated and unnormalized variants"
   const { creation, variant } = fixtures();
   assert.throws(() => buildProfessionalReport({}), /creación guardada/);
   assert.throws(() => buildProfessionalReport({ creation, variant: { id: "unknown" } }), /no pertenece/);
-  const invalid = { ...variant, items: [{ id: "bergamot", points: 40 }] };
-  assert.throws(() => buildProfessionalReport({ creation, variant: invalid }), /100 puntos/);
+  const invalidVariant = { ...variant, items: [{ id: "bergamot", points: 40 }] };
+  const invalidCreation = { ...creation, variants: [invalidVariant] };
+  assert.throws(() => buildProfessionalReport({ creation: invalidCreation, variant: invalidVariant }), /100 puntos/);
 });
 
 test("CSV export includes report sections and neutralizes spreadsheet formula prefixes", () => {
