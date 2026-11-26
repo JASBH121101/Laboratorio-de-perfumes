@@ -66,12 +66,12 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | **Completado** — PR #32 fusionado, CI verde y Pages desplegado |
 | 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | Implementado en rama; CI pendiente |
 
-La validación automatizada pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. El PR #32 se integró en `main` y el workflow de GitHub Pages terminó correctamente. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
+La validación del rediseño pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. El PR #32 se integró en `main` y el workflow de GitHub Pages terminó correctamente. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
 
 ## Bloque 6 — Experiencia del constructor
 
-El constructor incorpora un buscador integrado con filtros por familia, tipo y ubicación orientativa. Los resultados permiten añadir una referencia sin navegar a otra pantalla, muestran cuáles ya pertenecen a la composición y permiten ampliar o reducir el listado. La edición de cada peso combina deslizador y campo numérico; la redistribución conserva el total conceptual de 100 puntos. El borrador local y el archivo existente se mantienen.
+El constructor incorpora un buscador integrado con filtros por familia, tipo y ubicación orientativa. Los resultados permiten añadir una referencia sin navegar a otra pantalla, muestran cuáles ya pertenecen a la composición y permiten ampliar o reducir el listado. La edición de cada peso usa un campo numérico, botones `− / +` de tamaño táctil y una barra discreta de proporción; no utiliza un deslizador. La redistribución conserva el total conceptual de 100 puntos. El borrador local y el archivo existente se mantienen.
 
-## Protección de datos creativos
+El Bloque 6 cuenta con **105/105 pruebas aprobadas**, comprobación de sintaxis y validador de estructura. Se encuentra en la rama `feature/block6-formulation-ux`; aún no se fusiona ni publica.\n\n## Protección de datos creativos
 
 El archivo principal vive en IndexedDB, con localStorage como alternativa cuando IndexedDB no está disponible. No se sincroniza con GitHub ni con un servicio remoto. Los datos pueden perderse si se borran los datos del sitio o se pierde el dispositivo; mantené un respaldo JSON externo.
