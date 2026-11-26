@@ -481,6 +481,19 @@ appRoot.addEventListener("change", async (event) => {
       event.target.value = "";
     }
   }
+  if (event.target.id === "profile-compare-left") {
+    archiveState.profileLeftId = event.target.value;
+    archiveState.profileComparison = null;
+  } else if (event.target.id === "profile-compare-right") {
+    archiveState.profileRightId = event.target.value;
+    archiveState.profileComparison = null;
+  } else if (event.target.id === "profile-compare-concentration") {
+    archiveState.profileComparisonOptions.concentration = event.target.value;
+    archiveState.profileComparison = null;
+  } else if (event.target.id === "profile-compare-environment") {
+    archiveState.profileComparisonOptions.environment = event.target.value;
+    archiveState.profileComparison = null;
+  }
   if (event.target.id === "professional-report-variant") {
     archiveState.reportSelection = event.target.value;
     archiveState.professionalReport = null;
@@ -659,8 +672,27 @@ appRoot.addEventListener("click", async (event) => {
       updateClientBrief();
     } else if (action === "clear-client-brief") {
       clientBriefState.fields = {};
+      clientBriefState.label = "";
       clientBriefState.result = null;
       updateClientBrief();
+    } else if (action === "save-client-profile") {
+      if (clientBriefState.result?.status !== "ready") throw new Error("Primero prepará un brief válido.");
+      const proposals = generateFormulationProposals({ description: clientBriefState.result.description, mode: "client" });
+      if (proposals.status !== "ready" || proposals.proposals.length < 2) throw new Error("No hay suficientes alternativas válidas para guardar este perfil.");
+      const generatedLabel = [clientBriefState.result.fields.style, clientBriefState.result.fields.occasion]
+        .filter((value) => value && !["sin preferencia", "sin definir"].includes(value)).join(" · ");
+      const profile = createCreativeProfile({
+        label: clientBriefState.label || generatedLabel || "Perfil creativo",
+        mode: "client",
+        fields: clientBriefState.result.fields,
+        description: clientBriefState.result.description,
+        proposals: proposals.proposals
+      });
+      await archiveRepository.putProfile(profile);
+      archiveState.profileLeftId = profile.id;
+      archiveState.profileComparison = null;
+      await refreshArchive();
+      showNotice({ title: "Perfil guardado", message: profile.label + ": se conservaron " + profile.alternatives.length + " alternativas con sus referencias." });
     } else if (action === "send-client-brief-to-assistant") {
       if (clientBriefState.result?.status !== "ready") throw new Error("Primero prepará un brief con suficiente dirección creativa.");
       creativeAssistantState.mode = "client";
@@ -791,6 +823,28 @@ appRoot.addEventListener("click", async (event) => {
       updateArchiveUI();
     } else if (action === "save-sensory-experiment") {
       await saveSensoryExperimentFromForm();
+    } else if (action === "compare-creative-profiles") {
+      const leftId = appRoot.querySelector("#profile-compare-left")?.value || "";
+      const rightId = appRoot.querySelector("#profile-compare-right")?.value || "";
+      const options = {
+        concentration: appRoot.querySelector("#profile-compare-concentration")?.value || "edp",
+        environment: appRoot.querySelector("#profile-compare-environment")?.value || "neutral"
+      };
+      archiveState.profileLeftId = leftId;
+      archiveState.profileRightId = rightId;
+      archiveState.profileComparisonOptions = options;
+      archiveState.profileComparison = compareProfileSnapshots(archiveState.profiles, leftId, rightId, options);
+      const profilePanel = appRoot.querySelector("#profile-history-root");
+      if (profilePanel) profilePanel.outerHTML = renderProfileHistory(archiveState);
+    } else if (action === "delete-creative-profile") {
+      const id = event.target.closest("[data-profile-id]")?.dataset.profileId;
+      const profile = archiveState.profiles.find((item) => item.id === id);
+      if (profile && window.confirm("¿Eliminar el perfil «" + profile.label + "» y sus alternativas guardadas?")) {
+        await archiveRepository.removeProfile(id);
+        if (archiveState.profileLeftId === id || archiveState.profileRightId === id) archiveState.profileComparison = null;
+        await refreshArchive();
+        showNotice({ title: "Perfil eliminado", message: "El brief y sus alternativas se eliminaron del historial local." });
+      }
     } else if (action === "delete-sensory-experiment") {
       const id = event.target.closest("[data-experiment-id]")?.dataset.experimentId;
       const experiment = archiveState.experiments.find((item) => item.id === id);
