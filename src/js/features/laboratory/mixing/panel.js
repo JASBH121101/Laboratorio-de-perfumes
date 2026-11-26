@@ -42,7 +42,7 @@ export function renderMixPickerResults(mixingState, pickerState = {}) {
           <span>${escapeHtml(item.family)} · ${item.kind === "Acorde" ? "ACORDE" : "NOTA"}</span>
           <small>${escapeHtml(item.roles.join(" · "))}</small>
         </div>
-        <button type="button" class="mix-picker-add" data-add-to-mix="${escapeHtml(item.id)}" ${selected ? "disabled aria-label=\"Ya añadida\"" : `aria-label="Añadir ${escapeHtml(item.name)}"`}>
+        <button type="button" class="mix-picker-add" data-add-to-mix="${escapeHtml(item.id)}" data-drag-note="${escapeHtml(item.id)}" draggable="true" ${selected ? "disabled aria-label=\"Ya añadida\"" : `aria-label="Añadir ${escapeHtml(item.name)}"`}>
           ${selected ? "✓ Añadida" : "＋ Añadir"}
         </button>
       </article>
@@ -134,7 +134,7 @@ export function renderMixStudio(state, pickerState = {}) {
         <div class="mix-quick-block">
           <span>ACCESOS RÁPIDOS</span>
           <div class="mix-quick-notes" aria-label="Referencias rápidas">
-            ${quickNotes.map((item) => `<button type="button" data-add-to-mix="${escapeHtml(item.id)}">${escapeHtml(item.name)}</button>`).join("")}
+            ${quickNotes.map((item) => `<button type="button" data-add-to-mix="${escapeHtml(item.id)}" data-drag-note="${escapeHtml(item.id)}" draggable="true">${escapeHtml(item.name)}</button>`).join("")}
           </div>
         </div>
       </section>
