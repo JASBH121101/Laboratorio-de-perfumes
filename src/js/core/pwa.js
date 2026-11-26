@@ -87,7 +87,11 @@ export function createPwaManager({ onInstallState = () => {}, onUpdateAvailable 
         const installing = registration.installing;
         installing?.addEventListener("statechange", () => {
           if (installing.state === "installed" && navigator.serviceWorker.controller) {
-            announceWaitingUpdate({ force: true });
+            // "installed" is the browser's authoritative signal that a new worker is ready.
+            updateAnnounced = false;
+            clearDismissedUpdate();
+            updateAnnounced = true;
+            onUpdateAvailable();
           }
         });
       });
