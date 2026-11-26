@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { addMixNote, createMixState } from "../src/js/features/laboratory/mixing/state.js";
 import { renderMixPickerResults, renderMixStudio } from "../src/js/features/laboratory/mixing/panel.js";
 import { filterPerfumeLibrary } from "../src/js/features/perfume-library/library.js";
@@ -46,4 +47,15 @@ test("composition rows expose slider and precise numeric weight controls", () =>
   assert.match(html, /data-mix-weight="bergamot"/);
   assert.match(html, /TOTAL DE LA COMPOSICIÓN/);
   assert.match(html, /se distribuyen entre las demás referencias/);
+});
+
+test("application keeps finder filters, result expansion and manual clear actions wired", async () => {
+  const app = await readFile(new URL("../src/js/app.js", import.meta.url), "utf8");
+  assert.match(app, /event\.target\.id === "mix-picker-search"/);
+  assert.match(app, /event\.target\.id === "mix-picker-family"/);
+  assert.match(app, /event\.target\.id === "mix-picker-kind"/);
+  assert.match(app, /event\.target\.id === "mix-picker-role"/);
+  assert.match(app, /action === "toggle-mix-picker"/);
+  assert.match(app, /action === "clear-mix-picker"/);
+  assert.match(app, /renderMixStudio\(mixingState, mixPickerState\)/);
 });
