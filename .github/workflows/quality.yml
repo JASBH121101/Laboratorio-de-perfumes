@@ -47,6 +47,9 @@ jobs:
           node --check src/js/features/laboratory/client-brief/panel.js
           node --check src/js/features/laboratory/audience-fit/engine.js
           node --check src/js/features/laboratory/audience-fit/panel.js
+          node --check src/js/features/laboratory/reference-benchmark/data.js
+          node --check src/js/features/laboratory/reference-benchmark/engine.js
+          node --check src/js/features/laboratory/reference-benchmark/panel.js
           node --check src/js/features/laboratory/analysis/engine.js
           node --check src/js/features/laboratory/analysis/panel.js
           node --check src/js/features/laboratory/analytics/dashboard.js
