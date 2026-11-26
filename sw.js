@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "jb-virtual-perfume-lab-";
-const CACHE_NAME = `${CACHE_PREFIX}shell-v34`;
+const CACHE_NAME = `${CACHE_PREFIX}shell-v35`;
 
 const APP_SHELL = [
   "./",
