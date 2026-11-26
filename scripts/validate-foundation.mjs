@@ -84,6 +84,7 @@ if (comparison.similarity !== 25 || comparison.difference !== 75 || !comparison.
 
 if (!app.includes("renderPersonalSignatureHistory") || !views.includes("renderPersonalSignatureHistory") || !dashboardCss.includes(".personal-signature-history")) failures.push("Personal signature history is not wired into the dashboard with responsive styling.");
 if (!app.includes("saveSensoryExperimentFromForm") || !views.includes("renderSensoryExperiments") || !sw.includes("sensory-experiments/model.js") || !sw.includes("sensory-experiments/panel.js")) failures.push("Sensory experiment creation, project view or offline modules are not wired.");
+if (!app.includes("archiveRepository.listExperiments()") || !app.includes("archiveRepository.putExperiment(experiment)") || !app.includes("archiveRepository.removeExperimentsForCreation(id)")) failures.push("Sensory records are not fully persisted or cleaned with their source creation.");
 if (!originalityPanel.includes("ÍNDICE DE DIFERENCIACIÓN INTERNA") || !originalityPanel.includes("No consulta catálogos comerciales")) failures.push("Originality panel must explain its local comparison boundary.");
 if (!dashboardCss.includes(".dashboard-kpis") || !dashboardCss.includes(".originality-metrics")) failures.push("Responsive analytics and originality styles are missing.");
 
