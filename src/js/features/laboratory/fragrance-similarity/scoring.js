@@ -184,7 +184,7 @@ export function scoreFragranceSimilarity(comparison, referenceProfile, candidate
   };
 
   const includedDimensions = DIMENSIONS.filter((dimension) =>
-    metrics[dimension].score !== null && metrics[dimension].coverage > 0
+    metrics[dimension].score !== null && metrics[dimension].coverage > 0 && weights[dimension] > 0
   );
   const excludedDimensions = DIMENSIONS.filter((dimension) => !includedDimensions.includes(dimension));
   const availableWeight = includedDimensions.reduce(
