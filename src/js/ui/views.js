@@ -10,6 +10,7 @@ import { renderPersonalSignatureHistory } from "../features/laboratory/signature
 import { renderSensoryExperiments } from "../features/laboratory/sensory-experiments/panel.js";
 import { renderProfessionalReports } from "../features/laboratory/professional-reports/panel.js";
 import { renderCreativeAssistant } from "../features/laboratory/creative-assistant/panel.js";
+import { renderFormulationProposals } from "../features/laboratory/formulation-proposals/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -46,6 +47,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
     </section>
     ${renderMixStudio(mixingState, mixPickerState)}
     ${renderCreativeAssistant(creativeAssistantState)}
+    ${renderFormulationProposals({ result: creativeAssistantState.proposals })}
     ${renderArchiveQuickSave(archiveState)}
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
     ${renderOriginalityAnalysis(mixingState, archiveState.creations || [])}
