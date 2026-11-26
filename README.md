@@ -73,10 +73,10 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 12. Asistente creativo local | Interpretar briefs personales, perfiles de clientes e inspiraciones; recomendar referencias existentes con explicación y transferencia voluntaria al formulador | **Completado** — PR #42 fusionado |
 | 13. Motor de propuestas de formulación | Propuestas conceptuales A/B/C, explicación de cada referencia, balance editable de puntos creativos y transferencia voluntaria | **Completado** — PR #44 fusionado |
 | 14. Originalidad y diferenciación por inspiración | Extraer rasgos apreciados de perfumes de referencia y explorar estructuras conceptuales distintas sin reconstruir fórmulas comerciales | **Completado** — PR #45 fusionado |
-| 15. Briefs y diseño para clientes | Perfil de gustos, rechazos, ocasión y estilo; preguntas guiadas y conexión con propuestas de formulación | **Pendiente** |
-| 16. Validación integral del asistente | Pruebas de recomendaciones, referencias existentes, normalización, persistencia, autonomía offline, privacidad y aceptación Android | **Pendiente** |
+| 15. Briefs y diseño para clientes | Perfil de gustos, rechazos, ocasión, estilo y presencia deseada; vista previa y conexión voluntaria con asistente y propuestas | **Completado** — PR #47 fusionado |
+| 16. Posicionamiento de público y validación integral | Lectura comercial de género/estética de edad para fórmulas manuales, integración de flujos, referencias, normalización y offline | **Completado en CI** — PR #48 fusionado; aceptación física Android pendiente |
 
-La base funcional vigente pasó **160/160 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 14. Los PR #32 al #45 de funcionalidad y cierre documental están integrados en `main`. La PWA usa `shell-v38` e incluye los motores de propuestas y diferenciación por inspiración en su shell offline. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó **171/171 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 16. Los PR #32 al #48 de funcionalidad y cierre documental están integrados en `main`. La PWA usa `shell-v40` e incluye los módulos de briefs guiados y posicionamiento de público en su shell offline. Queda pendiente la aceptación física en Android: revisión visual responsive, actualización PWA en dispositivo, impresión/guardado PDF y verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 6 — Experiencia del constructor
 
@@ -96,13 +96,20 @@ El historial recorre las versiones guardadas de cada variante, las ordena cronol
 
 ## Checkpoint de desarrollo — Bloques 1 a 16
 
-**Completados (1–14):** estabilidad PWA; retirada 3D; dashboard analítico; motor de originalidad personal; certificación base; constructor de formulación; comparación analítica; historial de firma; experimentos sensoriales; informes profesionales; compactación móvil; asistente creativo local; motor de propuestas A/B/C; diferenciación por inspiración.
+**Completados (1–16):** estabilidad PWA; retirada 3D; dashboard analítico; motor de originalidad personal; certificación base; constructor de formulación; comparación analítica; historial de firma; experimentos sensoriales; informes profesionales; compactación móvil; asistente creativo local; motor de propuestas A/B/C; diferenciación por inspiración; briefs guiados de clientes; posicionamiento de público y validación integral automatizada.
 
-**Pendientes (15–16):**
-- **Bloque 15 — Briefs de clientes:** recopilar gustos, rechazos, ocasión, estilo y preferencias de intensidad mediante preguntas breves; convertir las respuestas en un brief utilizable por el asistente y el motor de propuestas.
-- **Bloque 16 — Validación integral:** probar recomendaciones, control de referencias, distribución de 100 puntos conceptuales, transferencia autorizada, privacidad, funcionamiento offline, flujos completos y aceptación física en Android.
+**Pendiente de cierre operativo (fuera de los bloques funcionales):**
+- Aceptación física en Android: revisar las pantallas reales, controles táctiles y distribución responsive.
+- Probar en dispositivo la instalación y actualización PWA, incluyendo caché y activación de `shell-v40`.
+- Comprobar impresión/guardado PDF desde Android y verificar el último despliegue de GitHub Pages.
+
+La CI cubre pruebas automatizadas, sintaxis y validador estructural; no sustituye estas pruebas físicas.
 
 **Cierre de los bloques 13 y 14:** el Bloque 13 genera tres rutas distintas, A/B/C, usando referencias reales de la biblioteca; cada propuesta suma 100 puntos creativos enteros y solo sustituye la mezcla actual después de confirmación, conservando la acción de deshacer. El Bloque 14 separa rasgos apreciados y rechazados, usa el historial local para priorizar familias menos utilizadas y construye tres arquitecturas alternativas sin buscar ni reconstruir composiciones comerciales. La transferencia de una dirección de inspiración al asistente vuelve a generar propuestas, pero nunca carga una mezcla automáticamente.
+
+**Cierre del Bloque 15:** el brief guiado recoge ocasión, estilo, presencia deseada, gustos, rasgos a evitar y contexto opcional. El usuario revisa la vista previa antes de enviar el contenido al asistente creativo y generar propuestas. No se solicitan nombres ni identificadores personales; el procesamiento es local.
+
+**Cierre del Bloque 16:** el análisis de público se recalcula al editar la composición manual o cargar una propuesta. Presenta tendencia masculina, femenina o unisex/versátil; además, una estética juvenil/contemporánea, adulta/sofisticada o transversal. Muestra las familias con mayor influencia y un nivel de confianza. Es una heurística editorial de posicionamiento comercial, no una predicción validada ni una limitación de quién puede usar la fragancia.
 
 **Aceptación manual aún pendiente:** revisar físicamente en Android el nuevo diseño móvil y el asistente; probar el flujo PWA de actualización en el dispositivo; comprobar impresión/guardado PDF y verificar el despliegue más reciente de GitHub Pages. Estas revisiones no se consideran aprobadas por el solo hecho de que CI pase.
 
@@ -132,7 +139,7 @@ Es un motor determinista basado en reglas y coincidencia editorial; no es un mod
 
 ## Política de costos y privacidad
 
-Los bloques 11 y 12 no incorporan servicios de IA externos, API keys, suscripciones, telemetría ni llamadas de red para generar recomendaciones. El asistente procesa el brief en el dispositivo usando el código y la biblioteca local. Las fórmulas y briefs no se envían a un proveedor de IA.
+Los bloques 11, 12, 15 y 16 no incorporan servicios de IA externos, API keys, suscripciones, telemetría ni llamadas de red para generar recomendaciones o posicionamiento. El asistente, el constructor de briefs y el evaluador de público procesan datos en el dispositivo usando el código y la biblioteca local. Las fórmulas y briefs no se envían a un proveedor de IA.
 
 
 ## Bloques 13 y 14 — Motor de propuestas y diferenciación por inspiración
@@ -141,4 +148,4 @@ El motor A/B/C ofrece tres rutas conceptuales distintas a partir del brief del a
 
 El módulo de inspiración recibe una etiqueta opcional, los rasgos que gustan y lo que se desea evitar. Extrae familias y descriptores, puede usar la frecuencia de familias del archivo local para ordenar caminos complementarios y muestra tres arquitecturas con referencias ilustrativas. Una dirección puede enviarse al asistente para crear otro brief y generar propuestas A/B/C; no se aplica a la composición activa. No consulta la fórmula de perfumes comerciales, no usa Internet ni certifica originalidad mundial.
 
-La PWA usa el shell `shell-v38`. Estos dos bloques no agregan API, proveedor IA externo, claves, cuotas, suscripciones ni servicios pagos.
+La PWA usa el shell `shell-v40`. Los bloques 15 y 16 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos.
