@@ -611,3 +611,59 @@
   .client-brief-preview-actions { display:grid; grid-template-columns:1fr; }
   .client-brief-preview-actions button { width:100%; min-height:42px; }
 }
+
+/* Block 23 — sensory observations and local performance calibration */
+.sensory-performance-fieldset { margin-top:2px; }
+.sensory-performance-grid {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px;
+}
+.sensory-performance-grid .sensory-field:last-child { grid-column:1/-1; }
+.sensory-observed-performance {
+  margin-top:10px; padding:10px; display:grid; gap:6px;
+  border:1px solid rgba(217,178,124,.3); border-radius:7px; background:var(--surface);
+}
+.sensory-observed-performance>strong { color:var(--accent); font-size:9px; }
+.sensory-observed-performance>small { color:var(--muted-2); font-size:8px; }
+.sensory-observed-performance>div { display:flex; flex-wrap:wrap; gap:7px 14px; }
+.sensory-observed-performance span { color:var(--muted); font-size:8px; }
+.sensory-observed-performance b { color:var(--text); }
+.performance-calibration {
+  margin:20px 0; padding:20px; border:1px solid var(--line); border-radius:12px;
+  background:linear-gradient(145deg,var(--surface-raised),var(--surface));
+}
+.performance-calibration-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
+.performance-calibration-heading h2 { margin:0 0 6px; color:var(--text); font:500 23px "Playfair Display",Georgia,serif; }
+.performance-calibration-heading h2 em { color:var(--accent); }
+.performance-calibration-heading p:last-child { max-width:700px; margin:0; color:var(--muted); font-size:10px; line-height:1.6; }
+.performance-calibration-heading>span { flex:none; padding:7px 9px; border:1px solid var(--line); border-radius:20px; color:var(--accent); font-size:8px; font-weight:800; }
+.performance-calibration-empty {
+  margin-top:13px; padding:16px; border:1px dashed var(--line); border-radius:8px; background:var(--bg);
+}
+.performance-calibration-empty strong { color:var(--text); font:500 16px "Playfair Display",Georgia,serif; }
+.performance-calibration-empty p { color:var(--muted); font-size:9px; line-height:1.6; }
+.performance-calibration-empty a { color:var(--accent); font-size:9px; font-weight:700; }
+.performance-calibration-scenarios { margin-top:13px; display:grid; gap:10px; }
+.performance-calibration-scenario { padding:12px; border:1px solid var(--line); border-radius:8px; background:var(--bg); }
+.performance-calibration-scenario>header { margin-bottom:9px; display:flex; justify-content:space-between; gap:10px; }
+.performance-calibration-scenario>header strong { color:var(--text); font-size:10px; }
+.performance-calibration-scenario>header span { color:var(--muted-2); font-size:8px; }
+.performance-calibration-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.performance-calibration-metric { min-width:0; padding:10px; display:grid; gap:6px; border:1px solid var(--line); border-radius:7px; background:var(--surface); }
+.performance-calibration-metric>div { display:flex; flex-direction:column; gap:3px; }
+.performance-calibration-metric>div strong { color:var(--text); font-size:9px; }
+.performance-calibration-metric>div span,.performance-calibration-metric>small { color:var(--muted-2); font-size:7px; }
+.performance-calibration-metric>p { margin:0; color:var(--muted); font-size:8px; }
+.performance-calibration-factor { color:#80b99b; font-size:12px; }
+.performance-calibration-metric.is-calibrated { border-color:rgba(128,185,155,.35); }
+.performance-calibration-disclaimer { margin:11px 0 0; color:var(--muted-2); font-size:8px; line-height:1.6; }
+.performance-estimate-calibration { margin:8px 0 0; color:var(--accent); font-size:8px; line-height:1.5; }
+@media(max-width:800px) {
+  .performance-calibration-grid { grid-template-columns:1fr; }
+}
+@media(max-width:700px) {
+  .performance-calibration { padding:13px; }
+  .performance-calibration-heading { flex-direction:column; }
+  .performance-calibration-heading h2 { font-size:20px; }
+  .sensory-performance-grid { grid-template-columns:1fr; }
+  .sensory-performance-grid .sensory-field:last-child { grid-column:auto; }
+}
