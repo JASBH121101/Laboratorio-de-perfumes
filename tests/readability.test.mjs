@@ -17,8 +17,8 @@ test("all authored typography sizes meet the 12.5px readability floor", async ()
     const shorthandSizes = [...css.matchAll(/\bfont\s*:\s*([^;{}]+);/gi)]
       .flatMap((match) => [...match[1].matchAll(/(\d+(?:\.\d+)?)px/g)].map((size) => Number(size[1])));
     const sizes = [...explicitSizes, ...shorthandSizes];
-    assert.ok(sizes.length > 0, \`No pixel typography declarations found in \${path}\`);
-    assert.ok(sizes.every((size) => size >= 12.5), \`\${path} contains a font size below 12.5px\`);
+    assert.ok(sizes.length > 0, "No pixel typography declarations found in " + path);
+    assert.ok(sizes.every((size) => size >= 12.5), path + " contains a font size below 12.5px");
   }
 });
 
