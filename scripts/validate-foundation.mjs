@@ -31,7 +31,7 @@ const requiredFiles = [
   "src/js/features/laboratory/professional-reports/engine.js", "src/js/features/laboratory/professional-reports/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
-  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs", "tests/professional-reports.test.mjs", "tests/creative-assistant.test.mjs", "tests/formulation-proposals.test.mjs", "tests/inspiration-differentiation.test.mjs"
+  "src/js/ui/views.js", "tests/pwa.test.mjs", "tests/profile-history.test.mjs", "tests/originality.test.mjs", "tests/dashboard.test.mjs", "tests/formulation-ux.test.mjs", "tests/analytical-comparison.test.mjs", "tests/signature-history.test.mjs", "tests/sensory-experiments.test.mjs", "tests/professional-reports.test.mjs", "tests/creative-assistant.test.mjs", "tests/formulation-proposals.test.mjs", "tests/inspiration-differentiation.test.mjs"
 ];
 
 const failures = [];
