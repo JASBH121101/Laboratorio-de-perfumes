@@ -530,3 +530,10 @@
   .creative-assistant-result { padding:10px; }
   .creative-assistant-suggestion { padding:8px; }
 }
+
+.creative-assistant-suggestion-main .creative-assistant-profile { margin:6px 0 0; color:var(--muted); font-size:8px; line-height:1.6; }
+.creative-assistant-suggestion-main .creative-assistant-rationale { margin:5px 0 0; color:var(--muted-2); font-size:7px; line-height:1.5; }
+@media(max-width:700px) {
+  .creative-assistant-suggestion-main .creative-assistant-profile { font-size:8px; }
+  .creative-assistant-suggestion-main .creative-assistant-rationale { font-size:7px; }
+}
