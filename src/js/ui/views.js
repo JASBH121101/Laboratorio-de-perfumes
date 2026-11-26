@@ -31,14 +31,14 @@ function homeView(archiveState = {}, mixingState = { items: [] }) {
   `;
 }
 
-function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}) {
+function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}) {
   return `
     <section class="page-intro lab-page-intro">
       <p class="eyebrow">FORMULATION WORKSPACE · JB PERFUME LAB</p>
       <h1>Constructor de <em>fórmulas</em></h1>
       <p>Desarrollá composiciones conceptuales, estudiá su estructura y documentá cómo evoluciona tu identidad creativa.</p>
     </section>
-    ${renderMixStudio(mixingState)}
+    ${renderMixStudio(mixingState, mixPickerState)}
     ${renderArchiveQuickSave(archiveState)}
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
     ${renderOriginalityAnalysis(mixingState, archiveState.creations || [])}
@@ -55,12 +55,12 @@ function projectsView(archiveState = {}) {
   return renderArchiveView(archiveState);
 }
 
-export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}) {
+export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}) {
   const current = ["home", "lab", "notes", "projects"].includes(activeView) ? activeView : "home";
   const content = current === "home"
     ? homeView(archiveState, mixingState)
     : current === "lab"
-      ? labView(mixingState, analysisDirection, evolutionStage, archiveState)
+      ? labView(mixingState, analysisDirection, evolutionStage, archiveState, mixPickerState)
       : current === "notes"
         ? notesView(libraryState)
         : projectsView(archiveState);
