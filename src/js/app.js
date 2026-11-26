@@ -629,7 +629,6 @@ appRoot.addEventListener("click", async (event) => {
       window.addEventListener("afterprint", cleanup, { once: true });
       document.body.classList.add("printing-professional-report");
       window.print();
-      cleanup();
     } else if (action === "export-professional-report-csv") {
       if (!archiveState.professionalReport) throw new Error("Generá un informe antes de exportar CSV.");
       downloadText(
