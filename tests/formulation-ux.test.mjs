@@ -40,13 +40,22 @@ test("picker limits the initial results and supports expanding the list", () => 
   assert.ok((expanded.match(/class="mix-picker-result/g) || []).length > 6);
 });
 
-test("composition rows expose slider and precise numeric weight controls", () => {
+test("composition rows expose precise numeric controls and one-point steppers", () => {
   const html = renderMixStudio(addMixNote(createMixState(), "bergamot"));
-  assert.match(html, /type="range"/);
   assert.match(html, /type="number"/);
   assert.match(html, /data-mix-weight="bergamot"/);
+  assert.match(html, /data-adjust-mix-weight="bergamot"/);
+  assert.match(html, /data-step="-1"/);
+  assert.match(html, /data-step="1"/);
+  assert.match(html, /mix-weight-progress/);
   assert.match(html, /TOTAL DE LA COMPOSICIÓN/);
-  assert.match(html, /se distribuyen entre las demás referencias/);
+  assert.doesNotMatch(html, /type="range"/);
+});
+
+test("stepper is disabled for a one-reference composition", () => {
+  const html = renderMixStudio(addMixNote(createMixState(), "bergamot"));
+  assert.match(html, /data-adjust-mix-weight="bergamot" data-step="-1"[^>]*disabled/);
+  assert.match(html, /data-adjust-mix-weight="bergamot" data-step="1"[^>]*disabled/);
 });
 
 test("application keeps finder filters, result expansion and manual clear actions wired", async () => {
