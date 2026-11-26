@@ -21,7 +21,8 @@ function aggregate(items, selector) {
 
 function normalizeExperiments(experiments, creationId, variantId) {
   return (Array.isArray(experiments) ? experiments : [])
-    .filter((item) => item.creationId === creationId && item.variantId === variantId)
+    .filter((item) => item.creationId === creationId && item.variantId === variantId
+      && Number.isFinite(Date.parse(item.observedAt)))
     .map((item) => ({
       id: String(item.id ?? ""),
       title: String(item.title ?? ""),
