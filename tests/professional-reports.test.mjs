@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createArchiveCreation, createArchiveVariant } from "../../archive/model.js";
-import { createSensoryExperiment } from "../sensory-experiments/model.js";
-import { buildProfessionalReport, toProfessionalReportCsv } from "./engine.js";
-import { renderProfessionalReports } from "./panel.js";
+import { createArchiveCreation, createArchiveVariant } from "../src/js/features/archive/model.js";
+import { createSensoryExperiment } from "../src/js/features/laboratory/sensory-experiments/model.js";
+import { buildProfessionalReport, toProfessionalReportCsv } from "../src/js/features/laboratory/professional-reports/engine.js";
+import { renderProfessionalReports } from "../src/js/features/laboratory/professional-reports/panel.js";
 
 function fixtures() {
   const creation = createArchiveCreation({
