@@ -10,12 +10,14 @@ La aplicación prioriza la formulación conceptual y la investigación creativa.
 - Distribución normalizada en 100 puntos creativos para comparar ideas.
 - Análisis de familias, facetas sensoriales y estructura orientativa salida/corazón/fondo.
 - Índice de diferenciación interna contra fórmulas guardadas en el archivo personal.
+- Benchmark local de similitud editorial frente a perfumes árabes, nicho e diseñador, usando notas públicas y familias.
+- Estimador heurístico de persistencia (horas) y proyección (metros), con rangos y confianza baja.
 - Lectura de patrones de identidad creativa y desafíos para explorar familias menos utilizadas.
 - Archivo local de creaciones, variantes, versiones e importación/exportación JSON.
 - Dashboard de indicadores y tendencias con gráficos 2D.
 - PWA instalable, responsive y preparada para funcionamiento local/offline.
 
-**Límite fundamental:** el sistema es una herramienta de exploración editorial y creativa, no un simulador químico ni una guía de fabricación. Los puntos creativos no son porcentajes de ingredientes, concentraciones, dosificaciones ni relaciones de producción. El índice de diferenciación solo compara el historial local del usuario; no demuestra originalidad mundial, ausencia de similitudes comerciales, patentabilidad ni exclusividad.
+**Límite fundamental:** el sistema es una herramienta de exploración editorial y creativa, no un simulador químico ni una guía de fabricación. Los puntos creativos no son porcentajes de ingredientes, concentraciones, dosificaciones ni relaciones de producción. El índice personal compara únicamente el historial local. El benchmark comercial compara notas y perfiles públicos, no fórmulas químicas propietarias. El estimador es una heurística de baja confianza; no garantiza duración, distancia ni desempeño físico.
 
 ## Dashboard y analítica
 
@@ -30,7 +32,7 @@ El Originality Engine compara una composición candidata contra variantes y vers
 
 La afinidad con patrones previos es una métrica separada: una fórmula puede diferenciarse bastante del archivo y, a la vez, alejarse del estilo predominante del creador. La primera fórmula no recibe una puntuación ficticia; el sistema solicita una línea base suficiente.
 
-No se consulta Internet, catálogos comerciales ni bases de datos globales de fórmulas. Por tanto, el resultado debe interpretarse como **diferenciación interna de tu archivo**, nunca como garantía de que una fragancia sea inédita en el mercado.
+El índice personal no consulta catálogos comerciales: es una métrica de **diferenciación interna de tu archivo**. El módulo separado de benchmark compara notas y familias públicas de una biblioteca local, pero no confirma fórmulas propietarias, copia, originalidad legal ni exclusividad.
 
 ## PWA, actualizaciones y uso offline
 
@@ -75,8 +77,22 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 14. Originalidad y diferenciación por inspiración | Extraer rasgos apreciados de perfumes de referencia y explorar estructuras conceptuales distintas sin reconstruir fórmulas comerciales | **Completado** — PR #45 fusionado |
 | 15. Briefs y diseño para clientes | Perfil de gustos, rechazos, ocasión, estilo y presencia deseada; vista previa y conexión voluntaria con asistente y propuestas | **Completado** — PR #47 fusionado |
 | 16. Posicionamiento de público y validación integral | Lectura comercial de género/estética de edad para fórmulas manuales, integración de flujos, referencias, normalización y offline | **Completado en CI** — PR #48 fusionado; aceptación física Android pendiente |
+| 17. Benchmark de catálogo comercial | Comparar notas y familias de una fórmula frente a perfumes árabes, nicho e diseñador, con top 3 por categoría, evidencia y fuente | **Completado** — PR #51 fusionado |
+| 18. Estimador conceptual de rendimiento | Estimar rangos amplios de persistencia en horas y proyección en metros en apertura y 1–2 h, con confianza baja y límites explícitos | **Completado** — PR #53 fusionado |
 
-La base funcional vigente pasó **171/171 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 16. Los PR #32 al #48 de funcionalidad y cierre documental están integrados en `main`. La PWA usa `shell-v40` e incluye los módulos de briefs guiados y posicionamiento de público en su shell offline. Queda pendiente la aceptación física en Android: revisión visual responsive, actualización PWA en dispositivo, impresión/guardado PDF y verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó **180/180 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 18. Los PR #32 al #53 de funcionalidad están integrados en `main`. La PWA usa `shell-v42` e incluye briefs, posicionamiento, benchmark y estimador en su shell offline. Queda pendiente la aceptación física en Android: revisión visual responsive, actualización PWA en dispositivo, impresión/guardado PDF y verificación del despliegue más reciente de GitHub Pages.
+
+## Bloque 17 — Benchmark comercial local
+
+La biblioteca de referencia incluye **1,479 perfiles** procedentes del dataset Scento, snapshot 2026-10-29, clasificados por tipo de casa en **324 árabes, 396 nicho/independiente y 759 diseñador/heritage**. Se muestran las tres mejores coincidencias por categoría. El score combina coincidencia de notas públicas y similitud de familias; cada tarjeta muestra evidencia y confianza.
+
+La comparación es editorial y aproximada: no compara composición química, fórmulas propietarias, proporciones de producción ni certifica que una fórmula sea copia u original. Las categorías se derivan del tipo de casa del dataset. El catálogo queda incluido en la PWA y funciona offline.
+
+**Fuente y licencia:** Scento Team, Scento Perfume Database (snapshot 2026-10-29), [scento.com/perfume-database](https://www.scento.com/perfume-database), CC BY 4.0. Se conserva atribución dentro del módulo. No se consulta la API durante la ejecución.
+
+## Bloque 18 — Estimador conceptual de rendimiento
+
+El panel estima rangos heurísticos de persistencia potencial en piel (horas), proyección inicial (metros) y proyección aproximada después de 1–2 horas. Utiliza familias, facetas y roles editoriales. La confianza se declara baja; la estimación no incorpora concentración real, vehículo, dosis, condiciones de aplicación, piel, clima ni prueba física. Los 100 puntos creativos no son porcentajes de ingredientes ni concentración, por lo que el resultado es una orientación de concepto, no una predicción de desempeño.
 
 ## Bloque 6 — Experiencia del constructor
 
@@ -135,7 +151,7 @@ El constructor móvil reduce el espacio vertical del encabezado, la búsqueda, l
 
 El asistente funciona sin conexión a modelos externos ni APIs facturables. Interpreta palabras y expresiones relacionadas con familias y facetas olfativas, distingue preferencias positivas de rasgos que el usuario desea evitar, y consulta exclusivamente las referencias incluidas en la biblioteca local. Permite trabajar con una idea personal, un perfil de cliente o una fragancia tomada como inspiración. Explica por qué sugiere cada materia, formula una pregunta de seguimiento cuando falta contexto y solo envía las referencias al constructor cuando el usuario pulsa la acción explícita de transferencia.
 
-Es un motor determinista basado en reglas y coincidencia editorial; no es un modelo generativo conversacional ni entiende cualquier frase libre como una persona. No reconstruye fórmulas de perfumes comerciales, no consulta catálogos externos y no predice química, seguridad, duración, rendimiento ni similitud comercial. Las propuestas son direcciones creativas iniciales que deben revisarse y probarse por el usuario.
+Es un motor determinista basado en reglas y coincidencia editorial; no es un modelo generativo conversacional ni entiende cualquier frase libre como una persona. No reconstruye fórmulas de perfumes comerciales ni predice química o seguridad. El benchmark comercial y el estimador de rendimiento son módulos separados, con sus limitaciones documentadas en los bloques 17 y 18.
 
 ## Política de costos y privacidad
 
@@ -148,4 +164,4 @@ El motor A/B/C ofrece tres rutas conceptuales distintas a partir del brief del a
 
 El módulo de inspiración recibe una etiqueta opcional, los rasgos que gustan y lo que se desea evitar. Extrae familias y descriptores, puede usar la frecuencia de familias del archivo local para ordenar caminos complementarios y muestra tres arquitecturas con referencias ilustrativas. Una dirección puede enviarse al asistente para crear otro brief y generar propuestas A/B/C; no se aplica a la composición activa. No consulta la fórmula de perfumes comerciales, no usa Internet ni certifica originalidad mundial.
 
-La PWA usa el shell `shell-v40`. Los bloques 15 y 16 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos.
+La PWA usa `shell-v42`. Los bloques 15–18 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
