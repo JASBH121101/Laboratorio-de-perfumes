@@ -92,11 +92,15 @@ export function renderMixStudio(state, pickerState = {}) {
             <span>Peso creativo</span><span>0–100 puntos</span>
           </label>
           <div class="mix-weight-controls">
-            <input class="mix-range" id="mix-${escapeHtml(entry.id)}-range" data-mix-weight="${escapeHtml(entry.id)}" type="range" min="0" max="100" step="1" value="${entry.points}" aria-label="Peso creativo de ${escapeHtml(note.name)}" ${state.items.length === 1 ? "disabled" : ""}>
+            <button type="button" class="mix-weight-step" data-adjust-mix-weight="${escapeHtml(entry.id)}" data-step="-1" aria-label="Restar un punto a ${escapeHtml(note.name)}" ${state.items.length === 1 || entry.points <= 0 ? "disabled" : ""}>−</button>
             <label class="mix-weight-number-label" for="mix-${escapeHtml(entry.id)}-number">
               <span class="sr-only">Puntos de ${escapeHtml(note.name)}</span>
               <input class="mix-weight-number" id="mix-${escapeHtml(entry.id)}-number" data-mix-weight="${escapeHtml(entry.id)}" type="number" inputmode="numeric" min="0" max="100" step="1" value="${entry.points}" aria-label="Puntos creativos de ${escapeHtml(note.name)}" ${state.items.length === 1 ? "disabled" : ""}>
             </label>
+            <button type="button" class="mix-weight-step" data-adjust-mix-weight="${escapeHtml(entry.id)}" data-step="1" aria-label="Sumar un punto a ${escapeHtml(note.name)}" ${state.items.length === 1 || entry.points >= 100 ? "disabled" : ""}>+</button>
+          </div>
+          <div class="mix-weight-progress" role="img" aria-label="${entry.points} de 100 puntos creativos">
+            <span style="width:${entry.points}%"></span>
           </div>
         </div>
       </article>
@@ -109,7 +113,7 @@ export function renderMixStudio(state, pickerState = {}) {
         <div>
           <p class="eyebrow">BLOCK 06 · FORMULATION WORKSPACE</p>
           <h2>Composición <em>conceptual</em></h2>
-          <p>Buscá materias por nombre, familia o perfil; añadilas y ajustá cada peso creativo con precisión.</p>
+          <p>Buscá materias por nombre, familia o perfil; añadilas y ajustá cada peso creativo con pasos precisos y valores numéricos.</p>
           <span class="mix-draft-status" role="status">Borrador automático local · se recupera al volver</span>
         </div>
         <span class="mix-total-badge">${hasItems ? total : 0}<small>/ 100 PTS</small></span>
