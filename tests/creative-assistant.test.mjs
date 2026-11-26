@@ -119,3 +119,42 @@ test("assistant recommendations are not treated as technical or safety certifica
   assert.match(result.notice, /No calculan una fórmula química/);
   assert.match(result.notice, /seguridad de uso/);
 });
+
+
+test("assistant blocks recommendations when the same family is both preferred and avoided", () => {
+  const result = buildCreativeRecommendations({
+    description: "Me gustan las notas dulces, pero no quiero nada dulce en la composición.",
+    mode: "personal"
+  });
+  assert.equal(result.status, "needs-clarification");
+  assert.ok(result.conflicts.includes("dulce o cremosa"));
+  assert.equal(result.suggestions.length, 0);
+  assert.match(result.followUpQuestion, /incluir|dejarlo fuera/);
+});
+
+test("assistant distinguishes positive and negative family mentions", () => {
+  const result = buildCreativeRecommendations({
+    description: "Quiero algo cítrico y amaderado, sin dulzor marcado.",
+    mode: "personal"
+  });
+  assert.equal(result.status, "ready");
+  assert.ok(result.preferences.includes("cítrica"));
+  assert.ok(result.preferences.includes("amaderada"));
+  assert.ok(result.avoidedPreferences.includes("dulce o cremosa"));
+});
+
+test("assistant renders guided prompts and an explicit conflict state", () => {
+  const html = renderCreativeAssistant({ open: true, mode: "personal" });
+  assert.match(html, /data-creative-prompt=/);
+  assert.match(html, /Fresco y limpio/);
+  assert.match(html, /Cálido y envolvente/);
+  const conflictHtml = renderCreativeAssistant({
+    open: true,
+    result: {
+      title: "Aclaración", summary: "Hay señales opuestas.", preferences: [],
+      avoidedPreferences: [], conflicts: ["dulce o cremosa"],
+      followUpQuestion: "¿Querés incluirlo?", suggestions: [], notice: "Pendiente."
+    }
+  });
+  assert.match(conflictHtml, /Brief pendiente de aclaración/);
+});
