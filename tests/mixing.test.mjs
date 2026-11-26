@@ -79,7 +79,7 @@ test("unknown note operations do not mutate the composition", () => {
 test("mix studio renderer labels point weights as conceptual", () => {
   const state = addMixNote(createMixState(), "bergamot");
   const html = renderMixStudio(state);
-  assert.match(html, /100 pts/);
+  assert.match(html, /100<small> pts<\/small>/);
   assert.match(html, /ponderaciones creativas/);
   assert.match(html, /No son porcentajes/);
 });
@@ -117,7 +117,7 @@ test("composition history is bounded to the most recent forty operations", () =>
 
 test("mixing panel exposes library picker, drag-drop zone and undo", () => {
   const html = renderMixStudio(addMixNote(createMixState(), "bergamot"));
-  assert.match(html, /id="mix-note-picker"/);
+  assert.match(html, /id="mix-picker-search"/);\n  assert.match(html, /id="mix-picker-family"/);\n  assert.match(html, /id="mix-picker-kind"/);\n  assert.match(html, /id="mix-picker-role"/);
   assert.match(html, /data-mix-dropzone/);
   assert.match(html, /data-action="undo-mix"/);
   assert.match(html, /data-mix-weight="bergamot"/);
