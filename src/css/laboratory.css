@@ -897,3 +897,15 @@
 .similarity-disclaimer{margin:15px 0 0;padding-top:12px;border-top:1px solid var(--line);color:var(--muted-2);font-size:14px;line-height:1.6}
 @media(max-width:760px){.fragrance-similarity-panel{margin:18px 0 22px;padding:13px}.similarity-panel-heading{flex-direction:column;gap:8px}.similarity-local-tag{align-self:flex-start}.similarity-controls{grid-template-columns:repeat(2,minmax(0,1fr));padding:10px;gap:10px}.similarity-scope-control,.similarity-filter--house{grid-column:1/-1}.similarity-suggestion-list{grid-template-columns:minmax(0,1fr)}.similarity-results-heading{align-items:flex-start;flex-direction:column}.similarity-results-heading>span{text-align:left}}
 @media(max-width:420px){.similarity-controls{grid-template-columns:minmax(0,1fr)}.similarity-scope-control,.similarity-filter--house{grid-column:auto}.similarity-reference-card{align-items:flex-start;flex-direction:column}.similarity-reset{width:100%}.similarity-result-card{padding:11px}.similarity-result-title{gap:7px}.similarity-result-title h4{font-size:16px}.similarity-score strong{font-size:23px}.similarity-evidence li{grid-template-columns:minmax(0,1fr);gap:1px}}
+
+
+/* Blocks 37–38 — search keyboard and evidence clarity */
+.similarity-suggestion[aria-selected="true"]{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);background:var(--accent-soft)}
+.similarity-confidence-detail{margin:10px 0 6px;padding:10px 11px;display:flex;flex-wrap:wrap;gap:8px 16px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+.similarity-confidence-detail>span{color:var(--muted);font-size:13px;line-height:1.5}
+.similarity-confidence-detail strong{margin-left:4px;color:var(--text);font-variant-numeric:tabular-nums}
+.similarity-confidence-reasons{margin:6px 0 10px;padding-left:19px;color:var(--muted);font-size:13px;line-height:1.5}
+.similarity-confidence-reasons li+li{margin-top:3px}
+.similarity-empty .similarity-reset-filters{margin-top:7px;max-width:240px}
+#fragrance-similarity-search[aria-expanded="true"]{border-color:var(--accent)}
+@media(max-width:520px){.similarity-confidence-detail{display:grid;grid-template-columns:minmax(0,1fr);gap:5px}.similarity-confidence-detail>span{font-size:13px}}

@@ -43,6 +43,8 @@ const requiredFiles = [
   "src/js/features/laboratory/fragrance-similarity/scope.js",
   "src/js/features/laboratory/fragrance-similarity/experience.js",
   "src/js/features/laboratory/fragrance-similarity/panel.js",
+  "src/js/features/laboratory/fragrance-similarity/interaction.js",
+  "tests/fragrance-similarity-interaction.test.mjs",
   "tests/fragrance-similarity-experience.test.mjs",
   "tests/fragrance-similarity-panel.test.mjs",
   "tests/fragrance-similarity-filters.test.mjs",
@@ -134,6 +136,11 @@ if (!app.includes("buildClientBrief") || !app.includes("send-client-brief-to-ass
 if (!app.includes("updateAudienceFit") || !views.includes("renderAudienceFit") || !sw.includes("audience-fit/engine.js") || !sw.includes("audience-fit/panel.js")) failures.push("Live audience positioning must update with the active composition and remain available offline.");
 if (!sw.includes("reference-benchmark/data.js") || !sw.includes("reference-benchmark/engine.js") || !sw.includes("reference-benchmark/panel.js") || !originalityPanel.includes("renderCatalogBenchmark") || !views.includes("renderOriginalityAnalysis")) failures.push("Commercial reference benchmark must be integrated and cached offline.");
 if (!sw.includes("performance-estimator/engine.js") || !sw.includes("performance-estimator/panel.js") || !app.includes("renderPerformanceEstimate") || !views.includes("renderPerformanceEstimate") || !app.includes("performance-concentration") || !app.includes("performance-environment")) failures.push("Performance estimator scenarios must be adjustable and wired into the composition workflow and offline shell.");
+const similarityInteraction = await readFile("src/js/features/laboratory/fragrance-similarity/interaction.js", "utf8");
+if (!app.includes("getFragranceSuggestionKeyboardAction") || !app.includes('addEventListener("keydown"') ||
+    !sw.includes("fragrance-similarity/interaction.js") || !similarityInteraction.includes("ArrowDown") || !similarityInteraction.includes("Escape")) {
+  failures.push("Fragrance search keyboard navigation is not wired to the offline shell and interaction contract.");
+}
 if (!app.includes("buildFragranceSimilarityExperience") || !app.includes("data-similarity-select") ||
     !views.includes("renderFragranceSimilarityPanel") ||
     !sw.includes("fragrance-similarity/experience.js") || !sw.includes("fragrance-similarity/panel.js")) {
