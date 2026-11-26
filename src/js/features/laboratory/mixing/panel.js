@@ -40,7 +40,8 @@ export function renderMixStudio(state) {
         <div>
           <p class="eyebrow">BLOCK 05 · CONCEPT COMPOSITION</p>
           <h2>Recipiente <em>conceptual</em></h2>
-          <p>Organizá notas y acordes y ajustá su peso creativo para explorar el perfil general.</p>\n          <span class="mix-draft-status" role="status">Borrador automático local · se recupera al volver</span>
+          <p>Organizá notas y acordes y ajustá su peso creativo para explorar el perfil general.</p>
+          <span class="mix-draft-status" role="status">Borrador automático local · se recupera al volver</span>
         </div>
         <span class="mix-total-badge">${hasItems ? total : 0}<small>/ 100 PTS</small></span>
       </div>
