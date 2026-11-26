@@ -76,7 +76,7 @@ test("sensory panel renders form, subjective rating labels, history and backup c
   const { creation } = fixture();
   const html = renderSensoryExperiments({ creations: [creation], experiments: [record()] });
   assert.match(html, /Nuevo experimento sensorial/);
-  assert.match(html, /Observación / evolución percibida/);
+  assert.match(html, /Observación \/ evolución percibida/);
   assert.match(html, /no son mediciones instrumentales/);
   assert.match(html, /Historial sensorial/);
   assert.match(html, /export-sensory-backup/);
