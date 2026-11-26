@@ -2,7 +2,7 @@ import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
-import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
+import { renderMixPickerResults, renderMixStudio } from "./features/laboratory/mixing/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -22,7 +22,7 @@ const notice = document.querySelector("#app-notice");
 const noticeTitle = document.querySelector("#app-notice-title");
 const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
-const libraryState = { query: "", family: "all", role: "all", selectedId: null };
+const libraryState = { query: "", family: "all", role: "all", selectedId: null };\nconst mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -159,7 +159,7 @@ function safeFilename(value) {
 
 function render() {
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState());
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -192,10 +192,10 @@ function updateOriginalityAnalysis() {
   if (panel) panel.outerHTML = renderOriginalityAnalysis(mixingState, archiveState.creations);
 }
 
-function updateMixStudio() {
+function updateMixPickerResults() {\n  const results = appRoot.querySelector("#mix-picker-results");\n  if (results) results.innerHTML = renderMixPickerResults(mixingState, mixPickerState);\n  const clear = appRoot.querySelector(".mix-picker-clear");\n  if (clear) clear.disabled = !mixPickerState.query && mixPickerState.family === "all" && mixPickerState.role === "all" && mixPickerState.kind === "all";\n}\n\nfunction updateMixStudio() {
   saveMixDraft(mixingState.items);
   const panel = appRoot.querySelector("#mix-studio");
-  if (panel) panel.outerHTML = renderMixStudio(mixingState);
+  if (panel) panel.outerHTML = renderMixStudio(mixingState, mixPickerState);
   const quickSave = appRoot.querySelector("#archive-quick-save");
   if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(getArchiveViewState());
   updateCreativeAnalysis();
