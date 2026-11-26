@@ -88,7 +88,7 @@ export function renderMixStudio(state, pickerState = {}) {
           <button class="mix-remove" type="button" data-remove-mix-note="${escapeHtml(entry.id)}" aria-label="Quitar ${escapeHtml(note.name)}">×</button>
         </div>
         <div class="mix-weight-editor">
-          <label class="mix-range-label" for="mix-${escapeHtml(entry.id)}-range">
+          <label class="mix-range-label" for="mix-${escapeHtml(entry.id)}-number">
             <span>Peso creativo</span><span>0–100 puntos</span>
           </label>
           <div class="mix-weight-controls">
@@ -99,7 +99,7 @@ export function renderMixStudio(state, pickerState = {}) {
             </label>
             <button type="button" class="mix-weight-step" data-adjust-mix-weight="${escapeHtml(entry.id)}" data-step="1" aria-label="Sumar un punto a ${escapeHtml(note.name)}" ${state.items.length === 1 || entry.points >= 100 ? "disabled" : ""}>+</button>
           </div>
-          <div class="mix-weight-progress" role="img" aria-label="${entry.points} de 100 puntos creativos">
+          <div class="mix-weight-progress" role="progressbar" aria-label="Peso de ${escapeHtml(note.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${entry.points}">
             <span style="width:${entry.points}%"></span>
           </div>
         </div>
