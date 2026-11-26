@@ -81,6 +81,7 @@ function updateArchiveUI() {
   if (archiveRoot) archiveRoot.outerHTML = renderArchiveView(viewState);
   const quickSave = appRoot.querySelector("#archive-quick-save");
   if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(viewState);
+  updateOriginalityAnalysis();
 }
 
 async function refreshArchive() {
