@@ -453,3 +453,17 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 
 ### Siguiente par
 - **Bloques 39–40:** pruebas integrales de ciclo completo, consistencia de filtros y alcance, reinicio/reselección, rendimiento con catálogo amplio y verificación de caché. La conexión comercial del inventario requerirá identificar y mapear una fuente real de productos y existencias; no se reutilizarán fórmulas ni experimentos como stock.
+
+
+### Resultado — Bloques 39 y 40
+- **Bloque 39:** pruebas de ciclo de vida de búsqueda, cambio de consulta después de seleccionar referencia, filtros y restablecimiento; se verifican IDs y scores estables.
+- **Bloque 40:** pruebas de aislamiento al cambiar Catálogo global ↔ Inventario propio, estabilidad del ranking/caché, límite de resultados y exclusión de la referencia.
+- **PR #79:** fusionado mediante Squash Merge; commit `22dc55d6ede6c0dc7fbc2a51b09ea07b309d7457`.
+- **CI #45885485572:** SUCCESS; pruebas, sintaxis de módulos y validación de estructura aprobadas.
+- Sin cambios al scoring, dependencias, APIs externas, servicios pagos ni Supabase.
+- No equivale a prueba física Android ni benchmark en dispositivo. Inventario real sigue pendiente de una fuente comercial.
+
+**Alcance global:** bloques 1–40 completados y fusionados en `main`.
+
+### Siguiente par
+- **Bloques 41–42:** certificación integral de aceptación, regresiones, checklist Android manual y documentación de estado final, limitaciones y preparación.
