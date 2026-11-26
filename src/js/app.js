@@ -6,6 +6,8 @@ import { renderMixPickerResults, renderMixStudio } from "./features/laboratory/m
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
+import { compareSavedCompositions } from "./features/laboratory/comparison/engine.js";
+import { renderAnalyticalComparison } from "./features/laboratory/comparison/panel.js";
 import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { createArchiveRepository } from "./features/archive/repository.js";
 import {
@@ -34,6 +36,7 @@ let archiveState = {
   selectedCreationId: null,
   selectedVariantId: null,
   comparison: null,
+  comparisonPair: null,
   error: "",
   storageMode: globalThis.indexedDB ? "IndexedDB" : "localStorage"
 };
@@ -82,6 +85,8 @@ function updateArchiveUI() {
   if (archiveRoot) archiveRoot.outerHTML = renderArchiveView(viewState);
   const quickSave = appRoot.querySelector("#archive-quick-save");
   if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(viewState);
+  const comparisonPanel = appRoot.querySelector("#archive-comparison-root");
+  if (comparisonPanel) comparisonPanel.outerHTML = renderAnalyticalComparison(archiveState);
   updateOriginalityAnalysis();
 }
 
@@ -503,6 +508,12 @@ appRoot.addEventListener("click", async (event) => {
         appRoot.querySelector("#archive-compare-left")?.value,
         appRoot.querySelector("#archive-compare-right")?.value
       );
+      updateArchiveUI();
+    } else if (action === "compare-saved-compositions") {
+      const leftKey = appRoot.querySelector("#comparison-left")?.value;
+      const rightKey = appRoot.querySelector("#comparison-right")?.value;
+      compareSavedCompositions(archiveState.creations, leftKey, rightKey);
+      archiveState.comparisonPair = { leftKey, rightKey };
       updateArchiveUI();
     } else if (action === "delete-archive") {
       const id = event.target.closest("[data-archive-id]")?.dataset.archiveId ?? archiveState.selectedCreationId;
