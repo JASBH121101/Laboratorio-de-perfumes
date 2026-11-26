@@ -209,7 +209,6 @@ if (!referenceProfile || !candidateProfile) {
       failures.push("Fragrance global scoring or evidence explanation did not return a valid independent result.");
     }
   }
-}
 
   const referenceSearch = searchFragranceReferences("Oud Wood");
   const exactReference = getFragranceSimilarityReferenceById("tom-ford-oud-wood");
