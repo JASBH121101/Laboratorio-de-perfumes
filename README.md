@@ -171,3 +171,8 @@ An empty composition opens a focused front-facing experiment view with architect
 ### Phase 2 Block 15 — Vessel & Glass Realism
 
 The flacon and vial fills use rounded profiles; vial and beaker liquids gain visible surfaces and meniscus edges; the beaker gains thicker base and lip cues with visual-only graduation marks; labels receive a paper-like print treatment and the pipette gets a refined bulb collar. Glass transmission and clearcoat are refined for the local environment map. PWA shell cache advances to `shell-v24`. Liquid quantities remain conceptual, not calibrated chemical volumes.
+
+
+### Phase 2 Block 18 — Original Creation Draft Recovery
+
+The active conceptual composition autosaves locally and restores after app reload. Loading an archived variant updates the working draft, and clearing the composition removes the draft. This protects unfinished creative work from accidental reloads; the local archive with variants and version history remains the durable saved-creation system. Draft weights are conceptual points, not a fragrance formula.

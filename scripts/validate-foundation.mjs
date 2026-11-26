@@ -12,7 +12,7 @@ const requiredFiles = [
   "src/js/app.js", "src/js/core/navigation.js", "src/js/core/pwa.js",
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
   "src/js/features/laboratory/catalog.js", "src/js/features/laboratory/inspector.js", "src/js/features/laboratory/scene.js", "src/js/features/laboratory/render-profile.js", "src/js/features/laboratory/architecture.js", "src/js/features/laboratory/materials.js", "src/js/features/laboratory/environment.js", "src/js/features/laboratory/perfume-assets.js", "src/js/features/laboratory/performance-audit.js",
-  "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/panel.js",
+  "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/draft-storage.js", "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
   "src/js/features/laboratory/evolution/engine.js", "src/js/features/laboratory/evolution/panel.js",
   "src/js/features/archive/model.js", "src/js/features/archive/repository.js", "src/js/features/archive/panel.js",
@@ -57,13 +57,14 @@ if (!manifest.icons?.some((icon) => icon.src === "./assets/brand-logo.svg")) fai
 if (!html.includes('id="app-notice"')) failures.push("Persistent PWA notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/design-system.css")) failures.push("Application or design-system entrypoint is missing.");
 if (!/shell-v[0-9]+/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("Versioned service-worker update lifecycle is missing.");
+if (!app.includes("loadMixDraft() ?? createMixState()") || !app.includes("saveMixDraft(mixingState.items)")) failures.push("Local creation draft restore/autosave is not wired to the mixing state.");
 if (!app.includes("createPwaManager") || !app.includes("check-updates")) failures.push("PWA install/update controls are not wired.");
 if (!app.includes("renderLibraryResults") || !app.includes("library-family")) failures.push("Perfume Library filters are not wired.");
 if (!html.includes("three@0.187.0") || !html.includes('type="importmap"')) failures.push("Pinned Three.js import map is missing.");
 if (!sw.includes("THREE_MODULE_URL") || !sw.includes("THREE_CORE_URL") || !sw.includes("three@0.187.0")) failures.push("Three.js module and core are not handled by the PWA cache.");
 if (sw.includes("cache.add(new Request(THREE_MODULE_URL")) failures.push("Three.js CDN files should be cached on first 3D use, not during PWA installation.");
 if (!sw.includes("src/js/features/laboratory/scene.js") || !sw.includes("src/css/laboratory.css")) failures.push("3D application modules are missing from the offline shell.");
-if (!sw.includes("mixing/state.js") || !sw.includes("mixing/panel.js")) failures.push("Virtual mixing modules are missing from the PWA offline shell.");
+if (!sw.includes("mixing/state.js") || !sw.includes("mixing/draft-storage.js") || !sw.includes("mixing/panel.js")) failures.push("Virtual mixing modules are missing from the PWA offline shell.");
 if (!sw.includes("analysis/engine.js") || !sw.includes("analysis/panel.js")) failures.push("Creative analysis modules are missing from the PWA offline shell.");
 if (!app.includes('import("./features/laboratory/scene.js")') || !app.includes("[data-lab-stage]")) failures.push("The 3D scene must be lazy-loaded only in the laboratory view.");
 if (!scene.includes("WebGLRenderer") || !scene.includes("Raycaster") || !scene.includes("pointerdown")) failures.push("Interactive 3D renderer or object selection is missing.");
@@ -88,7 +89,7 @@ if (!views.includes("renderCreativeAnalysis(mixingState, analysisDirection)") ||
 if (!sw.includes("evolution/engine.js") || !sw.includes("evolution/panel.js")) failures.push("Evolution simulator modules are missing from the PWA offline shell.");
 if (!sw.includes("archive/model.js") || !sw.includes("archive/repository.js") || !sw.includes("archive/panel.js")) failures.push("Creative archive modules are missing from the PWA offline shell.");
 const escapedNewlinePrefix = String.fromCharCode(92) + "n  ";
-if (!/shell-v26/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v26, precache the performance audit module and keep valid JavaScript source line breaks.");
+if (!/shell-v27/.test(sw) || !sw.includes("laboratory/performance-audit.js") || sw.includes(escapedNewlinePrefix)) failures.push("Service worker must use shell-v27, precache the performance audit module and keep valid JavaScript source line breaks.");
 if (!scene.includes("runPerformanceAudit") || !scene.includes("performanceAuditAbort?.abort()")) failures.push("3D performance audit must be on-demand and abort on scene disposal.");
 if (!views.includes('data-action="run-lab-performance-audit"') || !views.includes('id="lab-performance-report"')) failures.push("Local performance audit controls and report output are missing.");
 if (!app.includes("formatLabPerformanceReport") || !app.includes("run-lab-performance-audit")) failures.push("Performance report UI is not wired to the local audit.");

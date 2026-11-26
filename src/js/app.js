@@ -5,6 +5,7 @@ import { renderLabInspector } from "./features/laboratory/inspector.js";
 import { formatLabPerformanceReport } from "./features/laboratory/performance-audit.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
+import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { createArchiveRepository } from "./features/archive/repository.js";
@@ -25,7 +26,7 @@ const noticeAction = document.querySelector("#app-notice-action");
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 const archiveRepository = createArchiveRepository();
 
-let mixingState = createMixState();
+let mixingState = loadMixDraft() ?? createMixState();
 let analysisDirection = "balanced";
 let evolutionStage = "opening";
 let selectedLabPropId = null;
@@ -121,6 +122,7 @@ function loadVariantIntoLab(creation, variant) {
   archiveState.selectedVariantId = variant.id;
   archiveState.comparison = null;
   mixingState = { items: variant.items.map((item) => ({ ...item })), history: [] };
+  saveMixDraft(mixingState.items);
   evolutionStage = "opening";
   window.location.hash = "#lab";
   render();

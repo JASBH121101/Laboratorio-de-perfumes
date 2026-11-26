@@ -554,3 +554,22 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Regression tests, syntax validation and PWA foundation validation pass.
 - [ ] Physically verify all four buttons, camera transitions, pinch/orbit and composition changes on Android after deployment.
 - [ ] Inspect actual model scale, glass appearance, material quality and frame-time on the target Android device.
+
+
+## 25. Block 18 implementation record — Original Creation Draft Recovery
+
+- Added a versioned, local-only draft record for the current conceptual composition using browser storage. It restores the selected note IDs and creative points on app startup, without restoring undo history.
+- Composition changes save immediately; loading an archived variant also replaces the active draft. Clearing the composition removes the draft record.
+- Draft payload validation checks schema version, known library references, unique IDs, integer point bounds and the normalized 100-point total. Malformed, outdated or invalid payloads are ignored safely.
+- Added an explicit status label in the mixing studio explaining that the draft is autosaved locally and restored when returning.
+- Added unit/regression coverage and precached the draft-storage module; PWA shell advances to `shell-v27`.
+- No cloud sync, remote service, paid feature, new dependency or real-world formula/manufacturing guidance was added.
+
+### Acceptance record
+
+- [x] Current conceptual composition restores after app reload using local browser storage.
+- [x] Composition edits, loading an archive variant and clearing the vessel update draft storage.
+- [x] Storage validation rejects malformed data, invalid library IDs, duplicate IDs and invalid point totals.
+- [x] Undo history is not restored; saved archives remain the versioned source for long-term creations.
+- [x] PWA shell cache advances to `shell-v27` and includes the new module.
+- [ ] Run automated tests, syntax/foundation checks and CI; physical Android verification of reload recovery remains pending.
