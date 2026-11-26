@@ -29,7 +29,7 @@ test("notes can be added from the inspector, library and mixing picker", () => {
   assert.match(app, /action === "add-picked-note"/);
   assert.match(app, /addNoteToMix\(appRoot\.querySelector\("#mix-note-picker"\)\?\.value\)/);
   assert.match(app, /appRoot\.addEventListener\("change", async \(event\) => \{[\s\S]*?setMixNotePoints/);
-  assert.match(views, /data-mix-dropzone/);
+  assert.match(mixPanel, /data-mix-dropzone/);
 });
 
 test("selecting a variant loads its exact composition into the editor and autosaves it", () => {
