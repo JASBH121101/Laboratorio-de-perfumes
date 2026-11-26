@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createCreativeProfile, validateCreativeProfile, compareCreativeProfiles } from "../src/js/features/laboratory/profile-history/engine.js";
@@ -85,4 +86,18 @@ test("empty profile history offers a clear start and disables comparison", () =>
   assert.match(html, /El historial está vacío/);
   assert.match(html, /Preparar un perfil/);
   assert.match(html, /disabled/);
+});
+
+
+test("profile history remains responsive and privacy-aware in the projects view", async () => {
+  const [views, css, validator] = await Promise.all([
+    readFile(new URL("../src/js/ui/views.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/css/analytics.css", import.meta.url), "utf8"),
+    readFile(new URL("../scripts/validate-foundation.mjs", import.meta.url), "utf8")
+  ]);
+  assert.match(views, /renderProfileHistory/);
+  assert.match(views, /profile-history-root/);
+  assert.match(css, /\.profile-comparison-columns/);
+  assert.match(css, /@media\(max-width:700px\)/);
+  assert.match(validator, /profile-history\/engine\.js/);
 });
