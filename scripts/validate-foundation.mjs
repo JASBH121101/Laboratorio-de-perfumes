@@ -80,8 +80,7 @@ const comparison = compareCompositions(
   { name: "Validator B", items: [{ id: "bergamot", points: 25 }, { id: "vanilla", points: 75 }] }
 );
 if (comparison.similarity !== 25 || comparison.difference !== 75 || !comparison.familyRows.length) failures.push("Analytical comparison did not calculate structural overlap and family differences.");
-const signature = analyzePersonalSignature([alternate]);
-if (signature.status !== "ready" || signature.snapshotCount < 1 || signature.distinctReferenceCount < 1) failures.push("Personal signature history did not analyze saved version snapshots.");
+
 if (!app.includes("renderPersonalSignatureHistory") || !views.includes("renderPersonalSignatureHistory") || !dashboardCss.includes(".personal-signature-history")) failures.push("Personal signature history is not wired into the dashboard with responsive styling.");
 if (!originalityPanel.includes("ÍNDICE DE DIFERENCIACIÓN INTERNA") || !originalityPanel.includes("No consulta catálogos comerciales")) failures.push("Originality panel must explain its local comparison boundary.");
 if (!dashboardCss.includes(".dashboard-kpis") || !dashboardCss.includes(".originality-metrics")) failures.push("Responsive analytics and originality styles are missing.");
@@ -95,6 +94,8 @@ if (analysis.isEmpty || analysis.totalPoints !== 100 || !analysis.families.lengt
 
 const first = createArchiveCreation({ name: "Validator baseline", items: mix.items });
 const alternate = createArchiveVariant(first, { items: addMixNote(createMixState(), "yuzu").items });
+const signature = analyzePersonalSignature([alternate]);
+if (signature.status !== "ready" || signature.snapshotCount < 1 || signature.distinctReferenceCount < 1) failures.push("Personal signature history did not analyze saved version snapshots.");
 const backup = buildArchiveBackup([alternate]);
 const restored = parseArchiveBackup(backup);
 if (restored.length !== 1 || restored[0].variants.length !== 2) failures.push("Local archive backup round-trip failed.");
