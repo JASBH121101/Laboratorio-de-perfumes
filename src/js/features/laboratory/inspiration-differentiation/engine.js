@@ -88,7 +88,9 @@ function chooseFamilies(preferredFamilies, avoidedFamilies, usage, library) {
     .sort((a, b) => {
       const usageDifference = (usage.get(a) || 0) - (usage.get(b) || 0);
       if (usageDifference !== 0) return usageDifference;
-      return order.indexOf(a) - order.indexOf(b);
+      const rankA = order.indexOf(a) < 0 ? Number.MAX_SAFE_INTEGER : order.indexOf(a);
+      const rankB = order.indexOf(b) < 0 ? Number.MAX_SAFE_INTEGER : order.indexOf(b);
+      return rankA - rankB;
     });
   return { primary, secondary, complements };
 }
@@ -155,7 +157,7 @@ export function analyzeInspirationDifferentiation({
   const avoidText = String(avoid).trim().slice(0, 1200);
   const positive = extractTraits(likedText);
   const negativeFromLiked = positive.avoided;
-  const negativeFromAvoid = extractTraits(avoidText, true).positive;
+  const negativeFromAvoid = extractTraits(avoidText, true).avoided;
   const avoided = [...negativeFromLiked, ...negativeFromAvoid];
   const preferred = positive.positive.filter((trait) =>
     !avoided.some((item) => item.id === trait.id)
