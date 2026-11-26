@@ -55,7 +55,7 @@ test("loading a proposal validates real unique references and a normalized 100-p
   const state = createMixState();
   const loaded = replaceMixItems(state, [
     { id: "bergamot", points: 55 },
-    { id: "cedar", points: 45 }
+    { id: "cedarwood", points: 45 }
   ]);
   assert.equal(getMixTotal(loaded), 100);
   assert.equal(loaded.items.length, 2);
