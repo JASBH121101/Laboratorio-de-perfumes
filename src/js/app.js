@@ -408,6 +408,12 @@ appRoot.addEventListener("change", async (event) => {
       event.target.value = "";
     }
   }
+  if (event.target.id === "professional-report-variant") {
+    archiveState.reportSelection = event.target.value;
+    archiveState.professionalReport = null;
+    const reportPanel = appRoot.querySelector("#professional-reports-root");
+    if (reportPanel) reportPanel.outerHTML = renderProfessionalReports(archiveState);
+  }
   if (event.target.id === "sensory-import-file") {
     try {
       await importSensoryBackupFile(event.target.files?.[0]);
