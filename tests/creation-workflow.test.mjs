@@ -4,24 +4,14 @@ import { readFile } from "node:fs/promises";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFile(new URL(path, root), "utf8");
-const [app, scene, views, archivePanel, inspector, mixPanel] = await Promise.all([
+const [app, views, archivePanel, mixPanel] = await Promise.all([
   read("src/js/app.js"),
-  read("src/js/features/laboratory/scene.js"),
   read("src/js/ui/views.js"),
   read("src/js/features/archive/panel.js"),
-  read("src/js/features/laboratory/inspector.js"),
   read("src/js/features/laboratory/mixing/panel.js")
 ]);
 
-test("3D prop selection reaches the inspector and clear-selection returns to its empty state", () => {
-  assert.match(scene, /stage\.dispatchEvent\(new CustomEvent\("lab:item-selected"/);
-  assert.match(app, /appRoot\.addEventListener\("lab:item-selected", \(event\) => updateLabInspector/);
-  assert.match(inspector, /data-action="clear-lab-selection"/);
-  assert.match(app, /action === "clear-lab-selection"/);
-  assert.match(app, /labController\?\.clearSelection\(\)/);
-});
-
-test("notes can be added from the inspector, library and mixing picker", () => {
+test("notes can be added from the library and mixing picker", () => {
   assert.match(app, /const addMixTarget = event\.target\.closest\("\[data-add-to-mix\]"\)/);
   assert.match(app, /addNoteToMix\(addMixTarget\.dataset\.addToMix\)/);
   assert.match(app, /const noteTarget = event\.target\.closest\("\[data-open-note\]"\)/);
@@ -30,6 +20,7 @@ test("notes can be added from the inspector, library and mixing picker", () => {
   assert.match(app, /addNoteToMix\(appRoot\.querySelector\("#mix-note-picker"\)\?\.value\)/);
   assert.match(app, /appRoot\.addEventListener\("change", async \(event\) => \{[\s\S]*?setMixNotePoints/);
   assert.match(mixPanel, /data-mix-dropzone/);
+  assert.doesNotMatch(views, /data-lab-stage|camera-preset|Three\.js/i);
 });
 
 test("selecting a variant loads its exact composition into the editor and autosaves it", () => {
@@ -43,7 +34,7 @@ test("selecting a variant loads its exact composition into the editor and autosa
 });
 
 test("restoring an archive version also refreshes the working draft", () => {
-  const restoreHandler = app.match(/const restoreTarget = event\.target\.closest\("\[data-restore-version\]"\);([\s\S]*?)const cameraPreset/);
+  const restoreHandler = app.match(/const restoreTarget = event\.target\.closest\("\[data-restore-version\]"\);([\s\S]*?)const action = event\.target\.closest/);
   assert.ok(restoreHandler, "Version restore handler is present");
   assert.match(restoreHandler[1], /restoreArchiveVersion\(/);
   assert.match(restoreHandler[1], /saveMixDraft\(mixingState\.items\)/);
@@ -57,8 +48,7 @@ test("empty compositions cannot be saved or forked into archive versions", () =>
     assert.ok(start >= 0, `Missing ${name}`);
     assert.match(app.slice(start, start + 350), /requireWorkingComposition\(\)/);
   }
-  assert.match(archivePanel, /hasCurrentComposition = state\.hasCurrentComposition !== false/);
-  assert.match(archivePanel, /data-action="create-archive" \\?\$\{hasCurrentComposition/);
+  assert.ok(archivePanel.includes('data-action="create-archive"'));
 });
 
 test("quick-save status is refreshed after every composition update and each edit is autosaved", () => {

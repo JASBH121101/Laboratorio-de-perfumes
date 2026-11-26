@@ -1,12 +1,11 @@
 import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
-import { renderLabInspector } from "./features/laboratory/inspector.js";
-import { formatLabPerformanceReport } from "./features/laboratory/performance-audit.js";
 import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixStudio } from "./features/laboratory/mixing/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
+import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
 import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { createArchiveRepository } from "./features/archive/repository.js";
 import {
@@ -29,9 +28,6 @@ const archiveRepository = createArchiveRepository();
 let mixingState = loadMixDraft() ?? createMixState();
 let analysisDirection = "balanced";
 let evolutionStage = "opening";
-let selectedLabPropId = null;
-let labController = null;
-let renderCycle = 0;
 let archiveState = {
   creations: [],
   selectedCreationId: null,
@@ -85,6 +81,7 @@ function updateArchiveUI() {
   if (archiveRoot) archiveRoot.outerHTML = renderArchiveView(viewState);
   const quickSave = appRoot.querySelector("#archive-quick-save");
   if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(viewState);
+  updateOriginalityAnalysis();
 }
 
 async function refreshArchive() {
@@ -161,9 +158,6 @@ function safeFilename(value) {
 }
 
 function render() {
-  labController?.dispose();
-  labController = null;
-  const cycle = ++renderCycle;
   const activeView = resolveView(window.location.hash);
   appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState());
 
@@ -173,37 +167,6 @@ function render() {
       button.setAttribute("aria-hidden", "true");
     });
   }
-  if (activeView === "lab") mountLabScene(cycle);
-}
-
-function mountLabScene(cycle) {
-  const stage = appRoot.querySelector("[data-lab-stage]");
-  if (!stage) return;
-  import("./features/laboratory/scene.js")
-    .then(({ mountLaboratory }) => {
-      if (cycle !== renderCycle || !stage.isConnected) return;
-      labController = mountLaboratory(stage);
-      labController.setComposition(mixingState.items);
-      const modeLabel = stage.querySelector("[data-scene-mode-label]");
-      if (modeLabel) modeLabel.textContent = stage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
-      syncLabCameraPreset(stage);
-    })
-    .catch((error) => {
-      if (cycle !== renderCycle || !stage.isConnected) return;
-      const canvasHost = stage.querySelector("[data-lab-canvas]");
-      if (canvasHost) canvasHost.innerHTML = `<div class="lab-webgl-fallback"><strong>No se pudo cargar el motor 3D</strong><span>Revisa tu conexión o vuelve a cargar la sección. La biblioteca y el resto del laboratorio siguen disponibles.</span></div>`;
-      console.warn("No se pudo cargar el módulo 3D:", error);
-    });
-}
-
-function syncLabCameraPreset(stage = appRoot.querySelector("[data-lab-stage]")) {
-  const activePreset = stage?.dataset.cameraPreset
-    || (stage?.dataset.sceneMode === "experiment" ? "experiment" : "overview");
-  appRoot.querySelectorAll("[data-camera-preset]").forEach((button) => {
-    const active = button.dataset.cameraPreset === activePreset;
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
 }
 
 function updateLibrary() {
@@ -211,12 +174,6 @@ function updateLibrary() {
   const detail = appRoot.querySelector("#library-detail");
   if (results) results.innerHTML = renderLibraryResults(libraryState);
   if (detail) detail.outerHTML = renderLibraryDetail(libraryState.selectedId, mixingState);
-}
-
-function updateLabInspector(propId = selectedLabPropId) {
-  selectedLabPropId = propId;
-  const inspector = appRoot.querySelector("#lab-inspector");
-  if (inspector) inspector.innerHTML = renderLabInspector(propId, mixingState);
 }
 
 function updateEvolutionSimulator() {
@@ -227,6 +184,12 @@ function updateEvolutionSimulator() {
 function updateCreativeAnalysis() {
   const panel = appRoot.querySelector("#creative-analysis");
   if (panel) panel.outerHTML = renderCreativeAnalysis(mixingState, analysisDirection);
+  updateOriginalityAnalysis();
+}
+
+function updateOriginalityAnalysis() {
+  const panel = appRoot.querySelector("#originality-analysis");
+  if (panel) panel.outerHTML = renderOriginalityAnalysis(mixingState, archiveState.creations);
 }
 
 function updateMixStudio() {
@@ -235,15 +198,9 @@ function updateMixStudio() {
   if (panel) panel.outerHTML = renderMixStudio(mixingState);
   const quickSave = appRoot.querySelector("#archive-quick-save");
   if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(getArchiveViewState());
-  labController?.setComposition(mixingState.items);
-  const sceneStage = appRoot.querySelector("[data-lab-stage]");
-  const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
-  if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
-  syncLabCameraPreset(sceneStage);
   updateCreativeAnalysis();
   updateEvolutionSimulator();
   updateLibrary();
-  updateLabInspector();
 }
 
 function addNoteToMix(noteId) {
@@ -255,7 +212,7 @@ function addNoteToMix(noteId) {
     return;
   }
   updateMixStudio();
-  showNotice({ title: "Referencia añadida", message: "La composición conceptual y el recipiente 3D se actualizaron." });
+  showNotice({ title: "Referencia añadida", message: "La composición conceptual y sus análisis se actualizaron." });
 }
 
 function requireWorkingComposition() {
@@ -310,7 +267,6 @@ async function importBackupFile(file) {
   showNotice({ title: "Respaldo importado", message: `${imported.length} creaciones incorporadas. Las que tenían un identificador repetido se conservaron como copias separadas.` });
 }
 
-appRoot.addEventListener("lab:item-selected", (event) => updateLabInspector(event.detail?.id ?? null));
 
 appRoot.addEventListener("input", (event) => {
   if (event.target.id === "library-search") {
@@ -439,20 +395,6 @@ appRoot.addEventListener("click", async (event) => {
     return;
   }
 
-  const cameraPreset = event.target.closest("[data-camera-preset]")?.dataset.cameraPreset;
-  if (cameraPreset) {
-    if (typeof labController?.setCameraPreset !== "function") {
-      showNotice({ title: "Cámara 3D", message: "La escena todavía se está preparando. Probá nuevamente en un instante." });
-      return;
-    }
-    labController.setCameraPreset(cameraPreset);
-    const sceneStage = appRoot.querySelector("[data-lab-stage]");
-    const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
-    if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
-    syncLabCameraPreset(sceneStage);
-    return;
-  }
-
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (!action) return;
 
@@ -480,39 +422,6 @@ appRoot.addEventListener("click", async (event) => {
     } else if (action === "close-note-detail") {
       libraryState.selectedId = null;
       updateLibrary();
-    } else if (action === "reset-lab-camera") {
-      if (typeof labController?.resetCamera !== "function") {
-        showNotice({ title: "Cámara 3D", message: "La escena todavía se está preparando. Probá nuevamente en un instante." });
-        return;
-      }
-      labController.resetCamera();
-      const sceneStage = appRoot.querySelector("[data-lab-stage]");
-      const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
-      if (modeLabel) modeLabel.textContent = sceneStage.dataset.sceneMode === "experiment" ? "EXPERIMENTO" : "ATELIER";
-      syncLabCameraPreset(sceneStage);
-    } else if (action === "run-lab-performance-audit") {
-      const button = appRoot.querySelector("[data-action='run-lab-performance-audit']");
-      const reportOutput = appRoot.querySelector("#lab-performance-report");
-      if (!button || !reportOutput || typeof labController?.runPerformanceAudit !== "function") {
-        showNotice({ title: "Diagnóstico 3D", message: "La escena todavía se está preparando. Intentá de nuevo cuando aparezca SCENE READY." });
-        return;
-      }
-      button.disabled = true;
-      button.textContent = "Midiendo…";
-      reportOutput.hidden = false;
-      reportOutput.textContent = "Ejecutando una prueba breve de renderizado activo. No cierres esta vista.";
-      try {
-        const report = await labController.runPerformanceAudit();
-        reportOutput.textContent = formatLabPerformanceReport(report);
-      } catch (error) {
-        reportOutput.textContent = `No se pudo completar el diagnóstico: ${error instanceof Error ? error.message : "error desconocido"}`;
-      } finally {
-        button.disabled = false;
-        button.textContent = "Medir de nuevo";
-      }
-    } else if (action === "clear-lab-selection") {
-      labController?.clearSelection();
-      updateLabInspector(null);
     } else if (action === "add-picked-note") {
       addNoteToMix(appRoot.querySelector("#mix-note-picker")?.value);
     } else if (action === "undo-mix") {
@@ -607,7 +516,10 @@ appRoot.addEventListener("drop", (event) => {
 document.addEventListener("click", (event) => {
   const action = event.target.closest("[data-action]")?.dataset.action;
   if (action === "apply-update") pwa.applyUpdate();
-  if (action === "dismiss-notice") hideNotice();
+  if (action === "dismiss-notice") {
+    if (noticeTitle?.textContent === "Nueva versión disponible") pwa.dismissUpdateNotice();
+    hideNotice();
+  }
 });
 
 window.addEventListener("hashchange", render);

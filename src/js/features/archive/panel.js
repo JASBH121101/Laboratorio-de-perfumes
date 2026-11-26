@@ -18,7 +18,7 @@ function renderCreationCard(creation, selectedId) {
         <small>${esc(creation.description || "Sin descripción")}</small>
         <span class="archive-card-meta">${active?.items.length ?? 0} referencias · ${creation.updatedAt ? new Date(creation.updatedAt).toLocaleDateString("es-NI") : "—"}</span>
       </button>
-      <button class="archive-card-open" type="button" data-load-archive="${esc(creation.id)}" title="Abrir en laboratorio">↗</button>
+      <button class="archive-card-open" type="button" data-load-archive="${esc(creation.id)}" title="Abrir en constructor">↗</button>
     </article>
   `;
 }
@@ -86,7 +86,7 @@ export function renderArchiveView(state = {}) {
     : "";
   const createForm = `
     <section class="archive-create-panel">
-      <div><p class="eyebrow">NEW CREATION · LOCAL ARCHIVE</p><h3>Guardar una idea nueva</h3><p>${hasCurrentComposition ? "Se guardará una copia independiente de la composición actual." : "Primero añadí una referencia en el Laboratorio 3D para iniciar una creación."}</p></div>
+      <div><p class="eyebrow">NEW CREATION · LOCAL ARCHIVE</p><h3>Guardar una idea nueva</h3><p>${hasCurrentComposition ? "Se guardará una copia independiente de la composición actual." : "Primero añadí una referencia en el constructor de fórmulas para iniciar una creación."}</p></div>
       <label for="archive-new-name">Nombre de la creación</label>
       <input id="archive-new-name" maxlength="60" placeholder="Ej. Jardín después de la lluvia" value="${esc(state.newName ?? "")}">
       <label for="archive-new-description">Descripción breve (opcional)</label>
