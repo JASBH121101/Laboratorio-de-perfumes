@@ -1249,6 +1249,14 @@ export function mountLaboratory(stage) {
     renderer.render(scene, camera);
   }
 
+  function zoomCamera(direction) {
+    stopCameraTransition();
+    const amount = direction === "in" ? -0.65 : 0.65;
+    radius = THREE.MathUtils.clamp(radius + amount, LAB_RENDER_CONFIG.minCameraRadius, LAB_RENDER_CONFIG.maxCameraRadius);
+    updateCamera();
+    return radius;
+  }
+
   function resetCamera() {
     const preset = experimentMode ? "experiment" : "overview";
     animateCameraPreset(preset);
@@ -1283,6 +1291,7 @@ export function mountLaboratory(stage) {
 
   return {
     resetCamera,
+    zoomCamera,
     setCameraPreset: (preset) => {
       if (preset === "experiment") return setExperimentMode(true, "experiment");
       if (preset === "overview" || preset === "bottle" || preset === "workbench") {
