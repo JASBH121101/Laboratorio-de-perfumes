@@ -12,6 +12,7 @@ import { buildArchiveBackup, createArchiveCreation, createArchiveVariant, parseA
 import { buildClientBrief } from "../src/js/features/laboratory/client-brief/engine.js";
 import { analyzeAudienceFit } from "../src/js/features/laboratory/audience-fit/engine.js";
 import { FRAGRANCE_SIMILARITY_SCORE, validateFragranceSimilarityProfile } from "../src/js/features/laboratory/fragrance-similarity/contracts.js";
+import { buildFragranceSimilarityCatalog } from "../src/js/features/laboratory/fragrance-similarity/model.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -21,6 +22,9 @@ const requiredFiles = [
   "src/js/app.js", "src/js/core/navigation.js", "src/js/core/pwa.js",
   "src/js/features/perfume-library/data.js", "src/js/features/perfume-library/library.js",
   "src/js/features/laboratory/fragrance-similarity/contracts.js",
+  "src/js/features/laboratory/fragrance-similarity/model.js",
+  "tests/fragrance-similarity-contracts.test.mjs",
+  "tests/fragrance-similarity-model.test.mjs",
   "src/js/features/laboratory/mixing/state.js", "src/js/features/laboratory/mixing/draft-storage.js",
   "src/js/features/laboratory/mixing/panel.js",
   "src/js/features/laboratory/analysis/engine.js", "src/js/features/laboratory/analysis/panel.js",
@@ -148,6 +152,15 @@ const similarityContractCheck = validateFragranceSimilarityProfile({
 });
 if (!similarityContractCheck.valid || FRAGRANCE_SIMILARITY_SCORE.minimum !== 0 || FRAGRANCE_SIMILARITY_SCORE.maximum !== 100) {
   failures.push("Fragrance similarity contract is invalid or its score bounds changed.");
+}
+
+const fragranceSimilarityCatalog = buildFragranceSimilarityCatalog();
+if (
+  fragranceSimilarityCatalog.status !== "ready" ||
+  fragranceSimilarityCatalog.acceptedRecords !== 1479 ||
+  fragranceSimilarityCatalog.rejectedRecords !== 0
+) {
+  failures.push("The fragrance similarity model must normalize all 1,479 licensed reference records without loss.");
 }
 
 let mix = addMixNote(createMixState(), "bergamot");
