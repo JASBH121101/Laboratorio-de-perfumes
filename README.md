@@ -65,7 +65,7 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 4. Originalidad e identidad | Diferenciación interna, afinidad personal y desafíos creativos | **Completado** |
 | 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | **Completado** — PR #32 fusionado, CI verde y Pages desplegado |
 | 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | **Completado** — PR #33 fusionado |
-| 7. Comparación analítica | Comparar variantes guardadas, coincidencia estructural y diferencias por familia/faceta/rol | En implementación — PR pendiente |
+| 7. Comparación analítica | Comparar variantes guardadas, coincidencia estructural y diferencias por familia/faceta/rol | **Completado** — PR #34 fusionado |
 
 La validación de la base original pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. Los PR #32 y #33 se integraron en `main`; el Bloque 6 quedó incluido en el merge de #33. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
 
