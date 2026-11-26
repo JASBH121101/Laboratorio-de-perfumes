@@ -1,6 +1,6 @@
 import { PERFUME_ITEMS } from "../../perfume-library/data.js";
 import { REFERENCE_PERFUMES, REFERENCE_CATALOG_SOURCE } from "./data.js";
-const norm = (value="") => String(value).normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const norm = (value="") => String(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 const ALIASES = {
  "white musk":["musk"],"almizcle blanco":["musk"],"orange blossom":["orange blossom","neroli"],"flor de azahar":["orange blossom","neroli"],
  "pink pepper":["pink pepper","pepper"],"cedarwood":["cedar","cedarwood"],"cedro":["cedar","cedarwood"],"patchouli":["patchouli"],"pachuli":["patchouli"],
