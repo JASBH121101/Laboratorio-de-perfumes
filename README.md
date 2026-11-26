@@ -71,8 +71,12 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 10. Informes profesionales | Dossier por variante con composición, análisis editorial e historial sensorial; impresión PDF y exportaciones CSV/JSON | **Completado** — PR #39 fusionado |
 | 11. UX móvil del formulador | Compactar el Bloque 06, aclarar el contador de materias y optimizar búsqueda, filtros y resultados en Android | **Completado** — PR #41 fusionado |
 | 12. Asistente creativo local | Interpretar briefs personales, perfiles de clientes e inspiraciones; recomendar referencias existentes con explicación y transferencia voluntaria al formulador | **Completado** — PR #42 fusionado |
+| 13. Motor de propuestas de formulación | Propuestas conceptuales A/B/C, explicación de cada referencia, balance editable de puntos creativos y transferencia voluntaria | **Pendiente** |
+| 14. Originalidad y diferenciación por inspiración | Extraer rasgos apreciados de perfumes de referencia y explorar estructuras conceptuales distintas sin reconstruir fórmulas comerciales | **Pendiente** |
+| 15. Briefs y diseño para clientes | Perfil de gustos, rechazos, ocasión y estilo; preguntas guiadas y conexión con propuestas de formulación | **Pendiente** |
+| 16. Validación integral del asistente | Pruebas de recomendaciones, referencias existentes, normalización, persistencia, autonomía offline, privacidad y aceptación Android | **Pendiente** |
 
-La base funcional vigente pasó la suite de pruebas, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 12. Los PR #32 al #42 de funcionalidad y cierre documental están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó **144/144 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 12. Los PR #32 al #42 de funcionalidad y cierre documental están integrados en `main`. La PWA usa `shell-v36` e incluye el asistente en su shell offline. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 6 — Experiencia del constructor
 
@@ -89,6 +93,18 @@ El historial recorre las versiones guardadas de cada variante, las ordena cronol
 ## Bloque 8 — Historial de firma personal
 
 El historial recorre las versiones guardadas de cada variante, las ordena cronológicamente y resume las familias editoriales presentes, las referencias más recurrentes y los cambios entre el primer registro y el más reciente. La vista de evolución usa hasta ocho registros recientes para conservar una lectura compacta en móvil. No añade registros al archivo ni modifica las composiciones. Los patrones representan únicamente decisiones creativas guardadas y etiquetas editoriales; no determinan una identidad olfativa objetiva ni una medición sensorial.
+
+## Checkpoint de desarrollo — Bloques 1 a 16
+
+**Completados (1–12):** estabilidad PWA; retirada 3D; dashboard analítico; motor de originalidad personal; certificación base; constructor de formulación; comparación analítica; historial de firma; experimentos sensoriales; informes profesionales; compactación móvil del Bloque 06; asistente creativo local.
+
+**Pendientes (13–16):**
+- **Bloque 13 — Motor de propuestas:** generar rutas creativas A/B/C con referencias reales, explicar aportes editoriales y distribuir puntos creativos editables; el usuario conserva el control de la mezcla.
+- **Bloque 14 — Diferenciación por inspiración:** registrar qué rasgos de un perfume gustan y proponer direcciones alternativas, sin copiar ni reconstruir fórmulas de terceros.
+- **Bloque 15 — Briefs de clientes:** recopilar gustos, rechazos, ocasión y estilo mediante preguntas breves; convertir las respuestas en un brief utilizable por el motor de propuestas.
+- **Bloque 16 — Validación integral:** probar recomendaciones, control de referencias, suma de 100 puntos conceptuales, transferencia autorizada, privacidad, uso offline y comportamiento en Android.
+
+**Aceptación manual aún pendiente:** revisar físicamente en Android el nuevo diseño móvil y el asistente; probar el flujo PWA de actualización en el dispositivo; comprobar impresión/guardado PDF y verificar el despliegue más reciente de GitHub Pages. Estas revisiones no se consideran aprobadas por el solo hecho de que CI pase.
 
 ## Protección de datos creativos
 
