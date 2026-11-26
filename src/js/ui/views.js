@@ -11,6 +11,7 @@ import { renderSensoryExperiments } from "../features/laboratory/sensory-experim
 import { renderProfessionalReports } from "../features/laboratory/professional-reports/panel.js";
 import { renderCreativeAssistant } from "../features/laboratory/creative-assistant/panel.js";
 import { renderFormulationProposals } from "../features/laboratory/formulation-proposals/panel.js";
+import { renderInspirationDifferentiation } from "../features/laboratory/inspiration-differentiation/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -38,7 +39,7 @@ function homeView(archiveState = {}, mixingState = { items: [] }) {
   `;
 }
 
-function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}) {
+function labView(mixingState, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}) {
   return `
     <section class="page-intro lab-page-intro">
       <p class="eyebrow">FORMULATION WORKSPACE · JB PERFUME LAB</p>
@@ -48,6 +49,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
     ${renderMixStudio(mixingState, mixPickerState)}
     ${renderCreativeAssistant(creativeAssistantState)}
     ${renderFormulationProposals({ result: creativeAssistantState.proposals })}
+    ${renderInspirationDifferentiation(inspirationDifferentiationState)}
     ${renderArchiveQuickSave(archiveState)}
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
     ${renderOriginalityAnalysis(mixingState, archiveState.creations || [])}
@@ -64,12 +66,12 @@ function projectsView(archiveState = {}) {
   return `${renderArchiveView(archiveState)}${renderAnalyticalComparison(archiveState)}${renderSensoryExperiments(archiveState)}${renderProfessionalReports(archiveState)}`;
 }
 
-export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}) {
+export function renderPage(activeView = "home", libraryState = {}, mixingState = { items: [], history: [] }, analysisDirection = "balanced", evolutionStage = "opening", archiveState = {}, mixPickerState = {}, creativeAssistantState = {}, inspirationDifferentiationState = {}) {
   const current = ["home", "lab", "notes", "projects"].includes(activeView) ? activeView : "home";
   const content = current === "home"
     ? homeView(archiveState, mixingState)
     : current === "lab"
-      ? labView(mixingState, analysisDirection, evolutionStage, archiveState, mixPickerState, creativeAssistantState)
+      ? labView(mixingState, analysisDirection, evolutionStage, archiveState, mixPickerState, creativeAssistantState, inspirationDifferentiationState)
       : current === "notes"
         ? notesView(libraryState)
         : projectsView(archiveState);
