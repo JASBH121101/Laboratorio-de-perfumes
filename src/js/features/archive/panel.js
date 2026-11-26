@@ -28,7 +28,7 @@ function renderVariant(variant, selectedVariantId) {
   const latest = variant.versions.at(-1);
   return `
     <article class="archive-variant ${selected ? "is-selected" : ""}">
-      <button class="archive-variant-select" type="button" data-select-variant="${esc(variant.id)}" aria-pressed="${selected}">
+      <button class="archive-variant-select" type="button" data-select-variant="${esc(variant.id)}" aria-label="Seleccionar y cargar variante ${esc(variant.label)}: ${esc(variant.name)}" aria-pressed="${selected}">
         <span class="archive-variant-label">${esc(variant.label)}</span>
         <span class="archive-variant-info"><strong>${esc(variant.name)}</strong><small>v${latest?.number ?? 1} · ${variant.items.length} referencias</small></span>
         <span class="archive-variant-arrow">${selected ? "●" : "○"}</span>
@@ -46,7 +46,7 @@ function renderVersions(variant) {
     <article class="archive-version">
       <div><strong>Versión ${version.number}</strong><small>${esc(version.note)} · ${new Date(version.createdAt).toLocaleString("es-NI")}</small></div>
       <span>${version.items.length} refs.</span>
-      <button type="button" data-restore-version="${esc(variant.id)}" data-version-number="${version.number}" ${version.number === variant.versions.at(-1).number ? "disabled" : ""}>Restaurar</button>
+      <button type="button" data-restore-version="${esc(variant.id)}" data-version-number="${version.number}" aria-label="Restaurar y cargar la versión ${version.number}" ${version.number === variant.versions.at(-1).number ? "disabled" : ""}>Restaurar y cargar</button>
     </article>
   `).join("");
 }
