@@ -1,10 +1,12 @@
 import { resolveView } from "./core/navigation.js";
 import { createPwaManager } from "./core/pwa.js";
 import { renderLibraryDetail, renderLibraryResults } from "./features/perfume-library/library.js";
-import { addMixNote, createMixState, removeMixNote, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
+import { addMixNote, createMixState, removeMixNote, replaceMixItems, resetMix, setMixNotePoints, undoMix } from "./features/laboratory/mixing/state.js";
 import { renderMixPickerResults, renderMixStudio } from "./features/laboratory/mixing/panel.js";
 import { buildCreativeRecommendations } from "./features/laboratory/creative-assistant/engine.js";
 import { renderCreativeAssistant } from "./features/laboratory/creative-assistant/panel.js";
+import { generateFormulationProposals } from "./features/laboratory/formulation-proposals/engine.js";
+import { renderFormulationProposals } from "./features/laboratory/formulation-proposals/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -35,7 +37,7 @@ const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
-const creativeAssistantState = { mode: "personal", description: "", result: null };
+const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -285,6 +287,8 @@ function updateMixPickerResults() {
 function updateCreativeAssistant() {
   const panel = appRoot.querySelector("#creative-assistant");
   if (panel) panel.outerHTML = renderCreativeAssistant(creativeAssistantState);
+  const proposalsPanel = appRoot.querySelector("#formulation-proposals");
+  if (proposalsPanel) proposalsPanel.outerHTML = renderFormulationProposals({ result: creativeAssistantState.proposals });
 }
 
 function updateMixStudio() {
@@ -582,10 +586,15 @@ appRoot.addEventListener("click", async (event) => {
         description: creativeAssistantState.description,
         mode: creativeAssistantState.mode
       });
+      creativeAssistantState.proposals = generateFormulationProposals({
+        description: creativeAssistantState.description,
+        mode: creativeAssistantState.mode
+      });
       updateCreativeAssistant();
     } else if (action === "clear-creative-assistant") {
       creativeAssistantState.description = "";
       creativeAssistantState.result = null;
+      creativeAssistantState.proposals = null;
       updateCreativeAssistant();
     } else if (action === "apply-creative-assistant-suggestions") {
       const suggestions = creativeAssistantState.result?.suggestions || [];
@@ -601,6 +610,14 @@ appRoot.addEventListener("click", async (event) => {
         title: added ? "Materias enviadas al formulador" : "Materias ya presentes",
         message: added ? `${added} referencias se agregaron a tu composición. Revisá y ajustá manualmente sus puntos creativos.` : "Las referencias sugeridas ya forman parte de tu composición."
       });
+    } else if (action === "load-formulation-proposal") {
+      const proposalId = event.target.closest("[data-proposal-id]")?.dataset.proposalId;
+      const proposal = creativeAssistantState.proposals?.proposals?.find((item) => item.id === proposalId);
+      if (!proposal) throw new Error("No se encontró la propuesta que querés cargar. Volvé a generar las alternativas.");
+      if (mixingState.items.length && !window.confirm(`¿Reemplazar la composición actual por «${proposal.title}»? Podés usar Deshacer para recuperar la mezcla anterior.`)) return;
+      mixingState = replaceMixItems(mixingState, proposal.items);
+      updateMixStudio();
+      showNotice({ title: "Propuesta cargada", message: `${proposal.title} se cargó con ${proposal.totalCreativePoints} puntos creativos. Podés editarla o deshacer el cambio.` });
     } else if (action === "undo-mix") {
       mixingState = undoMix(mixingState);
       updateMixStudio();
