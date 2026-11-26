@@ -7,6 +7,8 @@ import { buildCreativeRecommendations } from "./features/laboratory/creative-ass
 import { renderCreativeAssistant } from "./features/laboratory/creative-assistant/panel.js";
 import { generateFormulationProposals } from "./features/laboratory/formulation-proposals/engine.js";
 import { renderFormulationProposals } from "./features/laboratory/formulation-proposals/panel.js";
+import { analyzeInspirationDifferentiation } from "./features/laboratory/inspiration-differentiation/engine.js";
+import { renderInspirationDifferentiation } from "./features/laboratory/inspiration-differentiation/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -38,6 +40,7 @@ const noticeAction = document.querySelector("#app-notice-action");
 const libraryState = { query: "", family: "all", role: "all", selectedId: null };
 const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
 const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
+const inspirationDifferentiationState = { referenceLabel: "", liked: "", avoid: "", result: null };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -244,7 +247,7 @@ function safeFilename(value) {
 
 function render() {
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState, creativeAssistantState);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState(), mixPickerState, creativeAssistantState, inspirationDifferentiationState);
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -289,6 +292,11 @@ function updateCreativeAssistant() {
   if (panel) panel.outerHTML = renderCreativeAssistant(creativeAssistantState);
   const proposalsPanel = appRoot.querySelector("#formulation-proposals");
   if (proposalsPanel) proposalsPanel.outerHTML = renderFormulationProposals({ result: creativeAssistantState.proposals });
+}
+
+function updateInspirationDifferentiation() {
+  const panel = appRoot.querySelector("#inspiration-differentiation");
+  if (panel) panel.outerHTML = renderInspirationDifferentiation(inspirationDifferentiationState);
 }
 
 function updateMixStudio() {
@@ -372,6 +380,12 @@ appRoot.addEventListener("input", (event) => {
     mixPickerState.query = event.target.value;
     mixPickerState.expanded = false;
     updateMixPickerResults();
+  } else if (event.target.id === "inspiration-reference-label") {
+    inspirationDifferentiationState.referenceLabel = event.target.value;
+  } else if (event.target.id === "inspiration-liked") {
+    inspirationDifferentiationState.liked = event.target.value;
+  } else if (event.target.id === "inspiration-avoid") {
+    inspirationDifferentiationState.avoid = event.target.value;
   } else if (event.target.id === "creative-assistant-brief") {
     creativeAssistantState.description = event.target.value;
   } else if (event.target.id === "library-search") {
@@ -610,6 +624,38 @@ appRoot.addEventListener("click", async (event) => {
         title: added ? "Materias enviadas al formulador" : "Materias ya presentes",
         message: added ? `${added} referencias se agregaron a tu composición. Revisá y ajustá manualmente sus puntos creativos.` : "Las referencias sugeridas ya forman parte de tu composición."
       });
+    } else if (action === "analyze-inspiration-profile") {
+      inspirationDifferentiationState.referenceLabel = appRoot.querySelector("#inspiration-reference-label")?.value || "";
+      inspirationDifferentiationState.liked = appRoot.querySelector("#inspiration-liked")?.value || "";
+      inspirationDifferentiationState.avoid = appRoot.querySelector("#inspiration-avoid")?.value || "";
+      inspirationDifferentiationState.result = analyzeInspirationDifferentiation({
+        referenceLabel: inspirationDifferentiationState.referenceLabel,
+        liked: inspirationDifferentiationState.liked,
+        avoid: inspirationDifferentiationState.avoid,
+        creations: archiveState.creations
+      });
+      updateInspirationDifferentiation();
+    } else if (action === "clear-inspiration-profile") {
+      inspirationDifferentiationState.referenceLabel = "";
+      inspirationDifferentiationState.liked = "";
+      inspirationDifferentiationState.avoid = "";
+      inspirationDifferentiationState.result = null;
+      updateInspirationDifferentiation();
+    } else if (action === "send-inspiration-direction") {
+      const directionId = event.target.closest("[data-direction-id]")?.dataset.directionId;
+      const direction = inspirationDifferentiationState.result?.directions?.find((item) => item.id === directionId);
+      if (!direction) throw new Error("No se encontró esa dirección de inspiración. Analizá el perfil nuevamente.");
+      creativeAssistantState.mode = "personal";
+      creativeAssistantState.description = [
+        inspirationDifferentiationState.liked,
+        inspirationDifferentiationState.avoid ? `Evitar: ${inspirationDifferentiationState.avoid}` : "",
+        direction.briefForAssistant
+      ].filter(Boolean).join(". ");
+      creativeAssistantState.result = buildCreativeRecommendations({ description: creativeAssistantState.description, mode: "personal" });
+      creativeAssistantState.proposals = generateFormulationProposals({ description: creativeAssistantState.description, mode: "personal" });
+      updateCreativeAssistant();
+      window.location.hash = "#lab";
+      showNotice({ title: "Dirección convertida en brief", message: `${direction.title} pasó al asistente creativo y generó nuevas alternativas. Revisalas antes de cargar una composición.` });
     } else if (action === "load-formulation-proposal") {
       const proposalId = event.target.closest("[data-proposal-id]")?.dataset.proposalId;
       const proposal = creativeAssistantState.proposals?.proposals?.find((item) => item.id === proposalId);
