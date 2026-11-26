@@ -27,7 +27,7 @@ test("integration keeps user-initiated transfer actions and local offline module
   readFile(new URL("../src/js/features/laboratory/audience-fit/engine.js",import.meta.url),"utf8")
  ]);
  assert.match(app,/send-client-brief-to-assistant/);assert.match(app,/load-formulation-proposal/);assert.match(app,/replaceMixItems/);assert.match(app,/updateAudienceFit/);
- assert.match(views,/renderAudienceFit/);assert.match(views,/id="audience-fit-root"/);assert.match(app,/root\.innerHTML = renderAudienceFit\(mixingState\.items\)/);assert.match(sw,/shell-v48/);assert.ok(sw.includes("client-brief/engine.js"));assert.ok(sw.includes("audience-fit/engine.js"));
+ assert.match(views,/renderAudienceFit/);assert.match(views,/id="audience-fit-root"/);assert.match(app,/root\.innerHTML = renderAudienceFit\(mixingState\.items\)/);assert.match(sw,/shell-v49/);assert.ok(sw.includes("client-brief/engine.js"));assert.ok(sw.includes("audience-fit/engine.js"));
  assert.equal(briefEngine.includes("fetch("),false);assert.equal(audienceEngine.includes("fetch("),false);
 });
 
@@ -59,7 +59,7 @@ test("saved client profiles remain local, persistent, comparable and available o
   assert.match(repository, /listProfiles/);
   assert.match(sw, /profile-history\/engine\.js/);
   assert.match(sw, /profile-history\/panel\.js/);
-  assert.match(sw, /shell-v48/);
+  assert.match(sw, /shell-v49/);
 });
 
 
@@ -78,5 +78,5 @@ test("observed sensory performance feeds local calibration and the offline shell
   assert.match(calibrationPanel, /analyzePerformanceCalibration/);
   assert.match(sw, /performance-estimator\/calibration\.js/);
   assert.match(sw, /performance-estimator\/calibration-panel\.js/);
-  assert.match(sw, /shell-v48/);
+  assert.match(sw, /shell-v49/);
 });
