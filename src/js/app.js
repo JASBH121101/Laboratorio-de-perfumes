@@ -11,6 +11,7 @@ import { analyzeInspirationDifferentiation } from "./features/laboratory/inspira
 import { renderInspirationDifferentiation } from "./features/laboratory/inspiration-differentiation/panel.js";
 import { buildClientBrief } from "./features/laboratory/client-brief/engine.js";
 import { renderClientBriefPanel } from "./features/laboratory/client-brief/panel.js";
+import { renderAudienceFit } from "./features/laboratory/audience-fit/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -276,6 +277,12 @@ function updateCreativeAnalysis() {
   const panel = appRoot.querySelector("#creative-analysis");
   if (panel) panel.outerHTML = renderCreativeAnalysis(mixingState, analysisDirection);
   updateOriginalityAnalysis();
+  updateAudienceFit();
+}
+
+function updateAudienceFit() {
+  const panel = appRoot.querySelector("#audience-fit-analysis");
+  if (panel) panel.outerHTML = renderAudienceFit(mixingState.items);
 }
 
 function updateOriginalityAnalysis() {
