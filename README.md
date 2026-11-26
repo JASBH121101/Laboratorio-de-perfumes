@@ -431,8 +431,12 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 - **Resultado:** **279/279 pruebas**, 0 fallidas; sintaxis de módulos y validador estructural aprobados.
 - Sin dependencias nuevas, APIs externas, servicios de IA, costos ni cambios en Supabase.
 
-### Siguiente par
-- **Bloque 35:** interfaz de búsqueda inversa: campo de búsqueda, selección inequívoca de referencia, modo global/inventario, filtros y presentación de alternativas.
-- **Bloque 36:** integración funcional completa, accesibilidad/responsive, estados vacíos/errores, QA de interfaz, pruebas end-to-end y certificación final del flujo.
+### Resultado — Bloques 35 y 36
+- **Bloque 35:** interfaz de búsqueda inversa integrada en el Laboratorio: búsqueda por nombre/casa, selección explícita, filtros, ranking y explicación de coincidencias/diferencias.
+- **Bloque 36:** integración en la aplicación, estados vacíos, controles accesibles, estilos responsive, validación automatizada y shell offline `shell-v51`.
+- **PR #75:** fusionado mediante Squash Merge; commit `79517fd99bf182f73fe04fa7cb1ddc47016ee4c0`.
+- **GitHub Actions #45873457345 (push) y #45873482428 (pull request):** aprobados; **288/288 pruebas**, 0 fallidas.
+- El modo `own-inventory` continúa pendiente de conexión a un inventario comercial real. No hay fallback al catálogo global.
+- La aceptación visual física en Android y la conexión al inventario comercial son tareas independientes pendientes.
 
-**Alcance global:** bloques 1–34 completados y fusionados en `main`. La interfaz de búsqueda inversa y la integración con un inventario comercial real siguen pendientes.
+**Alcance global:** bloques 1–36 completados y fusionados en `main`.
