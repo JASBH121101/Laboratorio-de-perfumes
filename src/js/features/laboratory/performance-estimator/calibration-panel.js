@@ -1,9 +1,11 @@
 import { analyzePerformanceCalibration } from "./calibration.js";
-import { CALIBRATION_CONCENTRATIONS, CALIBRATION_ENVIRONMENTS } from "./calibration.js";
 
 const esc = (value = "") => String(value).replace(/[&<>"']/g, (char) => ({
   "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
 })[char]);
+
+const CONCENTRATION_LABELS = { edt: "EDT", edp: "EDP", parfum: "Parfum" };
+const ENVIRONMENT_LABELS = { neutral: "Neutro", warm: "Cálido", cool: "Fresco", outdoor: "Exterior", indoor: "Interior" };
 
 const METRICS = [
   ["persistenceHours", "Persistencia", "h"],
@@ -25,10 +27,6 @@ function metricCard(metric) {
   `;
 }
 
-function scenarioLabel(key, map) {
-  return map[key] || key;
-}
-
 export function renderPerformanceCalibration(experiments = []) {
   const observed = (experiments || []).filter((item) => item.observedPerformance);
   if (!observed.length) {
@@ -48,7 +46,7 @@ export function renderPerformanceCalibration(experiments = []) {
     const result = analyzePerformanceCalibration(observed, scenario);
     return `
       <article class="performance-calibration-scenario">
-        <header><strong>${esc(scenarioLabel(scenario.concentration, CALIBRATION_CONCENTRATIONS))} · ${esc(scenarioLabel(scenario.environment, CALIBRATION_ENVIRONMENTS))}</strong><span>${result.sampleRecords} registros</span></header>
+        <header><strong>${esc(CONCENTRATION_LABELS[scenario.concentration] || scenario.concentration)} · ${esc(ENVIRONMENT_LABELS[scenario.environment] || scenario.environment)}</strong><span>${result.sampleRecords} registros</span></header>
         <div class="performance-calibration-grid">${METRICS.map(([metricKey]) => metricCard(result.metrics[metricKey])).join("")}</div>
       </article>
     `;
