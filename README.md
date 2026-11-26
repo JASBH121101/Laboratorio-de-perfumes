@@ -285,3 +285,34 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 - **Bloque 28:** motor de comparación olfativa por notas, familias, acordes, pirámide y carácter.
 
 **Alcance global:** bloques 1–26 completados y fusionados en `main`. La aceptación visual física de Android del trabajo anterior continúa siendo una verificación manual independiente.
+
+
+## Checkpoint — Bloques 27 y 28: normalización y comparación olfativa
+
+**Estado:** COMPLETADOS / CI APROBADA / PR DE FUNCIONALIDAD FUSIONADO
+
+### Bloque 27 — Normalización semántica
+- Se agregó normalización Unicode, acentos, mayúsculas, puntuación y espacios.
+- Se incorporaron alias bilingües para notas frecuentes, por ejemplo Bergamot/Bergamota, Blackcurrant/Cassis, Pink Pepper/Pimienta rosa, Sandalwood/Sándalo y Olibanum/Incienso.
+- Las familias editoriales del catálogo se traducen a etiquetas amplias de comparación. Los grupos compuestos conservan varias facetas: Wood & Root → woody/earthy; Amber & Resin → amber/resinous; Smoke & Leather → smoky/leathery; Salt & Mineral → aquatic/mineral.
+- Los duplicados semánticos se consolidan por dimensión y se conserva la primera etiqueta original.
+- Descriptores desconocidos mantienen una clave estable; no se adivinan equivalencias. Notas relacionadas pero diferentes permanecen separadas.
+
+### Bloque 28 — Motor de comparación olfativa
+- Se implementó comparación independiente de notas agregadas, familias, subfamilias, acordes, carácter y etapas de salida/corazón/fondo.
+- Cada dimensión comparable devuelve un índice de solapamiento 0–100 (intersección/unión), coincidencias y descriptores exclusivos de cada perfil.
+- Las dimensiones no disponibles en alguno de los perfiles se marcan como no comparables; no se convierten en coincidencias cero.
+- No se calcula todavía porcentaje global, confianza ni ranking: corresponden a los bloques 29 y 32.
+
+### Certificación
+- **PR #67:** fusionado mediante Squash Merge.
+- **Commit de integración:** `745747a64998bb6e295038f96ce08dc1201c684f`.
+- **GitHub Actions runs #1113 y #1114:** aprobados.
+- **Resultado:** **240/240 pruebas**, 0 fallidas; sintaxis de módulos y validador estructural aprobados.
+- Sin nuevas dependencias, APIs externas, servicios IA, sincronización en nube ni costos. Sin cambios en Supabase.
+
+### Siguiente par
+- **Bloque 29:** puntuación global transparente y nivel de confianza separado, con cobertura y límites explícitos.
+- **Bloque 30:** explicación de similitudes y diferencias, evidencia y calidad de datos.
+
+**Alcance global:** bloques 1–28 completados y fusionados en `main`. La aceptación visual física Android de los cambios anteriores continúa siendo una verificación manual independiente.
