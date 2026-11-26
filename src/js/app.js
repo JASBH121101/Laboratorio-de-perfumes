@@ -9,6 +9,10 @@ import { renderOriginalityAnalysis } from "./features/laboratory/originality/pan
 import { compareSavedCompositions } from "./features/laboratory/comparison/engine.js";
 import { renderAnalyticalComparison } from "./features/laboratory/comparison/panel.js";
 import { renderPersonalSignatureHistory } from "./features/laboratory/signature-history/panel.js";
+import { renderSensoryExperiments } from "./features/laboratory/sensory-experiments/panel.js";
+import {
+  buildSensoryBackup, createSensoryExperiment, mergeSensoryExperiments, parseSensoryBackup
+} from "./features/laboratory/sensory-experiments/model.js";
 import { renderEvolutionSimulator } from "./features/laboratory/evolution/panel.js";
 import { createArchiveRepository } from "./features/archive/repository.js";
 import {
@@ -38,6 +42,8 @@ let archiveState = {
   selectedVariantId: null,
   comparison: null,
   comparisonPair: null,
+  experiments: [],
+  sensorySelection: "",
   error: "",
   storageMode: globalThis.indexedDB ? "IndexedDB" : "localStorage"
 };
@@ -90,12 +96,17 @@ function updateArchiveUI() {
   if (comparisonPanel) comparisonPanel.outerHTML = renderAnalyticalComparison(archiveState);
   const signatureHistory = appRoot.querySelector("#signature-history-root");
   if (signatureHistory) signatureHistory.outerHTML = renderPersonalSignatureHistory(archiveState);
+  const sensoryPanel = appRoot.querySelector("#sensory-experiments-root");
+  if (sensoryPanel) sensoryPanel.outerHTML = renderSensoryExperiments(archiveState);
   updateOriginalityAnalysis();
 }
 
 async function refreshArchive() {
   try {
-    archiveState.creations = await archiveRepository.list();
+    [archiveState.creations, archiveState.experiments] = await Promise.all([
+      archiveRepository.list(),
+      archiveRepository.listExperiments()
+    ]);
     archiveState.storageMode = archiveRepository.getStorageMode();
     archiveState.error = "";
     if (archiveState.selectedCreationId) {
@@ -125,6 +136,46 @@ async function persistCreation(creation, successMessage = "Cambios guardados en 
 
 function findSelectedCreation() {
   return archiveState.creations.find((creation) => creation.id === archiveState.selectedCreationId) ?? null;
+}
+
+async function saveSensoryExperimentFromForm() {
+  const form = appRoot.querySelector("#sensory-experiment-form");
+  if (!form) throw new Error("No hay un formulario de experimento disponible.");
+  if (!form.reportValidity()) return;
+  const data = new FormData(form);
+  let selection;
+  try { selection = JSON.parse(String(data.get("variantKey") || "")); }
+  catch { throw new Error("Seleccioná una variante válida."); }
+  const creation = archiveState.creations.find((item) => item.id === selection.creationId);
+  const variant = creation?.variants?.find((item) => item.id === selection.variantId);
+  if (!creation || !variant) throw new Error("La creación o variante seleccionada ya no existe.");
+  const ratings = Object.fromEntries(["intensity", "freshness", "sweetness", "floral", "woody", "spicy", "persistence"]
+    .map((key) => [key, data.get(`rating_${key}`) || null]));
+  const experiment = createSensoryExperiment({
+    creation,
+    variant,
+    title: data.get("title"),
+    observedAt: data.get("observedAt"),
+    observer: data.get("observer"),
+    context: data.get("context"),
+    elapsedMinutes: data.get("elapsedMinutes"),
+    impression: data.get("impression"),
+    tags: data.getAll("tags"),
+    ratings
+  });
+  await archiveRepository.putExperiment(experiment);
+  archiveState.sensorySelection = String(data.get("variantKey") || "");
+  await refreshArchive();
+  showNotice({ title: "Observación guardada", message: `El experimento quedó vinculado a ${creation.name} · variante ${variant.label} · versión ${experiment.versionNumber}.` });
+}
+
+async function importSensoryBackupFile(file) {
+  if (!file) return;
+  const imported = parseSensoryBackup(await file.text());
+  const merged = mergeSensoryExperiments(archiveState.experiments, imported);
+  await archiveRepository.putExperiments(merged);
+  await refreshArchive();
+  showNotice({ title: "Respaldo sensorial importado", message: `${imported.length} registros se incorporaron sin sobrescribir identificadores existentes.` });
 }
 
 function loadVariantIntoLab(creation, variant) {
@@ -337,6 +388,15 @@ appRoot.addEventListener("change", async (event) => {
       event.target.value = "";
     }
   }
+  if (event.target.id === "sensory-import-file") {
+    try {
+      await importSensoryBackupFile(event.target.files?.[0]);
+    } catch (error) {
+      handleArchiveError(error);
+    } finally {
+      event.target.value = "";
+    }
+  }
 });
 
 appRoot.addEventListener("click", async (event) => {
@@ -518,10 +578,25 @@ appRoot.addEventListener("click", async (event) => {
       compareSavedCompositions(archiveState.creations, leftKey, rightKey);
       archiveState.comparisonPair = { leftKey, rightKey };
       updateArchiveUI();
+    } else if (action === "save-sensory-experiment") {
+      await saveSensoryExperimentFromForm();
+    } else if (action === "delete-sensory-experiment") {
+      const id = event.target.closest("[data-experiment-id]")?.dataset.experimentId;
+      const experiment = archiveState.experiments.find((item) => item.id === id);
+      if (experiment && window.confirm(`¿Eliminar la observación «${experiment.title}»? Esta acción no modifica la fórmula.`)) {
+        await archiveRepository.removeExperiment(id);
+        await refreshArchive();
+        showNotice({ title: "Observación eliminada", message: "El registro sensorial se eliminó del dispositivo." });
+      }
+    } else if (action === "export-sensory-backup") {
+      const backup = buildSensoryBackup(archiveState.experiments);
+      downloadJson(backup, `jb-perfume-lab-sensory-${new Date().toISOString().slice(0,10)}.json`);
+      showNotice({ title: "Respaldo sensorial preparado", message: "Guardá el JSON fuera del dispositivo para conservar tus observaciones." });
     } else if (action === "delete-archive") {
       const id = event.target.closest("[data-archive-id]")?.dataset.archiveId ?? archiveState.selectedCreationId;
       const creation = archiveState.creations.find((item) => item.id === id);
       if (creation && window.confirm(`¿Eliminar «${creation.name}» y todo su historial? Exportá un respaldo antes si necesitás conservarlo.`)) {
+        await archiveRepository.removeExperimentsForCreation(id);
         await archiveRepository.remove(id);
         archiveState.selectedCreationId = null;
         archiveState.selectedVariantId = null;

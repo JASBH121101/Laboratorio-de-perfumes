@@ -285,3 +285,66 @@
   .signature-timeline-top time { font-size:8px; }
   .signature-card { padding:13px; }
 }
+
+
+/* Block 9 — Sensory experiment records */
+.sensory-experiments { margin:22px 0 30px; padding:22px; border:1px solid var(--line); border-radius:11px; background:linear-gradient(145deg,var(--surface-raised),var(--surface)); box-shadow:0 10px 28px var(--shadow); }
+.sensory-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:17px; }
+.sensory-heading h2 { margin:4px 0 6px; font-size:22px; font-weight:600; letter-spacing:-.025em; }
+.sensory-heading h2 em { color:var(--accent); font-family:"Playfair Display",Georgia,serif; font-weight:500; }
+.sensory-heading p:not(.eyebrow) { max-width:650px; margin:0; color:var(--muted); font-size:11px; line-height:1.65; }
+.sensory-state { flex:none; padding:7px 9px; border:1px solid var(--line); border-radius:99px; color:var(--muted); font-size:8px; font-weight:700; letter-spacing:.1em; }
+.sensory-form-card { padding:17px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+.sensory-form-intro { margin-bottom:14px; }
+.sensory-form-intro h3,.sensory-records-heading h3 { margin:0 0 5px; font-size:13px; }
+.sensory-form-intro p { margin:0; color:var(--muted); font-size:9px; line-height:1.55; }
+.sensory-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.sensory-field { display:grid; gap:6px; min-width:0; }
+.sensory-field>span { color:var(--muted); font-size:9px; font-weight:600; }
+.sensory-field input,.sensory-field select,.sensory-field textarea { width:100%; min-height:39px; box-sizing:border-box; padding:9px 10px; border:1px solid var(--line); border-radius:7px; color:var(--text); background:var(--surface-raised); font:inherit; font-size:10px; }
+.sensory-field textarea { min-height:86px; resize:vertical; line-height:1.55; }
+.sensory-field--wide,.sensory-fieldset--wide { grid-column:1 / -1; }
+.sensory-fieldset { min-width:0; margin:0; padding:12px; border:1px solid var(--line); border-radius:7px; }
+.sensory-fieldset legend { padding:0 5px; color:var(--text); font-size:10px; font-weight:700; }
+.sensory-fieldset>p { margin:0 0 10px; color:var(--muted-2); font-size:8px; line-height:1.5; }
+.sensory-tag-choices { display:flex; flex-wrap:wrap; gap:7px; }
+.sensory-tag-choice { display:inline-flex; align-items:center; gap:5px; min-height:30px; padding:4px 8px; border:1px solid var(--line); border-radius:99px; color:var(--muted); font-size:9px; cursor:pointer; }
+.sensory-tag-choice input { accent-color:var(--accent); }
+.sensory-rating-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.sensory-form-actions { display:flex; justify-content:flex-end; grid-column:1 / -1; }
+.sensory-form-actions button,.sensory-backup-row button,.sensory-import-label { min-height:38px; padding:0 13px; border:1px solid rgba(217,178,124,.4); border-radius:7px; color:var(--accent); background:var(--accent-soft); font-size:10px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+.sensory-records-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:19px 0 10px; }
+.sensory-records-heading>span { color:var(--muted-2); font-size:9px; }
+.sensory-record-list { display:grid; gap:10px; }
+.sensory-record { padding:15px; border:1px solid var(--line); border-radius:8px; background:var(--surface); }
+.sensory-record-head { display:flex; justify-content:space-between; gap:12px; }
+.sensory-record-head h4 { margin:3px 0 5px; font-size:12px; }
+.sensory-record-head small { color:var(--muted-2); font-size:8px; line-height:1.5; }
+.sensory-delete { flex:none; width:30px; height:30px; border:1px solid var(--line); border-radius:7px; color:var(--muted); background:var(--surface-raised); font-size:18px; cursor:pointer; }
+.sensory-impression { margin:12px 0; color:var(--muted); font-size:10px; line-height:1.65; white-space:pre-wrap; }
+.sensory-tags,.sensory-ratings { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.sensory-tag,.sensory-ratings span { padding:5px 8px; border:1px solid var(--line); border-radius:99px; color:var(--muted); font-size:8px; }
+.sensory-ratings strong { color:var(--text); }
+.sensory-snapshot-note { display:block; margin-top:10px; color:var(--muted-2); font-size:8px; }
+.sensory-empty { padding:17px; border:1px dashed var(--line); border-radius:8px; color:var(--muted); font-size:10px; line-height:1.6; }
+.sensory-empty strong { color:var(--text); }
+.sensory-empty p { margin:5px 0 0; }
+.sensory-backup-row { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:14px; padding:13px; border:1px solid var(--line); border-radius:8px; }
+.sensory-backup-row>div:first-child { display:grid; gap:4px; }
+.sensory-backup-row>div:first-child strong { font-size:10px; }
+.sensory-backup-row small { color:var(--muted-2); font-size:8px; line-height:1.5; }
+.sensory-backup-row>div:last-child { display:flex; flex-wrap:wrap; gap:7px; }
+.sensory-import-label { background:var(--surface-raised); border-color:var(--line); color:var(--muted); }
+.sensory-backup-row button:disabled { opacity:.45; cursor:not-allowed; }
+.sensory-disclaimer { margin:12px 0 0; color:var(--muted-2); font-size:8px; line-height:1.6; }
+@media (max-width:900px) { .sensory-rating-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px) {
+ .sensory-experiments { padding:15px; }
+ .sensory-heading { flex-direction:column; gap:9px; }
+ .sensory-form { grid-template-columns:1fr; }
+ .sensory-field--wide,.sensory-fieldset--wide { grid-column:auto; }
+ .sensory-rating-grid { grid-template-columns:1fr 1fr; }
+ .sensory-backup-row { align-items:flex-start; flex-direction:column; }
+ .sensory-backup-row>div:last-child { width:100%; }
+ .sensory-backup-row button,.sensory-import-label { flex:1; }
+}

@@ -67,6 +67,7 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 6. Experiencia del constructor | Búsqueda directa, filtros por familia/tipo/ubicación y ajuste numérico preciso | **Completado** — PR #33 fusionado |
 | 7. Comparación analítica | Comparar variantes guardadas, coincidencia estructural y diferencias por familia/faceta/rol | **Completado** — PR #34 fusionado |
 | 8. Historial de firma personal | Evolución por versiones, familias recurrentes, referencias frecuentes y cambios entre el primer y último registro | **Completado** — PR #36 fusionado |
+| 9. Experimentos sensoriales | Observaciones subjetivas por variante y versión, contexto, tiempo, facetas, valoraciones y respaldo independiente | En implementación — rama feature/block9-sensory-experiment-records |
 
 La base funcional vigente pasó **117/117 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 8. Los PR #32, #33, #34, #35 y #36 están integrados en `main`. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA y la aceptación visual en Android.
 
@@ -89,3 +90,8 @@ El historial recorre las versiones guardadas de cada variante, las ordena cronol
 ## Protección de datos creativos
 
 El archivo principal vive en IndexedDB, con localStorage como alternativa cuando IndexedDB no está disponible. No se sincroniza con GitHub ni con un servicio remoto. Los datos pueden perderse si se borran los datos del sitio o se pierde el dispositivo; mantené un respaldo JSON externo.
+
+
+## Bloque 9 — Experimentos sensoriales
+
+Los registros sensoriales se guardan en una colección local separada del archivo de fórmulas. Cada observación conserva una instantánea de la variante y versión evaluada, fecha/hora, contexto, tiempo transcurrido opcional, evaluador, impresión libre, facetas seleccionadas y valoraciones subjetivas de 1 a 5. Las observaciones pueden exportarse e importarse como un respaldo JSON independiente. Al eliminar una creación también se eliminan sus registros asociados. Estas valoraciones no son mediciones instrumentales.
