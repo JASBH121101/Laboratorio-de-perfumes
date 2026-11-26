@@ -16,7 +16,8 @@ const [app, scene, views, archivePanel, inspector, mixPanel] = await Promise.all
 test("3D prop selection reaches the inspector and clear-selection returns to its empty state", () => {
   assert.match(scene, /stage\.dispatchEvent\(new CustomEvent\("lab:item-selected"/);
   assert.match(app, /appRoot\.addEventListener\("lab:item-selected", \(event\) => updateLabInspector/);
-  assert.match(inspector, /data-action="clear-lab-selection"/);\n  assert.match(app, /action === "clear-lab-selection"/);
+  assert.match(inspector, /data-action="clear-lab-selection"/);
+  assert.match(app, /action === "clear-lab-selection"/);
   assert.match(app, /labController\?\.clearSelection\(\)/);
 });
 
@@ -24,7 +25,8 @@ test("notes can be added from the inspector, library and mixing picker", () => {
   assert.match(app, /const addMixTarget = event\.target\.closest\("\[data-add-to-mix\]"\)/);
   assert.match(app, /addNoteToMix\(addMixTarget\.dataset\.addToMix\)/);
   assert.match(app, /const noteTarget = event\.target\.closest\("\[data-open-note\]"\)/);
-  assert.match(mixPanel, /data-action="add-picked-note"/);\n  assert.match(app, /action === "add-picked-note"/);
+  assert.match(mixPanel, /data-action="add-picked-note"/);
+  assert.match(app, /action === "add-picked-note"/);
   assert.match(app, /addNoteToMix\(appRoot\.querySelector\("#mix-note-picker"\)\?\.value\)/);
   assert.match(app, /appRoot\.addEventListener\("change", async \(event\) => \{[\s\S]*?setMixNotePoints/);
   assert.match(views, /data-mix-dropzone/);
