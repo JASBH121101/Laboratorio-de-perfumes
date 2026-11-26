@@ -452,6 +452,7 @@ appRoot.addEventListener("keydown", (event) => {
   );
   if (action.type === "move") {
     event.preventDefault();
+    fragranceSimilarityState.suggestionsOpen = true;
     fragranceSimilarityState.activeSuggestionIndex = action.activeIndex;
     updateFragranceSimilaritySuggestionsUI();
   } else if (action.type === "select") {
