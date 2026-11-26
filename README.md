@@ -116,13 +116,13 @@ El historial recorre las versiones guardadas de cada variante, las ordena cronol
 
 El historial recorre las versiones guardadas de cada variante, las ordena cronológicamente y resume las familias editoriales presentes, las referencias más recurrentes y los cambios entre el primer registro y el más reciente. La vista de evolución usa hasta ocho registros recientes para conservar una lectura compacta en móvil. No añade registros al archivo ni modifica las composiciones. Los patrones representan únicamente decisiones creativas guardadas y etiquetas editoriales; no determinan una identidad olfativa objetiva ni una medición sensorial.
 
-## Checkpoint de desarrollo — Bloques 1 a 16
+## Checkpoint de desarrollo — Bloques 1 a 21 (2026-11-26)
 
-**Completados (1–16):** estabilidad PWA; retirada 3D; dashboard analítico; motor de originalidad personal; certificación base; constructor de formulación; comparación analítica; historial de firma; experimentos sensoriales; informes profesionales; compactación móvil; asistente creativo local; motor de propuestas A/B/C; diferenciación por inspiración; briefs guiados de clientes; posicionamiento de público y validación integral automatizada.
+**Completados (1–21):** estabilidad PWA y retirada 3D; dashboard analítico; originalidad personal; constructor y comparación de formulaciones; historial de firma; experimentos sensoriales e informes; UX móvil; asistente creativo local; propuestas A/B/C; diferenciación por inspiración; briefs de clientes y posicionamiento de público; benchmark comercial; estimador conceptual de rendimiento; escenarios de rendimiento; asistente creativo con prompts guiados y detección de contradicciones; rediseño visual responsive del laboratorio, gráficos accesibles y navegación interna.
 
 **Pendiente de cierre operativo (fuera de los bloques funcionales):**
 - Aceptación física en Android: revisar las pantallas reales, controles táctiles y distribución responsive.
-- Probar en dispositivo la instalación y actualización PWA, incluyendo caché y activación de `shell-v40`.
+- Probar en dispositivo la instalación y actualización PWA, incluyendo caché y activación de `shell-v45`.
 - Comprobar impresión/guardado PDF desde Android y verificar el último despliegue de GitHub Pages.
 
 La CI cubre pruebas automatizadas, sintaxis y validador estructural; no sustituye estas pruebas físicas.
@@ -170,7 +170,7 @@ El motor A/B/C ofrece tres rutas conceptuales distintas a partir del brief del a
 
 El módulo de inspiración recibe una etiqueta opcional, los rasgos que gustan y lo que se desea evitar. Extrae familias y descriptores, puede usar la frecuencia de familias del archivo local para ordenar caminos complementarios y muestra tres arquitecturas con referencias ilustrativas. Una dirección puede enviarse al asistente para crear otro brief y generar propuestas A/B/C; no se aplica a la composición activa. No consulta la fórmula de perfumes comerciales, no usa Internet ni certifica originalidad mundial.
 
-La PWA usa `shell-v43`. Los bloques 15–19 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
+La PWA usa `shell-v45`. Los bloques 15–19 no agregan API, proveedor IA externo, claves, cuotas, suscripciones, nuevas dependencias ni servicios pagos. El benchmark comercial es un catálogo local con atribución y licencia; no se hacen llamadas de red para consultar referencias.
 
 ### Cierre del Bloque 19 — Benchmark y rendimiento por escenarios
 
@@ -180,9 +180,25 @@ La PWA usa `shell-v43`. Los bloques 15–19 no agregan API, proveedor IA externo
 - Presenta rangos aproximados de persistencia detectable en piel (horas), proyección inicial (metros) y proyección después de 1–2 horas (metros), con **confianza muy baja** y advertencias explícitas. Son estimaciones heurísticas, no mediciones físicas.
 - CI final: **180/180 pruebas**, sintaxis y validador de estructura aprobados.
 
-### Próximas mejoras propuestas (aún no implementadas)
+### Cierre del Bloque 20 — Asistente creativo guiado
 
-- **Bloque 20 — Asistente creativo UX:** prompts guiados más claros, respuestas compactas y explicaciones de selección, seguimiento de brief y control de contradicciones.
-- **Bloque 21 — Rediseño visual del laboratorio:** jerarquía de tarjetas, gráficos analíticos, estados vacíos, responsive/mobile y navegación más compacta.
+- Añade tres briefs de inicio editables: fresco y limpio, cálido y envolvente, y floral elegante.
+- Detecta cuando una misma familia aparece como preferida y también rechazada; pausa las recomendaciones y solicita aclaración en lugar de generar propuestas contradictorias.
+- Las propuestas A/B/C solo se generan cuando el brief queda en estado listo.
+- El motor sigue siendo local y determinista. No utiliza IA externa, API, nuevas dependencias ni servicios de pago.
+- PWA: shell-v44. CI aprobada en PR #57.
+
+### Cierre del Bloque 21 — Rediseño visual del laboratorio
+
+- Navegación interna compacta para saltar entre composición, asistente, análisis, originalidad, evolución y rendimiento.
+- Dashboard con gráfico de anillo por familias, barras accesibles y estados vacíos que orientan al primer paso.
+- Análisis con leyendas de participación, gráficos mejor adaptados a móvil y acceso para volver a la composición cuando aún no hay datos.
+- Se mantiene la lógica analítica existente: los gráficos se calculan a partir de datos guardados y no inventan métricas.
+- PWA: shell-v45. CI aprobada en PR #58: **189/189 pruebas**, sintaxis y validador de estructura aprobados.
+
+### Próximos bloques
+
 - **Bloque 22 — Historial y comparación de perfiles:** conservar briefs y comparar alternativas, público, benchmark y escenarios de rendimiento.
-- **Bloque 23 — Calibración sensorial:** permitir registrar pruebas reales de horas/proyección y ajustar las estimaciones con datos del usuario, manteniendo la privacidad local.
+- **Bloque 23 — Calibración sensorial:** registrar observaciones reales de persistencia/proyección y contrastarlas con las estimaciones, manteniendo los datos en el dispositivo.
+
+**Pendiente de aceptación manual:** comprobar en Android el diseño real en distintos tamaños, interacción táctil y desplazamiento de la navegación interna; verificar actualización PWA a shell-v45; probar impresión/guardado PDF y comprobar el último despliegue de GitHub Pages. La aprobación de CI no sustituye estas pruebas físicas.
