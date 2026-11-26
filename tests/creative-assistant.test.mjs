@@ -65,6 +65,7 @@ test("briefs without recognized fragrance direction ask a targeted question", ()
   assert.equal(result.status, "needs-direction");
   assert.ok(result.followUpQuestion);
   assert.equal(result.suggestions.length, 0);
+  assert.deepEqual(result.avoidedPreferences, []);
 });
 
 test("assistant panel exposes local modes and explicit transfer action, and escapes user text", () => {
