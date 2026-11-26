@@ -396,3 +396,43 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 - **Bloque 34:** modo de búsqueda en catálogo global frente a inventario propio, respetando la procedencia y disponibilidad de cada referencia.
 
 **Alcance global:** bloques 1–32 completados y fusionados en `main`. La aceptación visual física Android de la tipografía actualizada continúa pendiente.
+
+
+## Checkpoint — Bloques 33 y 34: filtros y alcance de búsqueda
+
+**Estado:** COMPLETADOS / CI APROBADA / PR DE FUNCIONALIDAD FUSIONADO
+
+### Bloque 33 — Filtros de resultados
+- Se incorporó un motor puro de filtrado que trabaja sobre los resultados ya puntuados.
+- Filtros disponibles: categoría comercial (designer, niche, arabian), banda de similitud, nivel de confianza, puntuación mínima/máxima, casa y estado de disponibilidad.
+- El filtrado no recalcula ni altera la puntuación de similitud ni el orden relativo del ranking.
+- Expone resultados visibles, resultados retirados por filtros, recuento de origen, truncamiento por límite de ranking y facetas para categoría, banda, confianza y disponibilidad.
+- La disponibilidad que no exista se clasifica como `not-tracked`, nunca se presupone que el producto está en stock.
+
+### Bloque 34 — Alcance global o inventario propio
+- `global-catalog`: usa únicamente perfiles de referencia globales y marca el stock como `not-tracked`.
+- `own-inventory`: admite perfiles entregados explícitamente por un adaptador de inventario propio.
+- Cada entrada de inventario requiere `inventoryItemId` estable. SKU y cantidad son opcionales; la disponibilidad puede ser `in-stock`, `out-of-stock` o `unknown`.
+- El ranking consciente del alcance conserva procedencia, identificador de inventario, SKU, cantidad y disponibilidad sin modificar el porcentaje de similitud.
+- Un inventario vacío devuelve `inventory-empty`; nunca cambia silenciosamente al catálogo global.
+
+### Límite de integración verificado
+- El repositorio local actual contiene formulaciones creativas, experimentos sensoriales y perfiles creativos; la biblioteca educativa contiene notas olfativas.
+- No existe todavía un repositorio comercial de perfumes y existencias en esta aplicación.
+- Por ello, el modo `own-inventory` está implementado y probado como contrato/adaptador, pero **no está conectado a un inventario comercial real**. La integración futura deberá suministrar registros de inventario con el contrato documentado.
+- No se reutilizan formulaciones ni notas educativas como si fueran productos en stock.
+
+### Offline y QA
+- Se añadieron módulos `filters.js` y `scope.js`, pruebas unitarias y comprobaciones en el validador de estructura.
+- El shell PWA pasó a `shell-v50` e incluye ambos módulos.
+- Se eliminaron seis entradas duplicadas del app shell.
+- **PR #73:** fusionado mediante Squash Merge.
+- **GitHub Actions run #1174 (push) y #1175 (pull request):** aprobados.
+- **Resultado:** **279/279 pruebas**, 0 fallidas; sintaxis de módulos y validador estructural aprobados.
+- Sin dependencias nuevas, APIs externas, servicios de IA, costos ni cambios en Supabase.
+
+### Siguiente par
+- **Bloque 35:** interfaz de búsqueda inversa: campo de búsqueda, selección inequívoca de referencia, modo global/inventario, filtros y presentación de alternativas.
+- **Bloque 36:** integración funcional completa, accesibilidad/responsive, estados vacíos/errores, QA de interfaz, pruebas end-to-end y certificación final del flujo.
+
+**Alcance global:** bloques 1–34 completados y fusionados en `main`. La interfaz de búsqueda inversa y la integración con un inventario comercial real siguen pendientes.
