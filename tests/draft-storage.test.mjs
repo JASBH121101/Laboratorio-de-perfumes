@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { addMixNote, createMixState } from "../src/js/features/laboratory/mixing/state.js";
-import { clearMixDraft, loadMixDraft, saveMixDraft } from "../src/js/features/laboratory/mixing/draft-storage.js";
+import { loadMixDraft, saveMixDraft from "../src/js/features/laboratory/mixing/draft-storage.js";
 
 function withStorage(run) {
   const store = new Map();
@@ -56,9 +56,9 @@ test("invalid draft JSON, unknown notes, duplicates and non-100 totals are rejec
 
 test("draft storage is wired to app startup, composition changes and PWA shell", async () => {
   const { readFile } = await import("node:fs/promises");
-  const app = await readFile(new URL("../../js/app.js", import.meta.url), "utf8");
-  const panel = await readFile(new URL("../../js/features/laboratory/mixing/panel.js", import.meta.url), "utf8");
-  const sw = await readFile(new URL("../../../../sw.js", import.meta.url), "utf8");
+  const app = await readFile(new URL("../src/js/app.js", import.meta.url), "utf8");
+  const panel = await readFile(new URL("../src/js/features/laboratory/mixing/panel.js", import.meta.url), "utf8");
+  const sw = await readFile(new URL("../sw.js", import.meta.url), "utf8");
   assert.match(app, /loadMixDraft\(\) \?\? createMixState\(\)/);
   assert.match(app, /saveMixDraft\(mixingState\.items\)/);
   assert.match(panel, /Borrador automático local/);
