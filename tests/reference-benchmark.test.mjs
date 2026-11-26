@@ -28,5 +28,5 @@ test("benchmark panel is safe and offline catalog is included in shell",async()=
  const {readFile}=await import("node:fs/promises");
  const sw=await readFile(new URL("../sw.js",import.meta.url),"utf8");
  assert.match(sw,/reference-benchmark\/data\.js/);
- assert.match(sw,/shell-v49/);
+ assert.match(sw,/shell-v50/);
 });
