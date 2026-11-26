@@ -97,9 +97,9 @@ test("deduplicates only accent/case/spacing variants and does not guess synonyms
   const profile = toFragranceSimilarityProfile({
     id: "dedupe",
     name: "Deduplication",
-    notes: ["  Bergamot ", "bergamot", "Bergamóta", "Bergamota"]
+    notes: ["  Bergamot ", "bergamot", "Bergamota", "Café", "Cafe"]
   }, source);
-  assert.deepEqual(profile.olfactory.notes.all, ["Bergamot", "Bergamóta", "Bergamota"]);
+  assert.deepEqual(profile.olfactory.notes.all, ["Bergamot", "Bergamota", "Café"]);
 });
 
 test("catalog builder reports invalid records instead of silently dropping them", () => {
