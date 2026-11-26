@@ -8,7 +8,7 @@ const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, (char) => (
 
 const ROLES = ["Salida", "Corazón", "Fondo"];
 const KINDS = ["Nota olfativa", "Acorde"];
-const PICKER_LIMIT = 6;
+const PICKER_LIMIT = 4;
 
 function familyOptions(selectedFamily) {
   const families = [...new Set(PERFUME_ITEMS.map((item) => item.family))]
@@ -109,7 +109,7 @@ export function renderMixStudio(state, pickerState = {}) {
         <div>
           <p class="eyebrow">BLOCK 06 · FORMULATION WORKSPACE</p>
           <h2>Composición <em>conceptual</em></h2>
-          <p>Buscá materias por nombre, familia o perfil; añadilas y ajustá cada peso creativo con precisión.</p>
+          <p>Buscá materias, agregalas y ajustá cada peso creativo.</p>
           <span class="mix-draft-status" role="status">Borrador automático local · se recupera al volver</span>
         </div>
         <span class="mix-total-badge">${hasItems ? total : 0}<small>/ 100 PTS</small></span>
@@ -117,12 +117,11 @@ export function renderMixStudio(state, pickerState = {}) {
       <section class="mix-note-picker" id="mix-note-picker-panel" aria-label="Añadir materias primas">
         <div class="mix-picker-title-row">
           <div><p class="eyebrow">MATERIAS DE REFERENCIA</p><h3>Buscar y añadir</h3><small>Filtrá la biblioteca sin salir del constructor.</small></div>
-          <span class="mix-picker-library-count">${PERFUME_ITEMS.length} REFERENCIAS</span>
+          <span class="mix-picker-library-count">${PERFUME_ITEMS.length} MATERIAS DISPONIBLES</span>
         </div>
         <label class="mix-picker-search" for="mix-picker-search">
           <span aria-hidden="true">⌕</span>
-          <input id="mix-picker-search" type="search" value="${escapeHtml(pickerState.query || "")}" placeholder="Buscar nombre, familia o descriptor…" autocomplete="off" aria-label="Buscar materias para la composición">
-          <kbd>60</kbd>
+          <input id="mix-picker-search" type="search" inputmode="search" enterkeyhint="search" value="${escapeHtml(pickerState.query || "")}" placeholder="Buscar nombre, familia o descriptor…" autocomplete="off" aria-label="Buscar materias para la composición">
         </label>
         <div class="mix-picker-filters">
           <label><span>Familia</span><select id="mix-picker-family">${familyOptions(pickerState.family || "all")}</select></label>
