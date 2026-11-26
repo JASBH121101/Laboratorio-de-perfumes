@@ -1,4 +1,4 @@
-import { PERFUME_ITEMS } from "../perfume-library/data.js";
+import { PERFUME_ITEMS } from "../../perfume-library/data.js";
 
 export const SENSORY_EXPERIMENT_SCHEMA_VERSION = 1;
 export const SENSORY_TAGS = Object.freeze([
