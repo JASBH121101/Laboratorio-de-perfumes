@@ -22,7 +22,8 @@ const notice = document.querySelector("#app-notice");
 const noticeTitle = document.querySelector("#app-notice-title");
 const noticeMessage = document.querySelector("#app-notice-message");
 const noticeAction = document.querySelector("#app-notice-action");
-const libraryState = { query: "", family: "all", role: "all", selectedId: null };\nconst mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
+const libraryState = { query: "", family: "all", role: "all", selectedId: null };
+const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
 const archiveRepository = createArchiveRepository();
 
 let mixingState = loadMixDraft() ?? createMixState();
@@ -192,7 +193,14 @@ function updateOriginalityAnalysis() {
   if (panel) panel.outerHTML = renderOriginalityAnalysis(mixingState, archiveState.creations);
 }
 
-function updateMixPickerResults() {\n  const results = appRoot.querySelector("#mix-picker-results");\n  if (results) results.innerHTML = renderMixPickerResults(mixingState, mixPickerState);\n  const clear = appRoot.querySelector(".mix-picker-clear");\n  if (clear) clear.disabled = !mixPickerState.query && mixPickerState.family === "all" && mixPickerState.role === "all" && mixPickerState.kind === "all";\n}\n\nfunction updateMixStudio() {
+function updateMixPickerResults() {
+  const results = appRoot.querySelector("#mix-picker-results");
+  if (results) results.innerHTML = renderMixPickerResults(mixingState, mixPickerState);
+  const clear = appRoot.querySelector(".mix-picker-clear");
+  if (clear) clear.disabled = !mixPickerState.query && mixPickerState.family === "all" && mixPickerState.role === "all" && mixPickerState.kind === "all";
+}
+
+function updateMixStudio() {
   saveMixDraft(mixingState.items);
   const panel = appRoot.querySelector("#mix-studio");
   if (panel) panel.outerHTML = renderMixStudio(mixingState, mixPickerState);
@@ -269,14 +277,30 @@ async function importBackupFile(file) {
 
 
 appRoot.addEventListener("input", (event) => {
-  if (event.target.id === "library-search") {
+  if (event.target.id === "mix-picker-search") {
+    mixPickerState.query = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "library-search") {
     libraryState.query = event.target.value;
     updateLibrary();
   }
 });
 
 appRoot.addEventListener("change", async (event) => {
-  if (event.target.id === "library-family") {
+  if (event.target.id === "mix-picker-family") {
+    mixPickerState.family = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "mix-picker-kind") {
+    mixPickerState.kind = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "mix-picker-role") {
+    mixPickerState.role = event.target.value;
+    mixPickerState.expanded = false;
+    updateMixPickerResults();
+  } else if (event.target.id === "library-family") {
     libraryState.family = event.target.value;
     updateLibrary();
   } else if (event.target.id === "library-role") {
@@ -422,8 +446,24 @@ appRoot.addEventListener("click", async (event) => {
     } else if (action === "close-note-detail") {
       libraryState.selectedId = null;
       updateLibrary();
-    } else if (action === "add-picked-note") {
-      addNoteToMix(appRoot.querySelector("#mix-note-picker")?.value);
+    } else if (action === "toggle-mix-picker") {
+      mixPickerState.expanded = !mixPickerState.expanded;
+      updateMixPickerResults();
+    } else if (action === "clear-mix-picker") {
+      mixPickerState.query = "";
+      mixPickerState.family = "all";
+      mixPickerState.role = "all";
+      mixPickerState.kind = "all";
+      mixPickerState.expanded = false;
+      const search = appRoot.querySelector("#mix-picker-search");
+      const family = appRoot.querySelector("#mix-picker-family");
+      const kind = appRoot.querySelector("#mix-picker-kind");
+      const role = appRoot.querySelector("#mix-picker-role");
+      if (search) search.value = "";
+      if (family) family.value = "all";
+      if (kind) kind.value = "all";
+      if (role) role.value = "all";
+      updateMixPickerResults();
     } else if (action === "undo-mix") {
       mixingState = undoMix(mixingState);
       updateMixStudio();
