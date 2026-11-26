@@ -30,15 +30,29 @@ function mentionedGroups(description) {
   const phrase = normalize(description);
   const preferred = [];
   const avoided = [];
+  const conflicts = [];
+  const isNegated = (index) => {
+    const prefix = phrase.slice(Math.max(0, index - 52), index);
+    return /\b(?:no|sin|evitar|evitando|evito|menos|descartar|descarto)\b(?:\s+\w+){0,3}\s*$/.test(prefix);
+  };
+
   for (const group of GROUPS) {
-    const matched = group.keywords.find((keyword) => containsTerm(phrase, keyword));
-    if (!matched) continue;
-    const normalizedKeyword = normalize(matched);
-    const escaped = normalizedKeyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const negated = new RegExp(`(?:\\bno\\b|\\bsin\\b|\\bevit(?:ar|ando)\\b|\\bmenos\\b)(?:\\s+\\w+){0,2}\\s+${escaped}\\b`).test(phrase);
-    (negated ? avoided : preferred).push(group);
+    let hasPreferredMention = false;
+    let hasAvoidedMention = false;
+    for (const keyword of group.keywords) {
+      const normalizedKeyword = normalize(keyword);
+      if (!normalizedKeyword) continue;
+      const pattern = new RegExp("\\b" + normalizedKeyword.replaceAll(" ", "\\s+") + "\\b", "g");
+      for (const match of phrase.matchAll(pattern)) {
+        if (isNegated(match.index)) hasAvoidedMention = true;
+        else hasPreferredMention = true;
+      }
+    }
+    if (hasPreferredMention && hasAvoidedMention) conflicts.push(group);
+    else if (hasAvoidedMention) avoided.push(group);
+    else if (hasPreferredMention) preferred.push(group);
   }
-  return { preferred, avoided };
+  return { preferred, avoided, conflicts };
 }
 
 function itemMatchesGroup(item, group) {
@@ -111,7 +125,22 @@ export function buildCreativeRecommendations({
     };
   }
 
-  const { preferred, avoided } = mentionedGroups(text);
+  const { preferred, avoided, conflicts } = mentionedGroups(text);
+  if (conflicts.length) {
+    const labels = conflicts.map((group) => group.label);
+    return {
+      status:"needs-clarification",
+      mode:normalizedMode,
+      title:"Hay una preferencia que conviene aclarar",
+      summary:"El brief presenta " + labels.join(" y ") + " como algo que querés incluir y también evitar. Para no recomendar en una dirección equivocada, primero aclaremos esa preferencia.",
+      preferences:preferred.map((group) => group.label),
+      avoidedPreferences:avoided.map((group) => group.label),
+      conflicts:labels,
+      suggestions:[],
+      followUpQuestion:"¿Querés incluir " + labels[0] + " como parte de la identidad o preferís dejarlo fuera?",
+      notice:"No se generaron sugerencias mientras exista una contradicción en el brief. Esta revisión es editorial y no evalúa química ni seguridad."
+    };
+  }
   const ranked = library
     .map((item, index) => ({ item, index, ...scoreItem(item, preferred, avoided) }))
     .filter((entry) => entry.score > 0)
