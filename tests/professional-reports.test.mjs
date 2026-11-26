@@ -53,7 +53,8 @@ test("professional dossier rejects missing, unrelated and unnormalized variants"
   const { creation, variant } = fixtures();
   assert.throws(() => buildProfessionalReport({}), /creación guardada/);
   assert.throws(() => buildProfessionalReport({ creation, variant: { id: "unknown" } }), /no pertenece/);
-  const invalidVariant = { ...variant, items: [{ id: "bergamot", points: 40 }] };
+  const invalidVersion = { ...variant.versions[0], items: [{ id: "bergamot", points: 40 }] };
+  const invalidVariant = { ...variant, items: [{ id: "bergamot", points: 40 }], versions: [invalidVersion] };
   const invalidCreation = { ...creation, variants: [invalidVariant] };
   assert.throws(() => buildProfessionalReport({ creation: invalidCreation, variant: invalidVariant }), /100 puntos/);
 });
