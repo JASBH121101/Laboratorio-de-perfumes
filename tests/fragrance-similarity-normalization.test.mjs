@@ -78,6 +78,16 @@ test("normalizes profile dimensions without mutating source values", () => {
   }, source);
   const normalized = normalizeFragranceSimilarityProfile(profile);
   assert.deepEqual(normalized.families.map((item) => item.key), ["woody", "earthy"]);
+  assert.deepEqual(normalizeFragranceSimilarityProfile(toFragranceSimilarityProfile({
+    id: "amber-family",
+    name: "Amber Family",
+    family: "Amber & Resin"
+  }, source)).families.map((item) => item.key), ["amber", "resinous"]);
+  assert.deepEqual(normalizeFragranceSimilarityProfile(toFragranceSimilarityProfile({
+    id: "smoke-family",
+    name: "Smoke Family",
+    family: "Smoke & Leather"
+  }, source)).families.map((item) => item.key), ["smoky", "leathery"]);
   assert.deepEqual(normalized.notes.all.map((item) => item.key), ["bergamot", "oud"]);
   assert.deepEqual(profile.olfactory.notes.all, ["Bergamot", "Bergamota", "Oud", "Agarwood"]);
   assert.equal(normalized.quality.pyramidCoverage, "partial");
