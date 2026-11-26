@@ -59,11 +59,13 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 
 | Bloque | Alcance | Estado |
 |---|---|---|
-| 1. Estabilidad PWA | Un solo aviso por release pendiente; persistir el cierre; chequeo manual separado | Implementado en rama, CI pendiente |
-| 2. Retirada 3D | Eliminar import map, motor, cámara, zoom, renderizado y caché externa | En implementación |
-| 3. Dashboard analítico | Indicadores locales, familias, actividad e interfaz responsive | Módulos implementados, integración y validación en curso |
-| 4. Originalidad e identidad | Diferenciación interna, afinidad personal y desafíos creativos | Motor y panel implementados, validación en curso |
-| 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | Pendiente |
+| 1. Estabilidad PWA | Un solo aviso por release pendiente; persistir el cierre; chequeo manual separado | **Completado** |
+| 2. Retirada 3D | Eliminar import map, motor, cámara, zoom, renderizado y caché externa | **Completado** |
+| 3. Dashboard analítico | Indicadores locales, familias, actividad e interfaz responsive | **Completado** |
+| 4. Originalidad e identidad | Diferenciación interna, afinidad personal y desafíos creativos | **Completado** |
+| 5. Certificación y publicación | Tests, validator, documentación, CI, PR y despliegue | **Completado** — PR #32 fusionado, CI verde y Pages desplegado |
+
+La validación automatizada pasó con **97/97 pruebas**, comprobación de sintaxis y validador de estructura. El PR #32 se integró en `main` y el workflow de GitHub Pages terminó correctamente. Queda pendiente la revisión física de la interfaz y de los avisos PWA desde Chrome en Android.
 
 ## Protección de datos creativos
 
