@@ -253,3 +253,35 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 **Aceptación manual pendiente:** revisar en Android el tamaño real de textos, saltos de línea, tarjetas, tablas, controles, gráficos y desbordamientos en pantallas pequeñas. Confirmar que el dispositivo active `shell-v48`. La CI no sustituye esta comprobación visual física.
 
 **Estado al cierre:** Bloques funcionales **1–24 completados y fusionados**; aceptación visual Android pendiente.
+
+
+## Checkpoint — Bloques 25 y 26: Fragrance Similarity
+
+**Estado:** COMPLETADOS / CI APROBADA / PR DE FUNCIONALIDAD FUSIONADO
+
+### Bloque 25 — Arquitectura independiente y contratos
+- Se creó el módulo `src/js/features/laboratory/fragrance-similarity/` con contratos de perfil y resultado.
+- Se definió el porcentaje como una **estimación editorial de similitud (0–100)**, separado del nivel de confianza.
+- Se documentaron las fronteras del motor: JavaScript puro, sin DOM, almacenamiento, llamadas de red, proveedores de IA ni dependencias de pago.
+- Se establecieron límites para no reconstruir fórmulas propietarias ni declarar equivalencia química o sensorial.
+
+### Bloque 26 — Modelo de datos olfativos
+- Se normalizaron los **1,479 registros** del catálogo local de referencia.
+- Cada perfil conserva nombre, casa, categoría, familia, notas declaradas, descriptores, atribución, licencia, snapshot y URL de la ficha cuando existe.
+- La pirámide se marca como completa, parcial o no disponible. Los datos agregados no se asignan artificialmente a salida, corazón o fondo.
+- Los acordes y subfamilias faltantes quedan como desconocidos; no se inventan a partir de descriptores.
+- Los registros inválidos se reportan con motivo; no se descartan silenciosamente.
+
+### Certificación
+- **PR #65:** fusionado mediante Squash Merge.
+- **Commit de integración:** `9c5bb19ff9e4b35813735371ddb1882937345fa1`.
+- **GitHub Actions run #1104:** aprobado.
+- **Resultado:** **226/226 pruebas**, 0 fallidas; sintaxis de módulos aprobada y validador estructural aprobado.
+- No se añadieron dependencias, APIs externas, servicios de IA, sincronización en nube ni costos. No se modificó Supabase.
+- El módulo todavía no tiene interfaz ni calcula similitud: esa lógica corresponde a los bloques siguientes.
+
+### Siguiente par
+- **Bloque 27:** normalización semántica, sinónimos, variantes de escritura, duplicados y calidad de datos.
+- **Bloque 28:** motor de comparación olfativa por notas, familias, acordes, pirámide y carácter.
+
+**Alcance global:** bloques 1–26 completados y fusionados en `main`. La aceptación visual física de Android del trabajo anterior continúa siendo una verificación manual independiente.
