@@ -37,5 +37,5 @@ test("performance estimator is integrated in app update and offline shell",async
  const views=await readFile(new URL("../src/js/ui/views.js",import.meta.url),"utf8");
  const sw=await readFile(new URL("../sw.js",import.meta.url),"utf8");
  assert.match(app,/updateEvolutionSimulator/);assert.match(app,/renderPerformanceEstimate/);
- assert.match(views,/renderPerformanceEstimate/);assert.match(sw,/performance-estimator\/engine\.js/);assert.match(sw,/shell-v45/);
+ assert.match(views,/renderPerformanceEstimate/);assert.match(sw,/performance-estimator\/engine\.js/);assert.match(sw,/shell-v46/);
 });

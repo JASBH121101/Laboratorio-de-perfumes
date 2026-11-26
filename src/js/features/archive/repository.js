@@ -1,9 +1,11 @@
 const DB_NAME = "jb-virtual-perfume-lab";
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 const STORE_NAME = "creations";
 const EXPERIMENT_STORE = "sensory-experiments";
+const PROFILE_STORE = "creative-profiles";
 const FALLBACK_KEY = "jb-vpl-archive-v1";
 const EXPERIMENTS_FALLBACK_KEY = "jb-vpl-sensory-experiments-v1";
+const PROFILES_FALLBACK_KEY = "jb-vpl-creative-profiles-v1";
 
 function requestResult(request) {
   return new Promise((resolve, reject) => {
@@ -47,6 +49,7 @@ export function createArchiveRepository({
           const database = request.result;
           if (!database.objectStoreNames.contains(STORE_NAME)) database.createObjectStore(STORE_NAME, { keyPath: "id" });
           if (!database.objectStoreNames.contains(EXPERIMENT_STORE)) database.createObjectStore(EXPERIMENT_STORE, { keyPath: "id" });
+          if (!database.objectStoreNames.contains(PROFILE_STORE)) database.createObjectStore(PROFILE_STORE, { keyPath: "id" });
         };
         request.onsuccess = () => {
           const database = request.result;
@@ -213,9 +216,58 @@ export function createArchiveRepository({
     await transactionFinished(transaction);
   }
 
+  async function listProfiles() {
+    const database = await openDatabase();
+    if (!database) return readFallback(storage, PROFILES_FALLBACK_KEY)
+      .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+    const transaction = database.transaction(PROFILE_STORE, "readonly");
+    const finished = transactionFinished(transaction);
+    const result = await requestResult(transaction.objectStore(PROFILE_STORE).getAll());
+    await finished;
+    return result.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  }
+
+  async function putProfile(profile) {
+    const database = await openDatabase();
+    if (!database) {
+      const records = readFallback(storage, PROFILES_FALLBACK_KEY);
+      const index = records.findIndex((item) => item.id === profile.id);
+      if (index >= 0) records[index] = profile; else records.push(profile);
+      writeFallback(storage, PROFILES_FALLBACK_KEY, records);
+      return profile;
+    }
+    const transaction = database.transaction(PROFILE_STORE, "readwrite");
+    transaction.objectStore(PROFILE_STORE).put(profile);
+    await transactionFinished(transaction);
+    return profile;
+  }
+
+  async function removeProfile(id) {
+    const database = await openDatabase();
+    if (!database) {
+      writeFallback(storage, PROFILES_FALLBACK_KEY, readFallback(storage, PROFILES_FALLBACK_KEY).filter((item) => item.id !== id));
+      return;
+    }
+    const transaction = database.transaction(PROFILE_STORE, "readwrite");
+    transaction.objectStore(PROFILE_STORE).delete(id);
+    await transactionFinished(transaction);
+  }
+
+  async function clearProfiles() {
+    const database = await openDatabase();
+    if (!database) {
+      storage.removeItem(PROFILES_FALLBACK_KEY);
+      return;
+    }
+    const transaction = database.transaction(PROFILE_STORE, "readwrite");
+    transaction.objectStore(PROFILE_STORE).clear();
+    await transactionFinished(transaction);
+  }
+
   return {
     list, get, put, putMany, remove, clear,
     listExperiments, putExperiment, putExperiments, removeExperiment, removeExperimentsForCreation, clearExperiments,
+    listProfiles, putProfile, removeProfile, clearProfiles,
     getStorageMode: () => fallbackRequired ? "localStorage" : "IndexedDB"
   };
 }

@@ -27,7 +27,7 @@ test("integration keeps user-initiated transfer actions and local offline module
   readFile(new URL("../src/js/features/laboratory/audience-fit/engine.js",import.meta.url),"utf8")
  ]);
  assert.match(app,/send-client-brief-to-assistant/);assert.match(app,/load-formulation-proposal/);assert.match(app,/replaceMixItems/);assert.match(app,/updateAudienceFit/);
- assert.match(views,/renderAudienceFit/);assert.match(views,/id="audience-fit-root"/);assert.match(app,/root\.innerHTML = renderAudienceFit\(mixingState\.items\)/);assert.match(sw,/shell-v45/);assert.ok(sw.includes("client-brief/engine.js"));assert.ok(sw.includes("audience-fit/engine.js"));
+ assert.match(views,/renderAudienceFit/);assert.match(views,/id="audience-fit-root"/);assert.match(app,/root\.innerHTML = renderAudienceFit\(mixingState\.items\)/);assert.match(sw,/shell-v46/);assert.ok(sw.includes("client-brief/engine.js"));assert.ok(sw.includes("audience-fit/engine.js"));
  assert.equal(briefEngine.includes("fetch("),false);assert.equal(audienceEngine.includes("fetch("),false);
 });
 
@@ -42,4 +42,22 @@ test("assistant UX supports guided prompts and blocks proposals for contradictor
   assert.match(app, /creativeAssistantState\.result\.status === "ready"/);
   assert.match(panel, /creative-assistant-prompt-guide/);
   assert.match(engine, /needs-clarification/);
+});
+
+ 
+test("saved client profiles remain local, persistent, comparable and available offline", async () => {
+  const [app, views, sw, repository] = await Promise.all([
+    readFile(new URL("../src/js/app.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/js/ui/views.js", import.meta.url), "utf8"),
+    readFile(new URL("../sw.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/js/features/archive/repository.js", import.meta.url), "utf8")
+  ]);
+  assert.match(app, /save-client-profile/);
+  assert.match(app, /compareProfileSnapshots/);
+  assert.match(views, /renderProfileHistory/);
+  assert.match(repository, /PROFILE_STORE/);
+  assert.match(repository, /listProfiles/);
+  assert.match(sw, /profile-history\/engine\.js/);
+  assert.match(sw, /profile-history\/panel\.js/);
+  assert.match(sw, /shell-v46/);
 });

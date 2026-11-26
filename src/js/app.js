@@ -12,6 +12,8 @@ import { renderInspirationDifferentiation } from "./features/laboratory/inspirat
 import { buildClientBrief } from "./features/laboratory/client-brief/engine.js";
 import { renderClientBriefPanel } from "./features/laboratory/client-brief/panel.js";
 import { renderAudienceFit } from "./features/laboratory/audience-fit/panel.js";
+import { createCreativeProfile, compareProfileSnapshots } from "./features/laboratory/profile-history/engine.js";
+import { renderProfileHistory } from "./features/laboratory/profile-history/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -45,7 +47,7 @@ const libraryState = { query: "", family: "all", role: "all", selectedId: null }
 const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
 const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
 const inspirationDifferentiationState = { referenceLabel: "", liked: "", avoid: "", result: null };
-const clientBriefState = { fields: {}, result: null };
+const clientBriefState = { fields: {}, label: "", result: null };
 const performanceScenarioState = { concentration: "edp", environment: "neutral" };
 const archiveRepository = createArchiveRepository();
 
@@ -59,6 +61,11 @@ let archiveState = {
   comparison: null,
   comparisonPair: null,
   experiments: [],
+  profiles: [],
+  profileLeftId: "",
+  profileRightId: "",
+  profileComparisonOptions: { concentration: "edp", environment: "neutral" },
+  profileComparison: null,
   sensorySelection: "",
   reportSelection: "",
   professionalReport: null,
@@ -118,14 +125,17 @@ function updateArchiveUI() {
   if (sensoryPanel) sensoryPanel.outerHTML = renderSensoryExperiments(archiveState);
   const reportsPanel = appRoot.querySelector("#professional-reports-root");
   if (reportsPanel) reportsPanel.outerHTML = renderProfessionalReports(archiveState);
+  const profilePanel = appRoot.querySelector("#profile-history-root");
+  if (profilePanel) profilePanel.outerHTML = renderProfileHistory(archiveState);
   updateOriginalityAnalysis();
 }
 
 async function refreshArchive() {
   try {
-    [archiveState.creations, archiveState.experiments] = await Promise.all([
+    [archiveState.creations, archiveState.experiments, archiveState.profiles] = await Promise.all([
       archiveRepository.list(),
-      archiveRepository.listExperiments()
+      archiveRepository.listExperiments(),
+      archiveRepository.listProfiles()
     ]);
     archiveState.storageMode = archiveRepository.getStorageMode();
     archiveState.professionalReport = null;
@@ -407,6 +417,8 @@ appRoot.addEventListener("input", (event) => {
     inspirationDifferentiationState.avoid = event.target.value;
   } else if (event.target.id === "creative-assistant-brief") {
     creativeAssistantState.description = event.target.value;
+  } else if (event.target.id === "client-brief-profile-label") {
+    clientBriefState.label = event.target.value;
   } else if (["client-brief-liked", "client-brief-avoid", "client-brief-additional"].includes(event.target.id)) {
     const field = event.target.id.replace("client-brief-", "");
     clientBriefState.fields[field] = event.target.value;
@@ -468,6 +480,19 @@ appRoot.addEventListener("change", async (event) => {
     } finally {
       event.target.value = "";
     }
+  }
+  if (event.target.id === "profile-compare-left") {
+    archiveState.profileLeftId = event.target.value;
+    archiveState.profileComparison = null;
+  } else if (event.target.id === "profile-compare-right") {
+    archiveState.profileRightId = event.target.value;
+    archiveState.profileComparison = null;
+  } else if (event.target.id === "profile-compare-concentration") {
+    archiveState.profileComparisonOptions.concentration = event.target.value;
+    archiveState.profileComparison = null;
+  } else if (event.target.id === "profile-compare-environment") {
+    archiveState.profileComparisonOptions.environment = event.target.value;
+    archiveState.profileComparison = null;
   }
   if (event.target.id === "professional-report-variant") {
     archiveState.reportSelection = event.target.value;
@@ -647,8 +672,27 @@ appRoot.addEventListener("click", async (event) => {
       updateClientBrief();
     } else if (action === "clear-client-brief") {
       clientBriefState.fields = {};
+      clientBriefState.label = "";
       clientBriefState.result = null;
       updateClientBrief();
+    } else if (action === "save-client-profile") {
+      if (clientBriefState.result?.status !== "ready") throw new Error("Primero prepará un brief válido.");
+      const proposals = generateFormulationProposals({ description: clientBriefState.result.description, mode: "client" });
+      if (proposals.status !== "ready" || proposals.proposals.length < 2) throw new Error("No hay suficientes alternativas válidas para guardar este perfil.");
+      const generatedLabel = [clientBriefState.result.fields.style, clientBriefState.result.fields.occasion]
+        .filter((value) => value && !["sin preferencia", "sin definir"].includes(value)).join(" · ");
+      const profile = createCreativeProfile({
+        label: clientBriefState.label || generatedLabel || "Perfil creativo",
+        mode: "client",
+        fields: clientBriefState.result.fields,
+        description: clientBriefState.result.description,
+        proposals: proposals.proposals
+      });
+      await archiveRepository.putProfile(profile);
+      archiveState.profileLeftId = profile.id;
+      archiveState.profileComparison = null;
+      await refreshArchive();
+      showNotice({ title: "Perfil guardado", message: profile.label + ": se conservaron " + profile.alternatives.length + " alternativas con sus referencias." });
     } else if (action === "send-client-brief-to-assistant") {
       if (clientBriefState.result?.status !== "ready") throw new Error("Primero prepará un brief con suficiente dirección creativa.");
       creativeAssistantState.mode = "client";
@@ -779,6 +823,28 @@ appRoot.addEventListener("click", async (event) => {
       updateArchiveUI();
     } else if (action === "save-sensory-experiment") {
       await saveSensoryExperimentFromForm();
+    } else if (action === "compare-creative-profiles") {
+      const leftId = appRoot.querySelector("#profile-compare-left")?.value || "";
+      const rightId = appRoot.querySelector("#profile-compare-right")?.value || "";
+      const options = {
+        concentration: appRoot.querySelector("#profile-compare-concentration")?.value || "edp",
+        environment: appRoot.querySelector("#profile-compare-environment")?.value || "neutral"
+      };
+      archiveState.profileLeftId = leftId;
+      archiveState.profileRightId = rightId;
+      archiveState.profileComparisonOptions = options;
+      archiveState.profileComparison = compareProfileSnapshots(archiveState.profiles, leftId, rightId, options);
+      const profilePanel = appRoot.querySelector("#profile-history-root");
+      if (profilePanel) profilePanel.outerHTML = renderProfileHistory(archiveState);
+    } else if (action === "delete-creative-profile") {
+      const id = event.target.closest("[data-profile-id]")?.dataset.profileId;
+      const profile = archiveState.profiles.find((item) => item.id === id);
+      if (profile && window.confirm("¿Eliminar el perfil «" + profile.label + "» y sus alternativas guardadas?")) {
+        await archiveRepository.removeProfile(id);
+        if (archiveState.profileLeftId === id || archiveState.profileRightId === id) archiveState.profileComparison = null;
+        await refreshArchive();
+        showNotice({ title: "Perfil eliminado", message: "El brief y sus alternativas se eliminaron del historial local." });
+      }
     } else if (action === "delete-sensory-experiment") {
       const id = event.target.closest("[data-experiment-id]")?.dataset.experimentId;
       const experiment = archiveState.experiments.find((item) => item.id === id);

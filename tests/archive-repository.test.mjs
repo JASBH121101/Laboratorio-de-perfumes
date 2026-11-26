@@ -77,7 +77,25 @@ test("sensory experiment storage supports bulk import and creation-linked cleanu
 test("IndexedDB schema is upgraded without replacing the existing creations store", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(new URL("../src/js/features/archive/repository.js", import.meta.url), "utf8");
-  assert.match(source, /const DB_VERSION = 2/);
+  assert.match(source, /const DB_VERSION = 3/);
   assert.match(source, /createObjectStore\(STORE_NAME, \{ keyPath: "id" \}\)/);
   assert.match(source, /createObjectStore\(EXPERIMENT_STORE, \{ keyPath: "id" \}\)/);
+  assert.match(source, /createObjectStore\(PROFILE_STORE, \{ keyPath: "id" \}\)/);
+});
+
+
+test("localStorage fallback keeps creative profiles independent and supports remove and clear", async () => {
+  const storage = memoryStorage();
+  const repository = createArchiveRepository({ indexedDBApi: null, storage });
+  const first = { id: "profile-a", label: "Fresco diario", createdAt: "2026-11-26T01:00:00.000Z" };
+  const second = { id: "profile-b", label: "Amaderado noche", createdAt: "2026-11-26T02:00:00.000Z" };
+  await repository.put(sample("creation-a"));
+  await repository.putProfile(first);
+  await repository.putProfile(second);
+  assert.deepEqual((await repository.listProfiles()).map((item) => item.id), ["profile-b", "profile-a"]);
+  assert.equal((await repository.list()).length, 1);
+  await repository.removeProfile("profile-a");
+  assert.deepEqual((await repository.listProfiles()).map((item) => item.id), ["profile-b"]);
+  await repository.clearProfiles();
+  assert.deepEqual(await repository.listProfiles(), []);
 });
