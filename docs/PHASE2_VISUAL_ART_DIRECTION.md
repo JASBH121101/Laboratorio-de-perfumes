@@ -151,6 +151,8 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 | 15. Vessel & Glass Realism | Refine flacons, vials, liquid surfaces, meniscus, graduated glass and pipette details with Android-conscious PBR | **Completed — implementation merged after CI; physical Android visual/performance sign-off pending** |
 | 16. Environmental Surface Realism | Refine mineral wall finish, honed stone response and low-cost contact-shadow falloff without increasing mobile render cost | **Implemented — CI certified; physical Android visual review pending** |
 | 17. Android Interaction & Camera Reliability | Repair touch camera presets, synchronize selected state, improve portrait framing and correct clipped scene status | **Implemented — CI/device visual validation pending** |
+| 18. Original Creation Draft Recovery | Restore and autosave the active conceptual composition locally; validate saved draft records and PWA offline support | **Completed — merged in PR #29; CI and Pages deployment passed** |
+| 19. Creation Workflow Reliability | Synchronize archive variant selection, restored versions, current working composition, 3D selection, note addition and empty-save safeguards | **Implementation complete — CI/device validation in progress** |
 
 ## 8. Block 1 acceptance record
 
@@ -573,3 +575,26 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Undo history is not restored; saved archives remain the versioned source for long-term creations.
 - [x] PWA shell cache advances to `shell-v27` and includes the new module.
 - [ ] Run automated tests, syntax/foundation checks and CI; physical Android verification of reload recovery remains pending.
+
+
+## 26. Block 19 implementation record — Creation Workflow Reliability
+
+- Variant selection in the local archive now loads that variant's exact note IDs and creative points into the active working composition, resets the undo stack for the new context, updates the beaker/analysis/inspector UI, and immediately writes the local draft.
+- Restoring an older archive version now also synchronizes the active working composition and local draft before confirming the archive update. A reload after restore no longer falls back to an older draft.
+- Saving a new creation, a new version, or a new A/B/C variant requires at least one library reference in the working composition. The guard exists in the application action layer as well as disabled UI controls.
+- The archive creation form and Laboratory quick-save controls now expose whether a working composition exists. Quick-save controls refresh whenever the mix changes, so their disabled state cannot remain stale after adding/removing the final reference.
+- Every composition mutation now writes the active draft before refreshing 3D, analysis and quick-save UI. This closes a gap where the previous autosave hook restored drafts but was not called by the common mixing update path.
+- Variant selection and restore buttons have explicit Spanish accessibility labels describing that they load the selected content into the workspace.
+- Regression coverage verifies the 3D selection-to-inspector event, note-add entry points, variant/draft synchronization, restore synchronization, and empty-composition save guards.
+- PWA shell advances to `shell-v28`. No new dependencies, remote services, paid services or external assets were introduced.
+
+### Acceptance record
+
+- [x] Selecting variant A, B or C loads that exact variant into the working composition and local draft.
+- [x] Restoring a historical version loads the restored composition into the active workspace and autosaved draft.
+- [x] Empty compositions cannot create an archive record, save a new version or fork a variant through the UI or action handlers.
+- [x] The quick-save panel updates its enabled/disabled state immediately after composition changes.
+- [x] Every add, remove, weight change, undo and reset operation passes through the local draft autosave hook.
+- [x] Automated regression coverage added for 3D inspector, library/picker additions and archive workflow state synchronization.
+- [ ] Full automated tests, browser syntax and foundation validation must pass in CI before merge.
+- [ ] Physical Android verification of object taps, note picker, sliders, A/B/C selection and reload/recovery remains pending.
