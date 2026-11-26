@@ -76,8 +76,11 @@ The draft is autosaved locally. The archive uses IndexedDB with a localStorage f
 
 ## 10. Current implementation status
 
-- PWA update lifecycle: implemented; CI verification in progress.
-- 3D runtime removal: main application routes, HTML import map, service-worker cache, rendering modules and 3D-only test suites removed. Final CI validation pending.
-- Dashboard: implemented and wired into the home view.
-- Originality engine and UI: implemented with tests; score is limited to the user's own archive.
-- Responsive review on physical Android and post-merge production verification: pending.
+- PWA update lifecycle: completed, merged in PR #32 and covered by passing CI.
+- 3D runtime removal: completed. Runtime modules, HTML import map, service-worker CDN/cache entries, rendering modules and 3D-only test suites removed.
+- Dashboard: completed and wired into the home view; the main branch and GitHub Pages deployment include it.
+- Originality engine and UI: completed with regression tests; score is limited to the user's own archive.
+- CI: 97/97 tests passed, syntax check passed and foundation validator passed.
+- PR #32: merged by squash into main. Main commit: 3840ed55510b87291c848442f5935d8b46c1f1e8.
+- GitHub Pages build and deploy workflow: completed successfully.
+- Physical Android responsive review, actual PWA dismissal/release behavior and device-level inspection: pending.
