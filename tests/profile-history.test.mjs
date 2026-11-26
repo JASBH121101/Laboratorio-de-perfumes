@@ -96,7 +96,7 @@ test("profile history remains responsive and privacy-aware in the projects view"
     readFile(new URL("../scripts/validate-foundation.mjs", import.meta.url), "utf8")
   ]);
   assert.match(views, /renderProfileHistory/);
-  assert.match(views, /profile-history-root/);
+  assert.match(views, /renderProfileHistory\(archiveState\)/);
   assert.match(css, /\.profile-comparison-columns/);
   assert.match(css, /@media\(max-width:700px\)/);
   assert.match(validator, /profile-history\/engine\.js/);
