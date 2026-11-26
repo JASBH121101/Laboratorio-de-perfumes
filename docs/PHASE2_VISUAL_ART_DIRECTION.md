@@ -598,3 +598,52 @@ Adaptive tier selection must fail safely toward Lite. It must not rely on a paid
 - [x] Automated regression coverage added for 3D inspector, library/picker additions and archive workflow state synchronization.
 - [ ] Full automated tests, browser syntax and foundation validation must pass in CI before merge.
 - [ ] Physical Android verification of object taps, note picker, sliders, A/B/C selection and reload/recovery remains pending.
+
+
+---
+
+# JB Perfume Lab — Minimal Analytics Redesign
+
+**Nueva dirección de producto:** software local de formulación conceptual, analítica e identidad creativa. Esta decisión reemplaza el objetivo anterior de atelier 3D. Se retiran las escenas, modelos, renderizador, cámara, zoom, iluminación virtual y animaciones. El espacio principal pasa a ser un dashboard y un constructor de fórmulas basado en datos.
+
+## Plan por bloques
+
+| Bloque | Alcance | Criterio de aceptación |
+|---|---|---|
+| 1. PWA Update Lifecycle | Un aviso por actualización pendiente; persistencia del cierre; no mostrar «actualizado» sin petición manual | Cierre persistido y verificación manual explícita |
+| 2. 3D Decommission | Retirar Three.js, escena, assets de rendering, controles de cámara, auditoría de FPS y caché remota | Ninguna referencia 3D en runtime, import map o shell |
+| 3. Analytics Dashboard | KPIs locales, gráfico de familias, actividad reciente y borrador actual | Todos los valores proceden del archivo/draft local; estado vacío veraz |
+| 4. Originality & Personal Signature | Índice interno basado en referencias, pares, distancia de variantes y afinidad de familias | No calcula puntuación sin línea base; no afirma originalidad mundial |
+| 5. Validation & Release | Tests unitarios, validator, documentación, CI, PR y deploy | CI verde y Pages verificado |
+
+## Bloque 1 — PWA Update Lifecycle
+
+Se corrigió src/js/core/pwa.js para separar detección automática silenciosa de comprobación manual. El cierre de «Nueva versión disponible» se registra localmente mientras exista un worker esperando. Los eventos de foco y visibilidad dejaron de disparar comprobaciones adicionales. Una nueva instalación del service worker elimina la marca anterior y habilita un nuevo aviso. «Está todo actualizado» queda reservado para la acción manual.
+
+**Pruebas añadidas:** aviso automático único, supresión de avisos cerrados, reaparición bajo comprobación manual, ausencia de avisos cuando no hay worker/controlador y ausencia de chequeos enlazados a cada foco/visibilidad.
+
+## Bloque 2 — Minimal Formulation Workspace
+
+El flujo de interfaz ya está siendo sustituido por un constructor sin escenario: la página de inicio presenta dashboard, y el laboratorio concentra composición, archivo, análisis creativo, originalidad y evolución editorial. El cache shell se avanza a shell-v29; el import map de Three.js y las URLs CDN dejan de ser necesarias. La retirada completa de módulos heredados y la certificación quedan pendientes.
+
+## Bloque 3 — Analytics Dashboard
+
+Se añadió un dashboard alimentado desde las creaciones locales: conteos de creaciones, variantes, versiones y referencias; distribución por familia; actividad reciente y estado del borrador. Los gráficos son 2D y no crean datos sintéticos cuando no existen registros.
+
+## Bloque 4 — Originality & Personal Signature
+
+El motor compara la composición actual contra variantes/versiones diferentes guardadas por el propio usuario. El Índice de Diferenciación Interna pondera frecuencia de referencias, novedad de parejas y distancia estructural respecto a la fórmula más cercana. La Afinidad con patrones previos se reporta aparte. Sin historial suficiente se muestra «Base en construcción» y no se inventa una puntuación.
+
+**Límite:** no se consulta un catálogo mundial ni bases comerciales. Ninguna cifra debe interpretarse como prueba de originalidad global, exclusividad de mercado o patentabilidad.
+
+## Estado de aceptación
+
+- [x] Dirección del producto redefinida sin 3D.
+- [x] Corrección de ciclo de avisos PWA implementada.
+- [x] Dashboard analítico creado.
+- [x] Motor de diferenciación personal creado.
+- [x] Panel de identidad creativa creado.
+- [ ] Retirada final de todos los módulos y pruebas 3D heredados.
+- [ ] Certificación completa de tests y validator.
+- [ ] Revisión visual responsive en Android y escritorio.
+- [ ] CI verde, PR mergeado y despliegue de GitHub Pages verificado.
