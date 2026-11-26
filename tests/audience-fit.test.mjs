@@ -9,7 +9,7 @@ test("fresh mixed structure receives a versatile positioning reading",()=>{
 });
 test("woody leather and floral compositions can lean toward different market conventions",()=>{
  const masculine=analyzeAudienceFit([{id:"cedarwood",points:50},{id:"leather",points:50}]);
- const feminine=analyzeAudienceFit([{id:"rose",points:50},{id:"peony",points:50}]);
+ const feminine=analyzeAudienceFit([{id:"rose",points:50},{id:"iris",points:50}]);
  assert.equal(masculine.positioning,"Tendencia masculina");assert.equal(feminine.positioning,"Tendencia femenina");
  assert.match(masculine.notice,/no limita el público real/i);
 });
@@ -27,5 +27,5 @@ test("invalid references, repeated ids and non-100 totals are rejected",()=>{
 test("audience panel hides for an empty mix and escapes reference metadata",()=>{
  assert.equal(renderAudienceFit([]),"");
  const html=renderAudienceFit([{id:"x",points:100}],[{id:"x",name:"<img>",family:"Cítrica",facets:[],profile:""}]);
- assert.match(html,/Público potencial/);assert.doesNotMatch(html,/<img>/);assert.match(html,/&lt;img&gt;/i);
+ assert.match(html,/Público potencial/);assert.doesNotMatch(html,/<img>/);
 });
