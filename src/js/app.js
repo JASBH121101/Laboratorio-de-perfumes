@@ -360,6 +360,17 @@ appRoot.addEventListener("click", async (event) => {
     return;
   }
 
+  const weightStepTarget = event.target.closest("[data-adjust-mix-weight]");
+  if (weightStepTarget) {
+    const item = mixingState.items.find((entry) => entry.id === weightStepTarget.dataset.adjustMixWeight);
+    if (!item) return;
+    const step = Number(weightStepTarget.dataset.step);
+    const requested = Math.max(0, Math.min(100, item.points + step));
+    mixingState = setMixNotePoints(mixingState, item.id, requested);
+    updateMixStudio();
+    return;
+  }
+
   const removeMixTarget = event.target.closest("[data-remove-mix-note]");
   if (removeMixTarget) {
     mixingState = removeMixNote(mixingState, removeMixTarget.dataset.removeMixNote);
