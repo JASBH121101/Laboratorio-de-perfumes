@@ -39,7 +39,7 @@ export function renderMixStudio(state) {
       <div class="mix-studio-header">
         <div>
           <p class="eyebrow">BLOCK 05 · CONCEPT COMPOSITION</p>
-          <h2>Recipiente <em>conceptual</em></h2>
+          <h2>Composición <em>conceptual</em></h2>
           <p>Organizá notas y acordes y ajustá su peso creativo para explorar el perfil general.</p>
           <span class="mix-draft-status" role="status">Borrador automático local · se recupera al volver</span>
         </div>
@@ -57,9 +57,9 @@ export function renderMixStudio(state) {
           ${quickNotes.map((item) => `<button type="button" data-add-to-mix="${escapeHtml(item.id)}" data-drag-note="${escapeHtml(item.id)}" draggable="true">${escapeHtml(item.name)}</button>`).join("")}
         </div>
       </div>
-      <div class="mix-drop-zone ${hasItems ? "has-items" : ""}" data-mix-dropzone aria-label="Zona para añadir notas al recipiente conceptual">
+      <div class="mix-drop-zone ${hasItems ? "has-items" : ""}" data-mix-dropzone aria-label="Zona para añadir notas a la composición conceptual">
         <span class="mix-drop-symbol">${hasItems ? "◈" : "＋"}</span>
-        <div><strong>${hasItems ? `${state.items.length} referencias en el recipiente` : "Tu recipiente está vacío"}</strong><small>Arrastrá una referencia desde la biblioteca en escritorio o usá «Añadir a composición» desde cualquier ficha. En Android, usá el botón táctil.</small></div>
+        <div><strong>${hasItems ? `${state.items.length} referencias en la composición` : "La composición está vacía"}</strong><small>Arrastrá una referencia desde la biblioteca en escritorio o usá «Añadir a composición» desde cualquier ficha. En Android, usá el botón táctil.</small></div>
       </div>
       <div class="mix-item-list">${rows || '<div class="mix-empty-list">Todavía no hay notas en esta composición.</div>'}</div>
       <div class="mix-studio-actions">
