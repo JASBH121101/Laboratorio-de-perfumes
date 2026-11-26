@@ -71,7 +71,7 @@ test("profile history panel renders privacy-safe archive, compare controls and r
     profileComparison: result
   });
   assert.match(html, /Historial y comparación de/);
-  assert.match(html, /Guardar perfiles/);
+  assert.match(html, /Dos briefs, seis posibles rutas/);
   assert.match(html, /profile-compare-left/);
   assert.match(html, /profile-compare-right/);
   assert.match(html, /PÚBLICO ORIENTATIVO/);
