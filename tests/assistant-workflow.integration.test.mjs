@@ -75,7 +75,7 @@ test("observed sensory performance feeds local calibration and the offline shell
   assert.match(app, /archiveState\.experiments\);/);
   assert.match(views, /renderPerformanceCalibration/);
   assert.match(sensorModel, /normalizeObservedPerformance/);
-  assert.match(calibrationPanel, /PERFORMANCE_CALIBRATION/);
+  assert.match(calibrationPanel, /analyzePerformanceCalibration/);
   assert.match(sw, /performance-estimator\/calibration\.js/);
   assert.match(sw, /performance-estimator\/calibration-panel\.js/);
   assert.match(sw, /shell-v47/);
