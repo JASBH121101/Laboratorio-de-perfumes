@@ -67,7 +67,8 @@ if (!pwa.includes("DISMISSED_UPDATE_KEY") || !pwa.includes("dismissUpdateNotice"
 if (!mixPanel.includes("No son porcentajes") || !mixPanel.includes("data-mix-weight")) failures.push("Composition weights must remain explicitly conceptual and editable.");
 if (!app.includes("mix-picker-search") || !app.includes("updateMixPickerResults") || !app.includes("toggle-mix-picker")) failures.push("The inline formulation finder is not wired to search, filters and expansion.");
 if (!mixPanel.includes("mix-picker-family") || !mixPanel.includes("mix-picker-kind") || !mixPanel.includes("mix-picker-role") || !mixPanel.includes("data-add-to-mix")) failures.push("The formulation picker must expose family, type, role and direct-add controls.");
-if (!mixPanel.includes('type="number"') || !mixPanel.includes('type="range"') || !mixPanel.includes("mix-weight-hint")) failures.push("Formulation weights must expose both slider and precise numeric editing.");
+if (!mixPanel.includes('type="number"') || !mixPanel.includes("data-adjust-mix-weight") || !mixPanel.includes("mix-weight-progress")) failures.push("Formulation weights must expose a numeric editor, touch stepper and proportion indicator.");
+if (!app.includes("data-adjust-mix-weight") || !app.includes("setMixNotePoints(mixingState, item.id, requested)")) failures.push("Touch weight stepper is not wired to the composition state.");
 
 if (!analysisPanel.includes("renderFamilyDonut") || !analysisPanel.includes("renderProfileRadar")) failures.push("Family and sensory charts are missing.");
 if (!originalityPanel.includes("ÍNDICE DE DIFERENCIACIÓN INTERNA") || !originalityPanel.includes("No consulta catálogos comerciales")) failures.push("Originality panel must explain its local comparison boundary.");
