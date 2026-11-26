@@ -160,15 +160,17 @@ export function generateFormulationProposals({
   }
 
   const proposalA = selectSet(ranked, { limit:3, diverse:true });
-  const anchor = ranked.find((entry) => assistant.suggestions.some((item) => item.id === entry.item.id)) || ranked[0];
-  const proposalB = [anchor, ...selectSet(ranked.filter((entry) => entry.item.id !== anchor.item.id), {
-    limit:2, diverse:true, preferPairing:true, excluded:[anchor.item.id]
-  })];
-
-  const excludedForC = [...new Set([...proposalA, ...proposalB].map((entry) => entry.item.id))];
-  let proposalC = selectSet(ranked, { limit:3, diverse:true, excluded:excludedForC });
-  if (proposalC.length < 2) {
-    proposalC = selectSet(ranked, { limit:3, diverse:true, excluded:[anchor.item.id] });
+  const excludedA = proposalA.map((entry) => entry.item.id);
+  const proposalB = selectSet(ranked, {
+    limit:3, diverse:true, preferPairing:true, excluded:excludedA
+  });
+  const excludedAB = [...new Set([...excludedA, ...proposalB.map((entry) => entry.item.id)])];
+  let proposalC = selectSet(ranked, { limit:3, diverse:true, excluded:excludedAB });
+  if (proposalB.length < 2 || proposalC.length < 2) {
+    const backupB = selectSet(ranked, { limit:3, diverse:true, excluded:[proposalA[0]?.item.id].filter(Boolean) });
+    const backupC = selectSet(ranked, { limit:3, diverse:true, excluded:[...backupB, ...proposalA.slice(0,1)].map((entry) => entry.item.id) });
+    if (proposalB.length < 2) proposalB.splice(0, proposalB.length, ...backupB);
+    if (proposalC.length < 2) proposalC.splice(0, proposalC.length, ...backupC);
   }
 
   const proposals = [
