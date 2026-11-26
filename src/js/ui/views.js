@@ -13,6 +13,7 @@ import { renderCreativeAssistant } from "../features/laboratory/creative-assista
 import { renderFormulationProposals } from "../features/laboratory/formulation-proposals/panel.js";
 import { renderInspirationDifferentiation } from "../features/laboratory/inspiration-differentiation/panel.js";
 import { renderClientBriefPanel } from "../features/laboratory/client-brief/panel.js";
+import { renderAudienceFit } from "../features/laboratory/audience-fit/panel.js";
 
 const navItems = [
   { id: "home", label: "Inicio", icon: "⌂" },
@@ -48,6 +49,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <p>Desarrollá composiciones conceptuales, estudiá su estructura y documentá cómo evoluciona tu identidad creativa.</p>
     </section>
     ${renderMixStudio(mixingState, mixPickerState)}
+    ${renderAudienceFit(mixingState.items)}
     ${renderClientBriefPanel(clientBriefState)}
     ${renderCreativeAssistant(creativeAssistantState)}
     ${renderFormulationProposals({ result: creativeAssistantState.proposals })}

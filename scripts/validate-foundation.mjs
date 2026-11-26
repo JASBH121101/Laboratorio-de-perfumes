@@ -10,6 +10,7 @@ import { buildProfessionalReport } from "../src/js/features/laboratory/professio
 import { renderAnalyticsDashboard } from "../src/js/features/laboratory/analytics/dashboard.js";
 import { buildArchiveBackup, createArchiveCreation, createArchiveVariant, parseArchiveBackup } from "../src/js/features/archive/model.js";
 import { buildClientBrief } from "../src/js/features/laboratory/client-brief/engine.js";
+import { analyzeAudienceFit } from "../src/js/features/laboratory/audience-fit/engine.js";
 
 const requiredFiles = [
   "index.html", "manifest.webmanifest", "sw.js", "assets/icon.svg", "assets/brand-logo.svg",
@@ -60,7 +61,7 @@ for (const size of ["192x192", "512x512"]) {
 if (!html.includes('rel="manifest"') || !html.includes('id="app-notice"')) failures.push("PWA manifest or update notice container is missing.");
 if (!html.includes("./src/js/app.js") || !html.includes("./src/css/analytics.css")) failures.push("Application or analytical stylesheet entrypoint is missing.");
 if (/importmap|three\.js|three@/i.test(html)) failures.push("The HTML must not load a Three.js import map or runtime.");
-if (!/shell-v39/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v39 and support controlled activation.");
+if (!/shell-v40/.test(sw) || !sw.includes("SKIP_WAITING")) failures.push("PWA shell must be versioned at shell-v40 and support controlled activation.");
 if (/three|THREE_|scene\.js|render-profile|performance-audit/i.test(sw)) failures.push("The PWA shell must not cache 3D modules or external 3D assets.");
 for (const path of ["mixing/state.js", "mixing/draft-storage.js", "mixing/panel.js", "creative-assistant/engine.js", "creative-assistant/panel.js", "formulation-proposals/engine.js", "formulation-proposals/panel.js", "inspiration-differentiation/engine.js", "inspiration-differentiation/panel.js", "analysis/engine.js", "analysis/panel.js", "analytics/dashboard.js", "originality/engine.js", "originality/panel.js", "evolution/engine.js", "evolution/panel.js", "comparison/engine.js", "comparison/panel.js", "signature-history/engine.js", "signature-history/panel.js", "sensory-experiments/model.js", "sensory-experiments/panel.js", "professional-reports/engine.js", "professional-reports/panel.js", "archive/model.js", "archive/repository.js", "archive/panel.js"]) {
   if (!sw.includes(path)) failures.push(`PWA shell is missing required module: ${path}`);
@@ -90,6 +91,9 @@ if (!sw.includes("inspiration-differentiation/engine.js") || !sw.includes("inspi
 if (!app.includes("inspirationDifferentiationState") || !app.includes("briefForAssistant")) failures.push("Inspiration analysis must remain locally stateful and create a brief only on explicit action.");
 if (!app.includes("compareSavedCompositions") || !views.includes("renderAnalyticalComparison")) failures.push("Saved composition comparison is not wired into the archive view.");
 if (!app.includes("buildClientBrief") || !app.includes("send-client-brief-to-assistant") || !views.includes("renderClientBriefPanel") || !sw.includes("client-brief/engine.js")) failures.push("Guided client briefs must be previewed and transferred to the local assistant only by explicit action.");
+if (!app.includes("updateAudienceFit") || !views.includes("renderAudienceFit") || !sw.includes("audience-fit/engine.js") || !sw.includes("audience-fit/panel.js")) failures.push("Live audience positioning must update with the active composition and remain available offline.");
+const audienceFit = analyzeAudienceFit([{ id: "bergamot", points: 50 }, { id: "rose", points: 50 }]);
+if (audienceFit.status !== "ready" || !audienceFit.positioning || !audienceFit.agePosition) failures.push("Audience positioning did not analyze a normalized local composition.");
 const brief = buildClientBrief({ style: "fresco", occasion: "diario", presence: "discreta", liked: "cítrico y limpio" });
 if (brief.status !== "ready" || !brief.description.includes("Presencia deseada: discreta")) failures.push("Guided client brief did not produce an assistant-ready profile.");
 const comparison = compareCompositions(
