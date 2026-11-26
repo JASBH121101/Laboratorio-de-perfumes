@@ -39,6 +39,7 @@ import { renderArchiveQuickSave, renderArchiveView } from "./features/archive/pa
 import { renderPage } from "./ui/views.js";
 import { buildFragranceSimilarityExperience } from "./features/laboratory/fragrance-similarity/experience.js";
 import { renderFragranceSimilaritySuggestions, renderFragranceSimilarityResults } from "./features/laboratory/fragrance-similarity/panel.js";
+import { getFragranceSuggestionKeyboardAction } from "./features/laboratory/fragrance-similarity/interaction.js";
 
 const appRoot = document.querySelector("#app");
 const notice = document.querySelector("#app-notice");
@@ -50,7 +51,7 @@ const mixPickerState = { query: "", family: "all", role: "all", kind: "all", exp
 const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
 const inspirationDifferentiationState = { referenceLabel: "", liked: "", avoid: "", result: null };
 const clientBriefState = { fields: {}, label: "", result: null };
-const fragranceSimilarityState = { query: "", selectedReferenceId: "", scope: "global-catalog", filters: {} };
+const fragranceSimilarityState = { query: "", selectedReferenceId: "", scope: "global-catalog", filters: {}, activeSuggestionIndex: -1, suggestionsOpen: true };
 const performanceScenarioState = { concentration: "edp", environment: "neutral" };
 const archiveRepository = createArchiveRepository();
 
@@ -337,12 +338,27 @@ function getFragranceSimilaritySession() {
   return buildFragranceSimilarityExperience(fragranceSimilarityState);
 }
 
-function updateFragranceSimilarityUI() {
+function updateFragranceSimilaritySuggestionsUI() {
   const session = getFragranceSimilaritySession();
   const suggestions = appRoot.querySelector("#fragrance-similarity-suggestions");
-  if (suggestions) suggestions.innerHTML = renderFragranceSimilaritySuggestions(session);
+  if (suggestions) suggestions.innerHTML = renderFragranceSimilaritySuggestions(session, {
+    activeIndex: fragranceSimilarityState.activeSuggestionIndex ?? -1,
+    open: fragranceSimilarityState.suggestionsOpen !== false
+  });
+  const input = appRoot.querySelector("#fragrance-similarity-search");
+  if (input) {
+    const active = session.search.results?.[fragranceSimilarityState.activeSuggestionIndex ?? -1];
+    const expanded = fragranceSimilarityState.suggestionsOpen !== false && Boolean(session.search.results?.length);
+    input.setAttribute("aria-expanded", String(expanded));
+    if (expanded && active) input.setAttribute("aria-activedescendant", `fragrance-similarity-option-${active.id}`);
+    else input.removeAttribute("aria-activedescendant");
+  }
+}
+
+function updateFragranceSimilarityUI() {
+  updateFragranceSimilaritySuggestionsUI();
   const output = appRoot.querySelector("#fragrance-similarity-output");
-  if (output) output.innerHTML = renderFragranceSimilarityResults(session);
+  if (output) output.innerHTML = renderFragranceSimilarityResults(getFragranceSimilaritySession());
 }
 
 function updateClientBrief() {
@@ -426,10 +442,41 @@ async function importBackupFile(file) {
 }
 
 
+appRoot.addEventListener("keydown", (event) => {
+  if (event.target.id !== "fragrance-similarity-search") return;
+  const session = getFragranceSimilaritySession();
+  const action = getFragranceSuggestionKeyboardAction(
+    event.key,
+    fragranceSimilarityState.activeSuggestionIndex ?? -1,
+    session.search.results?.length ?? 0
+  );
+  if (action.type === "move") {
+    event.preventDefault();
+    fragranceSimilarityState.suggestionsOpen = true;
+    fragranceSimilarityState.activeSuggestionIndex = action.activeIndex;
+    updateFragranceSimilaritySuggestionsUI();
+  } else if (action.type === "select") {
+    const selected = session.search.results[action.activeIndex];
+    if (!selected) return;
+    event.preventDefault();
+    fragranceSimilarityState.selectedReferenceId = selected.id;
+    fragranceSimilarityState.activeSuggestionIndex = -1;
+    fragranceSimilarityState.suggestionsOpen = false;
+    updateFragranceSimilarityUI();
+  } else if (action.type === "dismiss") {
+    event.preventDefault();
+    fragranceSimilarityState.activeSuggestionIndex = -1;
+    fragranceSimilarityState.suggestionsOpen = false;
+    updateFragranceSimilaritySuggestionsUI();
+  }
+});
+
 appRoot.addEventListener("input", (event) => {
   if (event.target.id === "fragrance-similarity-search") {
     fragranceSimilarityState.query = event.target.value;
     fragranceSimilarityState.selectedReferenceId = "";
+    fragranceSimilarityState.activeSuggestionIndex = -1;
+    fragranceSimilarityState.suggestionsOpen = true;
     updateFragranceSimilarityUI();
   } else if (event.target.id === "similarity-filter-house") {
     fragranceSimilarityState.filters.houseQuery = event.target.value;
@@ -564,6 +611,8 @@ appRoot.addEventListener("click", async (event) => {
   const similarityTarget = event.target.closest("[data-similarity-select]");
   if (similarityTarget) {
     fragranceSimilarityState.selectedReferenceId = similarityTarget.dataset.similaritySelect;
+    fragranceSimilarityState.activeSuggestionIndex = -1;
+    fragranceSimilarityState.suggestionsOpen = false;
     updateFragranceSimilarityUI();
     return;
   }
@@ -676,6 +725,8 @@ appRoot.addEventListener("click", async (event) => {
   try {
     if (action === "reset-fragrance-similarity") {
       fragranceSimilarityState.selectedReferenceId = "";
+      fragranceSimilarityState.activeSuggestionIndex = -1;
+      fragranceSimilarityState.suggestionsOpen = Boolean(fragranceSimilarityState.query.trim());
       updateFragranceSimilarityUI();
     } else if (action === "reset-fragrance-similarity-filters") {
       fragranceSimilarityState.filters = {};

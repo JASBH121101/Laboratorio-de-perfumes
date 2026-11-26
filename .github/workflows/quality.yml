@@ -62,6 +62,7 @@ jobs:
           node --check src/js/features/laboratory/fragrance-similarity/scope.js
           node --check src/js/features/laboratory/fragrance-similarity/experience.js
           node --check src/js/features/laboratory/fragrance-similarity/panel.js
+          node --check src/js/features/laboratory/fragrance-similarity/interaction.js
           node --check src/js/features/laboratory/performance-estimator/engine.js
           node --check src/js/features/laboratory/performance-estimator/panel.js
           node --check src/js/features/laboratory/analysis/engine.js
