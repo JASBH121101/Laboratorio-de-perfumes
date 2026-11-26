@@ -1,7 +1,9 @@
 const DB_NAME = "jb-virtual-perfume-lab";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = "creations";
+const EXPERIMENT_STORE = "sensory-experiments";
 const FALLBACK_KEY = "jb-vpl-archive-v1";
+const EXPERIMENTS_FALLBACK_KEY = "jb-vpl-sensory-experiments-v1";
 
 function requestResult(request) {
   return new Promise((resolve, reject) => {
@@ -18,15 +20,15 @@ function transactionFinished(transaction) {
   });
 }
 
-function readFallback(storage) {
-  const raw = storage.getItem(FALLBACK_KEY);
+function readFallback(storage, key) {
+  const raw = storage.getItem(key);
   if (!raw) return [];
   const parsed = JSON.parse(raw);
   return Array.isArray(parsed) ? parsed : [];
 }
 
-function writeFallback(storage, creations) {
-  storage.setItem(FALLBACK_KEY, JSON.stringify(creations));
+function writeFallback(storage, key, records) {
+  storage.setItem(key, JSON.stringify(records));
 }
 
 export function createArchiveRepository({
@@ -43,9 +45,8 @@ export function createArchiveRepository({
         const request = indexedDBApi.open(DB_NAME, DB_VERSION);
         request.onupgradeneeded = () => {
           const database = request.result;
-          if (!database.objectStoreNames.contains(STORE_NAME)) {
-            database.createObjectStore(STORE_NAME, { keyPath: "id" });
-          }
+          if (!database.objectStoreNames.contains(STORE_NAME)) database.createObjectStore(STORE_NAME, { keyPath: "id" });
+          if (!database.objectStoreNames.contains(EXPERIMENT_STORE)) database.createObjectStore(EXPERIMENT_STORE, { keyPath: "id" });
         };
         request.onsuccess = () => {
           const database = request.result;
@@ -65,17 +66,17 @@ export function createArchiveRepository({
 
   async function list() {
     const database = await openDatabase();
-    if (!database) return readFallback(storage).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    if (!database) return readFallback(storage, FALLBACK_KEY).sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
     const transaction = database.transaction(STORE_NAME, "readonly");
     const finished = transactionFinished(transaction);
     const result = await requestResult(transaction.objectStore(STORE_NAME).getAll());
     await finished;
-    return result.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+    return result.sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
   }
 
   async function get(id) {
     const database = await openDatabase();
-    if (!database) return readFallback(storage).find((creation) => creation.id === id) ?? null;
+    if (!database) return readFallback(storage, FALLBACK_KEY).find((creation) => creation.id === id) ?? null;
     const transaction = database.transaction(STORE_NAME, "readonly");
     const finished = transactionFinished(transaction);
     const result = await requestResult(transaction.objectStore(STORE_NAME).get(id));
@@ -86,11 +87,10 @@ export function createArchiveRepository({
   async function put(creation) {
     const database = await openDatabase();
     if (!database) {
-      const creations = readFallback(storage);
+      const creations = readFallback(storage, FALLBACK_KEY);
       const index = creations.findIndex((item) => item.id === creation.id);
-      if (index >= 0) creations[index] = creation;
-      else creations.push(creation);
-      writeFallback(storage, creations);
+      if (index >= 0) creations[index] = creation; else creations.push(creation);
+      writeFallback(storage, FALLBACK_KEY, creations);
       return creation;
     }
     const transaction = database.transaction(STORE_NAME, "readwrite");
@@ -102,10 +102,10 @@ export function createArchiveRepository({
   async function putMany(creations) {
     const database = await openDatabase();
     if (!database) {
-      const current = readFallback(storage);
+      const current = readFallback(storage, FALLBACK_KEY);
       const map = new Map(current.map((item) => [item.id, item]));
       for (const creation of creations) map.set(creation.id, creation);
-      writeFallback(storage, [...map.values()]);
+      writeFallback(storage, FALLBACK_KEY, [...map.values()]);
       return;
     }
     const transaction = database.transaction(STORE_NAME, "readwrite");
@@ -117,7 +117,7 @@ export function createArchiveRepository({
   async function remove(id) {
     const database = await openDatabase();
     if (!database) {
-      writeFallback(storage, readFallback(storage).filter((creation) => creation.id !== id));
+      writeFallback(storage, FALLBACK_KEY, readFallback(storage, FALLBACK_KEY).filter((item) => item.id !== id));
       return;
     }
     const transaction = database.transaction(STORE_NAME, "readwrite");
@@ -136,5 +136,86 @@ export function createArchiveRepository({
     await transactionFinished(transaction);
   }
 
-  return { list, get, put, putMany, remove, clear, getStorageMode: () => fallbackRequired ? "localStorage" : "IndexedDB" };
+  async function listExperiments() {
+    const database = await openDatabase();
+    if (!database) return readFallback(storage, EXPERIMENTS_FALLBACK_KEY)
+      .sort((a, b) => String(b.observedAt).localeCompare(String(a.observedAt)));
+    const transaction = database.transaction(EXPERIMENT_STORE, "readonly");
+    const finished = transactionFinished(transaction);
+    const result = await requestResult(transaction.objectStore(EXPERIMENT_STORE).getAll());
+    await finished;
+    return result.sort((a, b) => String(b.observedAt).localeCompare(String(a.observedAt)));
+  }
+
+  async function putExperiment(experiment) {
+    const database = await openDatabase();
+    if (!database) {
+      const records = readFallback(storage, EXPERIMENTS_FALLBACK_KEY);
+      const index = records.findIndex((item) => item.id === experiment.id);
+      if (index >= 0) records[index] = experiment; else records.push(experiment);
+      writeFallback(storage, EXPERIMENTS_FALLBACK_KEY, records);
+      return experiment;
+    }
+    const transaction = database.transaction(EXPERIMENT_STORE, "readwrite");
+    transaction.objectStore(EXPERIMENT_STORE).put(experiment);
+    await transactionFinished(transaction);
+    return experiment;
+  }
+
+  async function putExperiments(experiments) {
+    const database = await openDatabase();
+    if (!database) {
+      const current = readFallback(storage, EXPERIMENTS_FALLBACK_KEY);
+      const map = new Map(current.map((item) => [item.id, item]));
+      for (const experiment of experiments) map.set(experiment.id, experiment);
+      writeFallback(storage, EXPERIMENTS_FALLBACK_KEY, [...map.values()]);
+      return;
+    }
+    const transaction = database.transaction(EXPERIMENT_STORE, "readwrite");
+    const store = transaction.objectStore(EXPERIMENT_STORE);
+    for (const experiment of experiments) store.put(experiment);
+    await transactionFinished(transaction);
+  }
+
+  async function removeExperiment(id) {
+    const database = await openDatabase();
+    if (!database) {
+      writeFallback(storage, EXPERIMENTS_FALLBACK_KEY, readFallback(storage, EXPERIMENTS_FALLBACK_KEY).filter((item) => item.id !== id));
+      return;
+    }
+    const transaction = database.transaction(EXPERIMENT_STORE, "readwrite");
+    transaction.objectStore(EXPERIMENT_STORE).delete(id);
+    await transactionFinished(transaction);
+  }
+
+  async function removeExperimentsForCreation(creationId) {
+    const records = await listExperiments();
+    const remaining = records.filter((item) => item.creationId !== creationId);
+    const database = await openDatabase();
+    if (!database) {
+      writeFallback(storage, EXPERIMENTS_FALLBACK_KEY, remaining);
+      return;
+    }
+    const transaction = database.transaction(EXPERIMENT_STORE, "readwrite");
+    const store = transaction.objectStore(EXPERIMENT_STORE);
+    for (const record of records) if (record.creationId === creationId) store.delete(record.id);
+    await transactionFinished(transaction);
+  }
+
+  async function clearExperiments() {
+    const database = await openDatabase();
+    if (!database) {
+      storage.removeItem(EXPERIMENTS_FALLBACK_KEY);
+      return;
+    }
+    const transaction = database.transaction(EXPERIMENT_STORE, "readwrite");
+    transaction.objectStore(EXPERIMENT_STORE).clear();
+    await transactionFinished(transaction);
+  }
+
+  return {
+    list, get, put, putMany, remove, clear,
+    listExperiments, putExperiment, putExperiments, removeExperiment, removeExperimentsForCreation, clearExperiments,
+    getStorageMode: () => fallbackRequired ? "localStorage" : "IndexedDB"
+  };
 }
