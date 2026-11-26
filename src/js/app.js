@@ -230,8 +230,11 @@ function updateCreativeAnalysis() {
 }
 
 function updateMixStudio() {
+  saveMixDraft(mixingState.items);
   const panel = appRoot.querySelector("#mix-studio");
   if (panel) panel.outerHTML = renderMixStudio(mixingState);
+  const quickSave = appRoot.querySelector("#archive-quick-save");
+  if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(getArchiveViewState());
   labController?.setComposition(mixingState.items);
   const sceneStage = appRoot.querySelector("[data-lab-stage]");
   const modeLabel = sceneStage?.querySelector("[data-scene-mode-label]");
