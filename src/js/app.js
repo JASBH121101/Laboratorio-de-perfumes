@@ -75,11 +75,16 @@ const pwa = createPwaManager({
   onNotice: showNotice
 });
 
+function getArchiveViewState() {
+  return { ...archiveState, hasCurrentComposition: mixingState.items.length > 0 };
+}
+
 function updateArchiveUI() {
+  const viewState = getArchiveViewState();
   const archiveRoot = appRoot.querySelector("#archive-root");
-  if (archiveRoot) archiveRoot.outerHTML = renderArchiveView(archiveState);
+  if (archiveRoot) archiveRoot.outerHTML = renderArchiveView(viewState);
   const quickSave = appRoot.querySelector("#archive-quick-save");
-  if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(archiveState);
+  if (quickSave) quickSave.outerHTML = renderArchiveQuickSave(viewState);
 }
 
 async function refreshArchive() {
@@ -160,7 +165,7 @@ function render() {
   labController = null;
   const cycle = ++renderCycle;
   const activeView = resolveView(window.location.hash);
-  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, archiveState);
+  appRoot.innerHTML = renderPage(activeView, libraryState, mixingState, analysisDirection, evolutionStage, getArchiveViewState());
 
   if (pwa.isInstalled()) {
     appRoot.querySelectorAll("[data-action='install']").forEach((button) => {
@@ -250,7 +255,14 @@ function addNoteToMix(noteId) {
   showNotice({ title: "Referencia añadida", message: "La composición conceptual y el recipiente 3D se actualizaron." });
 }
 
+function requireWorkingComposition() {
+  if (!mixingState.items.length) {
+    throw new Error("Añadí al menos una referencia a la composición antes de crear, guardar una versión o abrir una variante.");
+  }
+}
+
 async function saveNewCreation(name, description = "") {
+  requireWorkingComposition();
   const creation = createArchiveCreation({ name, description, items: mixingState.items });
   await persistCreation(creation, `${creation.name} se guardó como una creación independiente.`);
   archiveState.selectedCreationId = creation.id;
@@ -260,6 +272,7 @@ async function saveNewCreation(name, description = "") {
 }
 
 async function saveCurrentAsVersion() {
+  requireWorkingComposition();
   const creation = findSelectedCreation();
   if (!creation) throw new Error("Primero seleccioná una creación del archivo.");
   const variant = getVariant(creation, archiveState.selectedVariantId) ?? getActiveVariant(creation);
@@ -273,6 +286,7 @@ async function saveCurrentAsVersion() {
 }
 
 async function createVariantFromCurrent() {
+  requireWorkingComposition();
   const creation = findSelectedCreation();
   if (!creation) throw new Error("Seleccioná una creación antes de crear una variante.");
   const updated = createArchiveVariant(creation, { items: mixingState.items });
@@ -392,10 +406,15 @@ appRoot.addEventListener("click", async (event) => {
   const selectVariant = event.target.closest("[data-select-variant]");
   if (selectVariant) {
     const creation = findSelectedCreation();
-    const updated = activateArchiveVariant(creation, selectVariant.dataset.selectVariant);
-    archiveState.selectedVariantId = selectVariant.dataset.selectVariant;
+    const variant = getVariant(creation, selectVariant.dataset.selectVariant);
+    if (!creation || !variant) throw new Error("No se encontró la variante que intentás seleccionar.");
+    const updated = activateArchiveVariant(creation, variant.id);
+    archiveState.selectedVariantId = variant.id;
     archiveState.comparison = null;
-    await persistCreation(updated, `Variante ${getVariant(updated, archiveState.selectedVariantId).label} seleccionada.`);
+    mixingState = { items: variant.items.map((item) => ({ ...item })), history: [] };
+    saveMixDraft(mixingState.items);
+    updateMixStudio();
+    await persistCreation(updated, `Variante ${variant.label} seleccionada y cargada en el espacio de trabajo.`);
     return;
   }
 
@@ -411,7 +430,9 @@ appRoot.addEventListener("click", async (event) => {
     archiveState.selectedVariantId = variant.id;
     mixingState = { items: variant.items.map((item) => ({ ...item })), history: [] };
     archiveState.comparison = null;
-    await persistCreation(updated, `Se restauró el contenido histórico como una versión nueva de la variante ${variant.label}.`);
+    saveMixDraft(mixingState.items);
+    updateMixStudio();
+    await persistCreation(updated, `Se restauró el contenido histórico como una versión nueva de la variante ${variant.label} y se cargó en el espacio de trabajo.`);
     return;
   }
 
