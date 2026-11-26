@@ -30,7 +30,11 @@ function renderFamilyDonut(analysis) {
   }).join("");
   const legend = analysis.families.map((family, index) => {
     const color = FAMILY_PALETTE[family.label] || FALLBACK_COLORS[index % FALLBACK_COLORS.length];
-    return `<div class="analysis-family-legend-row"><span class="analysis-family-swatch" style="background:${color}"></span><span>${escapeHtml(family.label)}</span><strong>${family.share}%</strong><small>${family.points} pts</small></div>`;
+    return `<div class="analysis-family-legend-row">
+      <span class="analysis-family-swatch" style="background:${color}"></span>
+      <span>${escapeHtml(family.label)}</span><strong>${family.share}%</strong><small>${family.points} pts</small>
+      <div class="analysis-family-legend-track" role="progressbar" aria-label="Participación de ${escapeHtml(family.label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${family.share}"><span style="width:${family.share}%;background:${color}"></span></div>
+    </div>`;
   }).join("");
   return `<div class="analysis-family-visual"><svg class="analysis-family-donut" viewBox="0 0 220 220" role="img" aria-label="Distribución de puntos por familia"><title>Distribución de familias olfativas</title><circle class="analysis-donut-track" cx="110" cy="110" r="${radius}"/><g transform="rotate(-90 110 110)">${segments}</g><text class="analysis-donut-total" x="110" y="108">${total}</text><text class="analysis-donut-caption" x="110" y="128">PUNTOS</text></svg><div class="analysis-family-legend">${legend}</div></div>`;
 }
@@ -69,7 +73,11 @@ export function renderCreativeAnalysis(state, direction = "balanced") {
     return `
       <section class="creative-analysis" id="creative-analysis">
         <div class="analysis-heading"><div><p class="eyebrow">BLOCK 06 · CREATIVE ANALYSIS</p><h2>Lectura <em>olfativa</em></h2><p>El motor revisa la estructura y propone ajustes según la dirección que busques.</p></div><span class="analysis-state">EN ESPERA</span></div>
-        <div class="analysis-empty"><span>⌁</span><strong>Primero construí una composición.</strong><p>Cuando agregués notas o acordes, aparecerán indicadores de familia, facetas, pirámide y sugerencias.</p></div>
+        <div class="analysis-empty">
+          <span aria-hidden="true">⌁</span><strong>Primero construí una composición.</strong>
+          <p>Cuando agregués notas o acordes, aparecerán indicadores de familia, facetas, pirámide y sugerencias.</p>
+          <a class="analysis-empty-link" href="#mix-studio">Volver a composición ↗</a>
+        </div>
       </section>
     `;
   }

@@ -49,6 +49,14 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
       <h1>Constructor de <em>fórmulas</em></h1>
       <p>Desarrollá composiciones conceptuales, estudiá su estructura y documentá cómo evoluciona tu identidad creativa.</p>
     </section>
+    <nav class="lab-section-nav" aria-label="Secciones del laboratorio">
+      <a href="#mix-studio">Composición</a>
+      <a href="#creative-assistant">Asistente</a>
+      <a href="#creative-analysis">Análisis</a>
+      <a href="#originality-analysis">Originalidad</a>
+      <a href="#evolution-simulator">Evolución</a>
+      <a href="#performance-estimate">Rendimiento</a>
+    </nav>
     ${renderMixStudio(mixingState, mixPickerState)}
     <div id="audience-fit-root">${renderAudienceFit(mixingState.items)}</div>
     ${renderClientBriefPanel(clientBriefState)}
