@@ -15,16 +15,17 @@ const scenario = { concentration: "edp", environment: "neutral" };
 
 function observation(id, multipliers = {}, options = scenario) {
   const baseline = estimatePerformance(composition, options);
-  return {
-    id,
-    composition,
-    observedPerformance: {
-      ...options,
-      persistenceHours: baseline.persistence.hours.reduce((a,b)=>a+b,0) / 2 * (multipliers.persistence ?? 1),
-      projectionInitialMeters: baseline.projection.initialMeters.reduce((a,b)=>a+b,0) / 2 * (multipliers.initial ?? 1),
-      projectionLaterMeters: baseline.projection.laterMeters.reduce((a,b)=>a+b,0) / 2 * (multipliers.later ?? 1)
-    }
-  };
+  const observedPerformance = { ...options };
+  if (Object.hasOwn(multipliers, "persistence")) {
+    observedPerformance.persistenceHours = baseline.persistence.hours.reduce((a,b)=>a+b,0) / 2 * multipliers.persistence;
+  }
+  if (Object.hasOwn(multipliers, "initial")) {
+    observedPerformance.projectionInitialMeters = baseline.projection.initialMeters.reduce((a,b)=>a+b,0) / 2 * multipliers.initial;
+  }
+  if (Object.hasOwn(multipliers, "later")) {
+    observedPerformance.projectionLaterMeters = baseline.projection.laterMeters.reduce((a,b)=>a+b,0) / 2 * multipliers.later;
+  }
+  return { id, composition, observedPerformance };
 }
 
 test("calibration waits for three same-scenario observations per metric", () => {
