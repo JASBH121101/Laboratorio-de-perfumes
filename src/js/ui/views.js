@@ -2,6 +2,7 @@ import { renderPerfumeLibrary } from "../features/perfume-library/library.js";
 import { renderMixStudio } from "../features/laboratory/mixing/panel.js";
 import { renderCreativeAnalysis } from "../features/laboratory/analysis/panel.js";
 import { renderEvolutionSimulator } from "../features/laboratory/evolution/panel.js";
+import { renderPerformanceEstimate } from "../features/laboratory/performance-estimator/panel.js";
 import { renderAnalyticsDashboard } from "../features/laboratory/analytics/dashboard.js";
 import { renderOriginalityAnalysis } from "../features/laboratory/originality/panel.js";
 import { renderArchiveView, renderArchiveQuickSave } from "../features/archive/panel.js";
@@ -58,6 +59,7 @@ function labView(mixingState, analysisDirection = "balanced", evolutionStage = "
     ${renderCreativeAnalysis(mixingState, analysisDirection)}
     ${renderOriginalityAnalysis(mixingState, archiveState.creations || [])}
     ${renderEvolutionSimulator(mixingState, evolutionStage)}
+    ${renderPerformanceEstimate(mixingState.items)}
     <p class="lab-boundary-note">Los puntos son ponderaciones creativas normalizadas para explorar conceptos. No equivalen a porcentajes de ingredientes, concentraciones, dosificaciones ni fórmulas de fabricación.</p>
   `;
 }
