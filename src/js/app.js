@@ -12,6 +12,8 @@ import { renderInspirationDifferentiation } from "./features/laboratory/inspirat
 import { buildClientBrief } from "./features/laboratory/client-brief/engine.js";
 import { renderClientBriefPanel } from "./features/laboratory/client-brief/panel.js";
 import { renderAudienceFit } from "./features/laboratory/audience-fit/panel.js";
+import { createCreativeProfile, compareProfileSnapshots } from "./features/laboratory/profile-history/engine.js";
+import { renderProfileHistory } from "./features/laboratory/profile-history/panel.js";
 import { loadMixDraft, saveMixDraft } from "./features/laboratory/mixing/draft-storage.js";
 import { renderCreativeAnalysis } from "./features/laboratory/analysis/panel.js";
 import { renderOriginalityAnalysis } from "./features/laboratory/originality/panel.js";
@@ -45,7 +47,7 @@ const libraryState = { query: "", family: "all", role: "all", selectedId: null }
 const mixPickerState = { query: "", family: "all", role: "all", kind: "all", expanded: false };
 const creativeAssistantState = { mode: "personal", description: "", result: null, proposals: null };
 const inspirationDifferentiationState = { referenceLabel: "", liked: "", avoid: "", result: null };
-const clientBriefState = { fields: {}, result: null };
+const clientBriefState = { fields: {}, label: "", result: null };
 const performanceScenarioState = { concentration: "edp", environment: "neutral" };
 const archiveRepository = createArchiveRepository();
 
@@ -59,6 +61,11 @@ let archiveState = {
   comparison: null,
   comparisonPair: null,
   experiments: [],
+  profiles: [],
+  profileLeftId: "",
+  profileRightId: "",
+  profileComparisonOptions: { concentration: "edp", environment: "neutral" },
+  profileComparison: null,
   sensorySelection: "",
   reportSelection: "",
   professionalReport: null,
@@ -118,14 +125,17 @@ function updateArchiveUI() {
   if (sensoryPanel) sensoryPanel.outerHTML = renderSensoryExperiments(archiveState);
   const reportsPanel = appRoot.querySelector("#professional-reports-root");
   if (reportsPanel) reportsPanel.outerHTML = renderProfessionalReports(archiveState);
+  const profilePanel = appRoot.querySelector("#profile-history-root");
+  if (profilePanel) profilePanel.outerHTML = renderProfileHistory(archiveState);
   updateOriginalityAnalysis();
 }
 
 async function refreshArchive() {
   try {
-    [archiveState.creations, archiveState.experiments] = await Promise.all([
+    [archiveState.creations, archiveState.experiments, archiveState.profiles] = await Promise.all([
       archiveRepository.list(),
-      archiveRepository.listExperiments()
+      archiveRepository.listExperiments(),
+      archiveRepository.listProfiles()
     ]);
     archiveState.storageMode = archiveRepository.getStorageMode();
     archiveState.professionalReport = null;
@@ -407,6 +417,8 @@ appRoot.addEventListener("input", (event) => {
     inspirationDifferentiationState.avoid = event.target.value;
   } else if (event.target.id === "creative-assistant-brief") {
     creativeAssistantState.description = event.target.value;
+  } else if (event.target.id === "client-brief-profile-label") {
+    clientBriefState.label = event.target.value;
   } else if (["client-brief-liked", "client-brief-avoid", "client-brief-additional"].includes(event.target.id)) {
     const field = event.target.id.replace("client-brief-", "");
     clientBriefState.fields[field] = event.target.value;
