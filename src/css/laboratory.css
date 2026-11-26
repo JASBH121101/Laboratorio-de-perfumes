@@ -530,3 +530,7 @@
 
 .archive-primary-button:disabled,.archive-quick-actions button:disabled,.archive-quick-actions input:disabled { opacity:.48; cursor:not-allowed; }
 .archive-quick-actions button:focus-visible,.archive-primary-button:focus-visible,.archive-action-row button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+
+.lab-zoom-controls { position: absolute; right: 12px; bottom: 54px; z-index: 5; display: flex; gap: 6px; }
+.lab-zoom-controls button { width: 40px; min-height: 40px; border: 1px solid var(--border, rgba(255,255,255,.18)); border-radius: 12px; background: rgba(22,18,22,.78); color: inherit; font-size: 22px; line-height: 1; touch-action: manipulation; cursor: pointer; }
+.lab-zoom-controls button:focus-visible { outline: 2px solid var(--accent, #c49a64); outline-offset: 2px; }
