@@ -466,3 +466,67 @@
   .mix-quick-notes { gap:5px; margin-top:6px; }
   .mix-quick-notes button { min-height:30px; padding:0 8px; font-size:7px; }
 }
+
+
+/* Block 12 — local creative assistant */
+.creative-assistant { margin:16px 0; }
+.creative-assistant-details { overflow:hidden; border:1px solid rgba(217,178,124,.28); border-radius:9px; background:var(--surface); }
+.creative-assistant-summary { min-height:62px; padding:11px 14px; display:flex; align-items:center; gap:11px; cursor:pointer; list-style:none; }
+.creative-assistant-summary::-webkit-details-marker { display:none; }
+.creative-assistant-symbol { width:34px; height:34px; flex:0 0 34px; display:grid; place-items:center; border:1px solid rgba(217,178,124,.4); border-radius:50%; color:var(--accent); font-size:17px; }
+.creative-assistant-summary-copy { min-width:0; flex:1; }
+.creative-assistant-summary-copy strong,.creative-assistant-summary-copy small { display:block; }
+.creative-assistant-summary-copy strong { color:var(--text); font-family:"Playfair Display",Georgia,serif; font-size:17px; font-weight:500; }
+.creative-assistant-summary-copy small { margin-top:3px; color:var(--muted-2); font-size:8px; }
+.creative-assistant-chevron { color:var(--accent); font-size:18px; transition:transform .15s; }
+.creative-assistant-details[open] .creative-assistant-chevron { transform:rotate(180deg); }
+.creative-assistant-body { padding:0 14px 14px; }
+.creative-assistant-intro { max-width:720px; margin:0 0 12px; color:var(--muted); font-size:9px; line-height:1.7; }
+.creative-assistant-field { display:grid; gap:6px; margin-top:10px; }
+.creative-assistant-field>span { color:var(--muted-2); font-size:8px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.creative-assistant-field select,.creative-assistant-field textarea { width:100%; min-width:0; padding:10px 11px; border:1px solid var(--line); border-radius:6px; color:var(--text); background:var(--bg); font:inherit; font-size:10px; }
+.creative-assistant-field select { min-height:40px; }
+.creative-assistant-field textarea { min-height:96px; resize:vertical; line-height:1.6; }
+.creative-assistant-field select:focus-visible,.creative-assistant-field textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.creative-assistant-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.creative-assistant-run,.creative-assistant-apply { min-height:39px; padding:0 13px; border:1px solid rgba(217,178,124,.48); border-radius:6px; color:#211a1e; background:var(--accent); font:700 9px "DM Sans",sans-serif; cursor:pointer; }
+.creative-assistant-clear { min-height:39px; padding:0 12px; border:1px solid var(--line); border-radius:6px; color:var(--muted); background:transparent; font:600 9px "DM Sans",sans-serif; cursor:pointer; }
+.creative-assistant-local-note,.creative-assistant-boundary { margin:9px 0 0; color:var(--muted-2); font-size:8px; line-height:1.65; }
+.creative-assistant-result { margin-top:13px; padding:13px; border:1px solid rgba(217,178,124,.25); border-radius:7px; background:var(--bg); }
+.creative-assistant-result>.eyebrow { margin:0 0 6px; }
+.creative-assistant-result h3 { margin:0 0 6px; color:var(--text); font:500 20px "Playfair Display",Georgia,serif; }
+.creative-assistant-result>p:not(.eyebrow) { margin:0; color:var(--muted); font-size:9px; line-height:1.7; }
+.creative-assistant-chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:9px; }
+.creative-assistant-chips span { padding:5px 8px; border:1px solid rgba(217,178,124,.27); border-radius:20px; color:var(--accent); font-size:7px; }
+.creative-assistant-avoided { margin-top:8px !important; color:var(--muted-2) !important; }
+.creative-assistant-question { margin-top:11px; padding:10px 11px; border-left:2px solid var(--accent); background:var(--surface); }
+.creative-assistant-question strong { color:var(--accent); font-size:8px; }
+.creative-assistant-question p { margin:4px 0 0; color:var(--text); font-size:9px; line-height:1.6; }
+.creative-assistant-result-heading { margin:14px 0 8px; display:flex; align-items:end; justify-content:space-between; gap:8px; }
+.creative-assistant-result-heading .eyebrow { margin:0 0 4px; }
+.creative-assistant-result-heading h4 { margin:0; color:var(--text); font:500 16px "Playfair Display",Georgia,serif; }
+.creative-assistant-result-heading>span { color:var(--muted-2); font-size:7px; }
+.creative-assistant-suggestion-list { display:grid; gap:6px; }
+.creative-assistant-suggestion { min-width:0; padding:9px 10px; display:flex; justify-content:space-between; align-items:flex-start; gap:10px; border:1px solid var(--line); border-radius:6px; background:var(--surface); }
+.creative-assistant-suggestion-main { min-width:0; }
+.creative-assistant-suggestion-main strong,.creative-assistant-suggestion-main span,.creative-assistant-suggestion-main small { display:block; }
+.creative-assistant-suggestion-main strong { color:var(--text); font:500 14px "Playfair Display",Georgia,serif; }
+.creative-assistant-suggestion-main span { margin-top:3px; color:var(--accent); font-size:7px; }
+.creative-assistant-suggestion-main small { margin-top:3px; color:var(--muted-2); font-size:7px; }
+.creative-assistant-suggestion-main p { margin:6px 0 0; color:var(--muted); font-size:8px; line-height:1.55; }
+.creative-assistant-reference-tag { flex:none; padding:5px 6px; border:1px solid var(--line); border-radius:12px; color:var(--muted-2); font-size:6px; }
+.creative-assistant-apply { width:100%; margin-top:10px; }
+.creative-assistant-boundary { padding-top:9px; border-top:1px solid var(--line); }
+@media(max-width:700px) {
+  .creative-assistant { margin:12px 0; }
+  .creative-assistant-summary { min-height:56px; padding:9px 10px; }
+  .creative-assistant-summary-copy strong { font-size:15px; }
+  .creative-assistant-summary-copy small { font-size:7px; line-height:1.45; }
+  .creative-assistant-body { padding:0 10px 11px; }
+  .creative-assistant-intro { font-size:8px; }
+  .creative-assistant-field select,.creative-assistant-field textarea { font-size:11px; }
+  .creative-assistant-field textarea { min-height:88px; }
+  .creative-assistant-run,.creative-assistant-clear { min-height:42px; }
+  .creative-assistant-result { padding:10px; }
+  .creative-assistant-suggestion { padding:8px; }
+}
