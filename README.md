@@ -352,3 +352,47 @@ La CI valida las pruebas automatizadas, la sintaxis y la estructura de la aplica
 - **Bloque 32:** clasificación y ranking de equivalentes, bandas de similitud y ordenamiento por score/calidad de evidencia.
 
 **Alcance global:** bloques 1–30 completados y fusionados en `main`. La aceptación visual física Android de los cambios anteriores continúa siendo una verificación manual independiente.
+
+
+## Checkpoint — Bloques 31 y 32: búsqueda de referencias y ranking de similitud
+
+**Estado:** COMPLETADOS / CI APROBADA / PR DE FUNCIONALIDAD FUSIONADO
+
+### Bloque 31 — Búsqueda por perfume y casa
+- Se incorporó búsqueda local sobre el catálogo de referencia existente de 1,479 perfumes.
+- Normaliza acentos, mayúsculas, puntuación y espacios; admite coincidencias exactas, prefijos, tokens y tolerancia acotada a errores de escritura, incluidas transposiciones adyacentes.
+- Busca por nombre, casa o consulta combinada.
+- Distingue consulta vacía, demasiado corta, coincidencia exacta, sugerencias, resultados ambiguos que requieren selección y ausencia de resultados.
+- Incluye filtro por categoría, límite de resultados y opción de desactivar la búsqueda por casa.
+- La relevancia de búsqueda se mantiene separada del porcentaje de similitud olfativa. La selección se resuelve por ID estable del perfil.
+
+### Bloque 32 — Ranking de candidatos
+- Cada candidato se compara mediante los motores de los bloques 28–30.
+- Ordena por porcentaje editorial de similitud; añade bandas: muy alta (90–100), alta (75–89), moderada (60–74), limitada (40–59) y baja (0–39).
+- La confianza y la cobertura de evidencia se utilizan como desempates; no modifican el porcentaje.
+- Los candidatos sin evidencia comparable suficiente se separan de la lista puntuable y no reciben porcentajes inventados.
+- Incluye umbral mínimo de similitud y límite de resultados.
+
+### Auditoría de tipografía y legibilidad
+- Se revisaron las cinco hojas de estilo: `styles.css`, `design-system.css`, `perfume-library.css`, `laboratory.css` y `analytics.css`.
+- Las declaraciones explícitas de tamaño y los shorthand tipográficos inferiores a **14 px** se elevaron a **14 px**. El audit del CSS final no encuentra declaraciones en px por debajo de ese mínimo.
+- Se mantiene el tamaño base de cuerpo en **16 px** con interlineado **1.55**.
+- En móvil, campos de texto, selectores y áreas de texto usan **16 px** para evitar el zoom automático al enfocarlos en navegadores móviles.
+- Se actualizó la prueba de regresión de legibilidad al mínimo de 14 px y controles móviles de 16 px.
+- Se eliminó la regla móvil duplicada antes de cerrar la documentación.
+- El service worker pasó de `shell-v48` a **`shell-v49`** e incluye los módulos de búsqueda y ranking para el shell offline.
+
+### Certificación
+- **PR #71:** fusionado mediante Squash Merge.
+- **Commit de integración:** `d4c2fd5df8a468571ebd1de215898737973314b4`.
+- **GitHub Actions run #1160 (push) y #1161 (pull request):** aprobados.
+- **Resultado:** **268/268 pruebas**, 0 fallidas; sintaxis de módulos y validador estructural aprobados.
+- Sin nuevas dependencias, APIs externas, servicios de IA, sincronización en nube ni costos. Sin cambios en Supabase.
+- El trabajo de búsqueda y ranking corresponde a motores locales; la interfaz que permitirá al usuario introducir y seleccionar un perfume permanece pendiente.
+- La revisión automatizada de tamaños no sustituye la inspección visual física en Android: saltos de línea, recortes, alineación y densidad deben confirmarse en el dispositivo.
+
+### Siguiente par
+- **Bloque 33:** filtros de candidatos y modos de visualización de resultados.
+- **Bloque 34:** modo de búsqueda en catálogo global frente a inventario propio, respetando la procedencia y disponibilidad de cada referencia.
+
+**Alcance global:** bloques 1–32 completados y fusionados en `main`. La aceptación visual física Android de la tipografía actualizada continúa pendiente.
