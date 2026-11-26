@@ -97,7 +97,7 @@ test("inspiration panel escapes all user-provided labels and renders a bridge to
   assert.match(html, /send-inspiration-direction/);
   assert.doesNotMatch(html, /<script>alert/);
   assert.match(html, /&lt;script&gt;/);
-  assert.match(html, //no se consulta ni reconstruye su fórmula/i/i);
+  assert.match(html, /no se consulta ni reconstruye su fórmula/i);
 });
 
 test("panel renders incomplete brief without showing unsupported directions", () => {
