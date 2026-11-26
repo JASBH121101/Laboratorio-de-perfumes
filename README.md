@@ -71,12 +71,12 @@ JB Expert QA 2.0 está declarado como dependencia de desarrollo, pero su runtime
 | 10. Informes profesionales | Dossier por variante con composición, análisis editorial e historial sensorial; impresión PDF y exportaciones CSV/JSON | **Completado** — PR #39 fusionado |
 | 11. UX móvil del formulador | Compactar el Bloque 06, aclarar el contador de materias y optimizar búsqueda, filtros y resultados en Android | **Completado** — PR #41 fusionado |
 | 12. Asistente creativo local | Interpretar briefs personales, perfiles de clientes e inspiraciones; recomendar referencias existentes con explicación y transferencia voluntaria al formulador | **Completado** — PR #42 fusionado |
-| 13. Motor de propuestas de formulación | Propuestas conceptuales A/B/C, explicación de cada referencia, balance editable de puntos creativos y transferencia voluntaria | **Pendiente** |
-| 14. Originalidad y diferenciación por inspiración | Extraer rasgos apreciados de perfumes de referencia y explorar estructuras conceptuales distintas sin reconstruir fórmulas comerciales | **Pendiente** |
+| 13. Motor de propuestas de formulación | Propuestas conceptuales A/B/C, explicación de cada referencia, balance editable de puntos creativos y transferencia voluntaria | **Completado** — PR #44 fusionado |
+| 14. Originalidad y diferenciación por inspiración | Extraer rasgos apreciados de perfumes de referencia y explorar estructuras conceptuales distintas sin reconstruir fórmulas comerciales | **Completado** — PR #45 fusionado |
 | 15. Briefs y diseño para clientes | Perfil de gustos, rechazos, ocasión y estilo; preguntas guiadas y conexión con propuestas de formulación | **Pendiente** |
 | 16. Validación integral del asistente | Pruebas de recomendaciones, referencias existentes, normalización, persistencia, autonomía offline, privacidad y aceptación Android | **Pendiente** |
 
-La base funcional vigente pasó **144/144 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 12. Los PR #32 al #42 de funcionalidad y cierre documental están integrados en `main`. La PWA usa `shell-v36` e incluye el asistente en su shell offline. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
+La base funcional vigente pasó **160/160 pruebas**, comprobación de sintaxis y validador de estructura en GitHub Actions tras el Bloque 14. Los PR #32 al #45 de funcionalidad y cierre documental están integrados en `main`. La PWA usa `shell-v38` e incluye los motores de propuestas y diferenciación por inspiración en su shell offline. Queda pendiente la revisión física de la interfaz, el comportamiento de actualización PWA, la impresión/guardado PDF en Android, la aceptación visual responsive y la verificación del despliegue más reciente de GitHub Pages.
 
 ## Bloque 6 — Experiencia del constructor
 
@@ -96,13 +96,13 @@ El historial recorre las versiones guardadas de cada variante, las ordena cronol
 
 ## Checkpoint de desarrollo — Bloques 1 a 16
 
-**Completados (1–12):** estabilidad PWA; retirada 3D; dashboard analítico; motor de originalidad personal; certificación base; constructor de formulación; comparación analítica; historial de firma; experimentos sensoriales; informes profesionales; compactación móvil del Bloque 06; asistente creativo local.
+**Completados (1–14):** estabilidad PWA; retirada 3D; dashboard analítico; motor de originalidad personal; certificación base; constructor de formulación; comparación analítica; historial de firma; experimentos sensoriales; informes profesionales; compactación móvil; asistente creativo local; motor de propuestas A/B/C; diferenciación por inspiración.
 
-**Pendientes (13–16):**
-- **Bloque 13 — Motor de propuestas:** generar rutas creativas A/B/C con referencias reales, explicar aportes editoriales y distribuir puntos creativos editables; el usuario conserva el control de la mezcla.
-- **Bloque 14 — Diferenciación por inspiración:** registrar qué rasgos de un perfume gustan y proponer direcciones alternativas, sin copiar ni reconstruir fórmulas de terceros.
-- **Bloque 15 — Briefs de clientes:** recopilar gustos, rechazos, ocasión y estilo mediante preguntas breves; convertir las respuestas en un brief utilizable por el motor de propuestas.
-- **Bloque 16 — Validación integral:** probar recomendaciones, control de referencias, suma de 100 puntos conceptuales, transferencia autorizada, privacidad, uso offline y comportamiento en Android.
+**Pendientes (15–16):**
+- **Bloque 15 — Briefs de clientes:** recopilar gustos, rechazos, ocasión, estilo y preferencias de intensidad mediante preguntas breves; convertir las respuestas en un brief utilizable por el asistente y el motor de propuestas.
+- **Bloque 16 — Validación integral:** probar recomendaciones, control de referencias, distribución de 100 puntos conceptuales, transferencia autorizada, privacidad, funcionamiento offline, flujos completos y aceptación física en Android.
+
+**Cierre de los bloques 13 y 14:** el Bloque 13 genera tres rutas distintas, A/B/C, usando referencias reales de la biblioteca; cada propuesta suma 100 puntos creativos enteros y solo sustituye la mezcla actual después de confirmación, conservando la acción de deshacer. El Bloque 14 separa rasgos apreciados y rechazados, usa el historial local para priorizar familias menos utilizadas y construye tres arquitecturas alternativas sin buscar ni reconstruir composiciones comerciales. La transferencia de una dirección de inspiración al asistente vuelve a generar propuestas, pero nunca carga una mezcla automáticamente.
 
 **Aceptación manual aún pendiente:** revisar físicamente en Android el nuevo diseño móvil y el asistente; probar el flujo PWA de actualización en el dispositivo; comprobar impresión/guardado PDF y verificar el despliegue más reciente de GitHub Pages. Estas revisiones no se consideran aprobadas por el solo hecho de que CI pase.
 
@@ -133,3 +133,12 @@ Es un motor determinista basado en reglas y coincidencia editorial; no es un mod
 ## Política de costos y privacidad
 
 Los bloques 11 y 12 no incorporan servicios de IA externos, API keys, suscripciones, telemetría ni llamadas de red para generar recomendaciones. El asistente procesa el brief en el dispositivo usando el código y la biblioteca local. Las fórmulas y briefs no se envían a un proveedor de IA.
+
+
+## Bloques 13 y 14 — Motor de propuestas y diferenciación por inspiración
+
+El motor A/B/C ofrece tres rutas conceptuales distintas a partir del brief del asistente y de la biblioteca local. Cada ruta utiliza IDs reales de referencia, explica su orientación y distribuye 100 puntos creativos enteros. Al cargarla, el usuario confirma la sustitución de la composición activa; el estado anterior se conserva en el historial para deshacer. La validación rechaza IDs desconocidos o duplicados y totales distintos de 100.
+
+El módulo de inspiración recibe una etiqueta opcional, los rasgos que gustan y lo que se desea evitar. Extrae familias y descriptores, puede usar la frecuencia de familias del archivo local para ordenar caminos complementarios y muestra tres arquitecturas con referencias ilustrativas. Una dirección puede enviarse al asistente para crear otro brief y generar propuestas A/B/C; no se aplica a la composición activa. No consulta la fórmula de perfumes comerciales, no usa Internet ni certifica originalidad mundial.
+
+La PWA usa el shell `shell-v38`. Estos dos bloques no agregan API, proveedor IA externo, claves, cuotas, suscripciones ni servicios pagos.
