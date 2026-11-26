@@ -45,8 +45,16 @@ const COMPLEMENT_ORDER = Object.freeze({
 });
 
 function isNegated(text, keyword) {
-  const term = normalize(keyword).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(?:\\bno\\b|\\bsin\\b|\\bevit\\\w*\\b|\\bmenos\\b)(?:\\s+\\w+){0,2}\\s+${term}\\b`).test(normalize(text));
+  const words = normalize(text).split(" ").filter(Boolean);
+  const target = normalize(keyword).split(" ").filter(Boolean);
+  const negators = new Set(["no","sin","evita","evitar","evitando","menos"]);
+  for (let index = 0; index <= words.length - target.length; index += 1) {
+    if (target.every((word, offset) => words[index + offset] === word)) {
+      const prefix = words.slice(Math.max(0, index - 3), index);
+      return prefix.some((word) => negators.has(word));
+    }
+  }
+  return false;
 }
 
 function extractTraits(text, forceAvoid = false) {
