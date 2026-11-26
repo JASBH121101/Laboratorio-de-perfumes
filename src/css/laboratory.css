@@ -524,3 +524,6 @@
   .lab-performance-panel { grid-template-columns: 1fr; align-items: stretch; padding: 13px; }
   .lab-performance-button { width: 100%; min-height: 43px; }
 }
+
+
+.mix-draft-status { display: inline-flex; margin-top: 6px; color: var(--muted-2); font-size: 10px; letter-spacing: .03em; }
