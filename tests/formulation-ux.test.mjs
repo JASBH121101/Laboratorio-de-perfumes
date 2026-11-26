@@ -36,7 +36,7 @@ test("picker displays a useful empty state and clear-filters action", () => {
 test("picker limits the initial results and supports expanding the list", () => {
   const html = renderMixPickerResults(createMixState(), {});
   assert.match(html, /Mostrar .* más referencias/);
-  assert.equal((html.match(/class="mix-picker-result ) || []).length, 4);
+  assert.equal((html.split('class="mix-picker-result ').length - 1), 4);
   const expanded = renderMixPickerResults(createMixState(), { expanded: true });
   assert.ok((expanded.match(/class="mix-picker-result ) || []).length > 4);
 });
