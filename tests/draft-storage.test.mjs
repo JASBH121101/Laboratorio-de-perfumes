@@ -63,5 +63,5 @@ test("draft storage is wired to app startup, composition changes and PWA shell",
   assert.match(app, /saveMixDraft\(mixingState\.items\)/);
   assert.match(panel, /Borrador automático local/);
   assert.match(sw, /mixing\/draft-storage\.js/);
-  assert.match(sw, /shell-v38/);
+  assert.match(sw, /shell-v39/);
 });

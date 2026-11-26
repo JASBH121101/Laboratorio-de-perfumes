@@ -646,3 +646,39 @@
   .inspiration-trait-groups { grid-template-columns:1fr; }
   .inspiration-direction { padding:8px; }
 }
+
+/* Block 15 — guided customer briefs */
+.client-brief-panel { margin:12px 0 16px; }
+.client-brief-details { overflow:hidden; border:1px solid var(--line); border-radius:9px; background:var(--surface); }
+.client-brief-summary { min-height:58px; padding:10px 13px; display:flex; align-items:center; gap:10px; cursor:pointer; list-style:none; }
+.client-brief-summary::-webkit-details-marker { display:none; }
+.client-brief-symbol { width:33px; height:33px; flex:none; display:grid; place-items:center; border:1px solid rgba(217,178,124,.4); border-radius:50%; color:var(--accent); }
+.client-brief-summary>span:nth-child(2) { min-width:0; flex:1; }
+.client-brief-summary strong,.client-brief-summary small { display:block; }
+.client-brief-summary strong { color:var(--text); font:500 16px "Playfair Display",Georgia,serif; }
+.client-brief-summary small { margin-top:3px; color:var(--muted-2); font-size:8px; }
+.client-brief-summary>b { color:var(--accent); }
+.client-brief-body { padding:0 13px 13px; }
+.client-brief-intro,.client-brief-privacy { margin:0 0 10px; color:var(--muted-2); font-size:8px; line-height:1.6; }
+.client-brief-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.client-brief-field { min-width:0; display:grid; gap:5px; margin-top:9px; }
+.client-brief-field>span { color:var(--muted-2); font-size:7px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+.client-brief-field select,.client-brief-field textarea { width:100%; min-width:0; padding:9px 10px; border:1px solid var(--line); border-radius:6px; color:var(--text); background:var(--bg); font:inherit; font-size:9px; }
+.client-brief-field select { min-height:38px; }
+.client-brief-field textarea { resize:vertical; line-height:1.55; }
+.client-brief-field select:focus-visible,.client-brief-field textarea:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.client-brief-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.client-brief-actions button,.client-brief-send { min-height:39px; padding:0 12px; border:1px solid rgba(217,178,124,.43); border-radius:6px; color:#211a1e; background:var(--accent); font:700 8px "DM Sans",sans-serif; cursor:pointer; }
+.client-brief-actions button+button { border-color:var(--line); color:var(--muted); background:transparent; }
+.client-brief-preview { margin-top:11px; padding:11px; border:1px solid rgba(217,178,124,.25); border-radius:6px; background:var(--bg); }
+.client-brief-preview>.eyebrow { margin:0 0 6px; }
+.client-brief-preview>p:not(.eyebrow) { color:var(--text); font-size:9px; line-height:1.65; }
+.client-brief-send { width:100%; }
+.client-brief-privacy { margin:9px 0 0; }
+@media(max-width:700px) {
+  .client-brief-summary { min-height:54px; padding:8px 9px; }
+  .client-brief-summary strong { font-size:14px; }
+  .client-brief-grid { grid-template-columns:1fr; gap:0; }
+  .client-brief-field select,.client-brief-field textarea { font-size:10px; }
+  .client-brief-actions button,.client-brief-send { min-height:42px; }
+}
