@@ -95,5 +95,5 @@ test("produces a clear insufficient-evidence explanation without a made-up perce
 
 test("rejects invalid explanation inputs", () => {
   assert.throws(() => explainFragranceSimilarity(null, {}), /comparison result/i);
-  assert.throws(() => explainFragranceSimilarity({}, null), /score result/i);
+  assert.throws(() => explainFragranceSimilarity({ components: {} }, null), /score result/i);
 });
